@@ -1,0 +1,42 @@
+{
+  "frames": 144,
+  "native_resolution": [
+    960,
+    540
+  ],
+  "camera_path_range": [
+    0,
+    59
+  ],
+  "camera_interpolation": "linear camera centres + rotation SLERP; actual Gaussian rendering at every frame",
+  "frame_rate": 18,
+  "selected_band_nm": [
+    633.3333333333334,
+    553.3333333333334,
+    455.55555555555554,
+    802.2222222222222,
+    651.1111111111111,
+    553.3333333333334
+  ],
+  "RGB": "visible narrow-band composite of learned radiance",
+  "HSI": "near-infrared false-colour composite of learned radiance",
+  "material": "mapped dominant abundance; frozen training-view mapping",
+  "new_training": false,
+  "GT_used_in_rendering": false,
+  "display": {
+    "RGB_scale": 0.63671875,
+    "HSI_channel_scales": [
+      0.5380859375,
+      0.611328125,
+      0.4609375
+    ],
+    "exposure": "fixed across all frames",
+    "native_frame_rate": 18,
+    "mode_duration_seconds": 8.0,
+    "demo_duration_seconds": 32.0,
+    "new_frames_are_actual_Gaussian_renders": true,
+    "no_optical_flow_or_diffusion": true
+  },
+  "scene": "Botanical",
+  "K": 24
+}

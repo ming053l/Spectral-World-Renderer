@@ -20,7 +20,7 @@
   ],
   "RGB": "visible narrow-band composite of learned radiance",
   "HSI": "near-infrared false-colour composite of learned radiance",
-  "material": "mapped dominant abundance; frozen training-view mapping",
+  "material": "Separate class-share maps from visibility-weighted abundance grouped with a frozen training-view mapping; not physical area fractions",
   "new_training": false,
   "GT_used_in_rendering": false,
   "display": {
@@ -38,5 +38,17 @@
     "no_optical_flow_or_diffusion": true
   },
   "scene": "City",
-  "K": 32
+  "K": 32,
+  "material_display": {
+    "frames": 120,
+    "fps": 30,
+    "duration_seconds": 4,
+    "native_camera_renders": true,
+    "interpolated_images": false,
+    "camera_view_range": [
+      80.65,
+      98.35
+    ],
+    "normalization": "Each pixel: sum visibility-weighted endmember shares by mapped class, divided by accumulated opacity; fixed display scale 0\u20131"
+  }
 }

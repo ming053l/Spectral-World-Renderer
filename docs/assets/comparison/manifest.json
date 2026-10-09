@@ -281,16 +281,13 @@
     ],
     "rows": 9,
     "K": {
-      "ours": 8,
+      "ours": 128,
       "unmix": 8,
       "wide": 8
     },
     "unassigned": {
       "ours": [
-        1,
-        5,
-        6,
-        7
+        6
       ],
       "unmix": [
         5,
@@ -304,7 +301,9 @@
         6,
         7
       ]
-    }
+    },
+    "oursAsset": "office_ours_refined.webp",
+    "variant": "Office uses a refined initialization from multi-view training spectra; display recovery remains partial."
   },
   "nvidia": {
     "view": "f_0081",

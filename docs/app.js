@@ -11,7 +11,26 @@ const scenes=[
 const descriptions={demo:'RGB, near-infrared false colour and material identification, followed by a synchronized three-panel comparison.',rgb:'Visible-light radiance rendered from the learned spectra, using bands near 630 / 550 / 460 nm.',hsi:'Five single-band views near 456, 553, 633, 651 and 802 nm, with RGB for reference. All bands share one fixed exposure and the same camera; grayscale brightness represents spectral radiance, not material identity.',material:'Separate material-share maps on the same fixed 0–1 scale, with RGB for reference. These are model shares, not physical area fractions. An asterisk marks a class without an assigned endmember.'};
 let currentScene='nvidia',currentMode='material';
 const player=document.getElementById('scene-video');
-function updatePlayer(){const wasPlaying=!player.paused;player.pause();const src=`assets/web/${currentScene}_${currentMode==='hsi'?'hsi_bands':currentMode}.mp4`;player.preload=wasPlaying?"auto":"none";player.src=src;player.style.aspectRatio=currentMode==='hsi'?'960 / 470':'16 / 9';player.poster=currentMode==='hsi'?`assets/images/${currentScene}_hsi_bands.webp`:currentMode==='material'?`assets/images/${currentScene}_layers.webp`:`assets/images/${currentScene}_poster.webp`;player.load();if(wasPlaying)player.play().catch(()=>{});document.getElementById('video-download').href=currentMode==='hsi'?src:`assets/videos/${currentScene}_${currentMode}.mp4`;document.getElementById('video-status').textContent=wasPlaying?'Loading video…':'Press play to watch.';document.getElementById('scene-name').textContent=scenes.find(s=>s.key===currentScene).name;document.getElementById('mode-description').textContent=descriptions[currentMode];for(const button of document.querySelectorAll('[data-scene]')){const active=button.dataset.scene===currentScene;button.classList.toggle('active',active);if(button.getAttribute('role')==='tab')button.setAttribute('aria-selected',String(active));}for(const button of document.querySelectorAll('[data-mode]')){const active=button.dataset.mode===currentMode;button.classList.toggle('active',active);button.setAttribute('aria-selected',String(active));}if(comparisonData){document.getElementById('compare-scene').value=currentScene;refreshComparison(true);}}
+function videoAssets(scene,mode){
+ if(scene==='office'){
+  const files={material:'office_refined_material',rgb:'office_refined_rgb',hsi:'office_refined_hsi_bands',demo:'office_display_focus'};
+  const posters={material:'office_refined_layers',rgb:'office_refined_rgb',hsi:'office_refined_hsi_bands',demo:'office_display_focus'};
+  const src=`assets/web/${files[mode]}.mp4`;
+  return {src,download:src,poster:`assets/images/${posters[mode]}.webp`,ratio:mode==='hsi'?'960 / 470':mode==='demo'?'1280 / 430':'16 / 9'};
+ }
+ return {src:`assets/web/${scene}_${mode==='hsi'?'hsi_bands':mode}.mp4`,download:mode==='hsi'?`assets/web/${scene}_hsi_bands.mp4`:`assets/videos/${scene}_${mode}.mp4`,poster:`assets/images/${scene}_${mode==='hsi'?'hsi_bands':mode==='material'?'layers':'poster'}.webp`,ratio:mode==='hsi'?'960 / 470':'16 / 9'};
+}
+function updatePlayer(){
+ const wasPlaying=!player.paused,media=videoAssets(currentScene,currentMode);player.pause();player.preload=wasPlaying?'auto':'none';player.src=media.src;player.style.aspectRatio=media.ratio;player.poster=media.poster;player.load();if(wasPlaying)player.play().catch(()=>{});
+ document.getElementById('video-download').href=media.download;
+ document.getElementById('video-status').textContent=wasPlaying?'Loading video…':'Press play to watch.';
+ document.getElementById('scene-name').textContent=scenes.find(s=>s.key===currentScene).name;
+ document.getElementById('mode-description').textContent=currentScene==='office'&&currentMode==='demo'?'RGB and the display material share, rendered from the same camera. Some screens remain undetected; the share map uses a fixed 0–1 scale.':descriptions[currentMode];
+ document.getElementById('office-refinement-note').hidden=currentScene!=='office';
+ for(const button of document.querySelectorAll('[data-scene]')){const active=button.dataset.scene===currentScene;button.classList.toggle('active',active);if(button.getAttribute('role')==='tab')button.setAttribute('aria-selected',String(active));}
+ for(const button of document.querySelectorAll('[data-mode]')){const active=button.dataset.mode===currentMode;button.classList.toggle('active',active);button.setAttribute('aria-selected',String(active));}
+ if(comparisonData){document.getElementById('compare-scene').value=currentScene;refreshComparison(true);}
+}
 function setScene(key,scroll=false){currentScene=key;updatePlayer();if(scroll)document.getElementById('demo').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
 const grid=document.getElementById('world-grid'),tabs=document.getElementById('scene-tabs');
 for(const scene of scenes){const card=document.createElement('button');card.className='world-card';card.dataset.scene=scene.key;card.setAttribute('aria-label',`Watch ${scene.name} demo`);const image=document.createElement('img');image.src=`assets/images/${scene.key}_rgb.webp`;image.alt=scene.name;image.loading='lazy';const copy=document.createElement('span');copy.className='card-copy';const name=document.createElement('strong');name.textContent=scene.name;const detail=document.createElement('small');detail.textContent=scene.detail;copy.append(name,detail);card.append(image,copy);card.addEventListener('click',()=>setScene(scene.key,true));grid.append(card);const button=document.createElement('button');button.textContent=scene.name;button.dataset.scene=scene.key;button.setAttribute('role','tab');button.setAttribute('aria-selected',String(scene.key===currentScene));if(scene.key===currentScene)button.classList.add('active');button.addEventListener('click',()=>setScene(scene.key));tabs.append(button);}
@@ -50,7 +69,7 @@ function refreshComparison(resetMaterial=false){
  document.getElementById('compare-material-label').hidden=!shares;
  document.getElementById('baseline-title').textContent=compareMethod.selectedOptions[0].text;
  for(const [id,m] of [['baseline',method],['ours','ours'],['gt','gt']]){
-  const image=document.getElementById(`compare-${id}`),src=`assets/comparison/${key}_${m}.webp`;
+  const image=document.getElementById(`compare-${id}`),src=`assets/comparison/${m==='ours'&&data.oursAsset?data.oursAsset:`${key}_${m}.webp`}`;
   if(image.getAttribute('src')!==src)image.src=src;
   image.style.height=`${data.rows*100}%`;image.style.transform=`translateY(${-100*row/data.rows}%)`;
   image.alt=`${scenes.find(s=>s.key===key).name}, ${m==='gt'?'ground truth':m==='ours'?'Abundance-GS':compareMethod.selectedOptions[0].text}, ${shares?data.names[material]:'material labels'}, evaluation view ${data.view}`;
@@ -62,11 +81,11 @@ function refreshComparison(resetMaterial=false){
  else data.names.forEach((name,i)=>{const item=document.createElement('span'),dot=document.createElement('i');dot.style.backgroundColor=data.colors[i];item.append(dot,document.createTextNode(name));legend.append(item);});
  let note=`Evaluation view ${data.view} · Same camera in all three panels. `;
  note+=shares?'Model shares show normalized learned contributions; GT shows visible-area fractions. These are different quantities, not a physical abundance accuracy score. ':'Colors identify the same material classes across all panels. ';
- note+='Gray indicates unscored or unavailable pixels. ';
+ note+='Gray indicates unscored or unavailable pixels. ';if(data.variant)note+=data.variant+' ';
  if(data.K.ours!==data.K[method])note+=`Endmembers: ours ${data.K.ours}, baseline ${data.K[method]}. `;
  if(shares){for(const [m,label] of [[method,'The baseline'],['ours','Our model']])if(data.unassigned[m].includes(material))note+=`${label} has no endmember assigned to this class. `;}
  document.getElementById('comparison-note').textContent=note;
 }
 compareScene.addEventListener('change',()=>refreshComparison(true));
 for(const control of [compareMethod,compareMode,compareMaterial])control.addEventListener('change',()=>refreshComparison());
-fetch('assets/comparison/manifest.json').then(response=>{if(!response.ok)throw Error('Comparison unavailable');return response.json();}).then(data=>{comparisonData=data;refreshComparison(true);}).catch(()=>{document.getElementById('comparison-note').textContent='Comparison could not load. Please refresh to try again.';});
+fetch('assets/comparison/manifest.json?v=office-refined1').then(response=>{if(!response.ok)throw Error('Comparison unavailable');return response.json();}).then(data=>{comparisonData=data;refreshComparison(true);}).catch(()=>{document.getElementById('comparison-note').textContent='Comparison could not load. Please refresh to try again.';});

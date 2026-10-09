@@ -2,7 +2,7 @@
 
 ### Towards Verifiable 3D Hyperspectral Unmixing
 
-**Chia-Ming Lee · Yu-Jou Xiao · Ming-Ching Chang · Xin Li · Yu-Lun Liu · Chih-Chung Hsu**
+**Chia-Ming Lee · Yu-Jou Hsiao · Ming-Ching Chang · Xin Li · Yu-Lun Liu · Chih-Chung Hsu**
 
 University at Albany, SUNY · National Yang Ming Chiao Tung University · National Cheng Kung University
 
@@ -50,7 +50,7 @@ GitHub Pages deployment is handled by `.github/workflows/pages.yml`. In reposito
 ```bibtex
 @misc{lee2026spectralworldrenderer,
   title = {Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing},
-  author = {Chia-Ming Lee and Yu-Jou Xiao and Ming-Ching Chang and Xin Li
+  author = {Chia-Ming Lee and Yu-Jou Hsiao and Ming-Ching Chang and Xin Li
             and Yu-Lun Liu and Chih-Chung Hsu},
   year = {2026}
 }

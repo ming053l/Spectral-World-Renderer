@@ -6,7 +6,7 @@
 
 University at Albany, SUNY · National Yang Ming Chiao Tung University · National Cheng Kung University
 
-[**Project page**](https://ming053l.github.io/Spectral-World-Renderer/) · [Paper](docs/assets/paper.pdf) · [Supplement](docs/assets/supplementary.pdf) · [Demo video](docs/assets/videos/teaser.mp4)
+[**Project page**](https://ming053l.github.io/Spectral-World-Renderer/) · [Supplement](docs/assets/supplementary.pdf) · [Demo video](docs/assets/videos/teaser.mp4)
 
 ![Spectral World Renderer: eight indoor and outdoor worlds](docs/assets/images/worlds.webp)
 
@@ -33,7 +33,7 @@ Each combined demo shows RGB, HSI false colour, material identification and a sy
 
 ## Release status
 
-This repository currently hosts the **project page, paper, supplementary material and rendered demos**. Research code and full datasets are not included in this website release.
+This repository currently hosts the **project page, supplementary material and rendered demos**. Research code and full datasets are not included in this website release.
 
 ## Website
 

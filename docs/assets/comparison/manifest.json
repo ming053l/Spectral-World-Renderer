@@ -1,0 +1,359 @@
+{
+  "forbidden_city": {
+    "view": "f_0116",
+    "names": [
+      "yellow roof tile",
+      "vermilion paint",
+      "vegetation",
+      "white marble",
+      "grey masonry",
+      "painted eaves",
+      "soil & bark",
+      "water",
+      "distant city / haze"
+    ],
+    "colors": [
+      "#ebbe1e",
+      "#c82823",
+      "#38903d",
+      "#f5f5f0",
+      "#6e6e73",
+      "#2896a0",
+      "#a0784b",
+      "#3c78c8",
+      "#c8c8d4"
+    ],
+    "rows": 10,
+    "K": {
+      "ours": 32,
+      "unmix": 9,
+      "wide": 9
+    },
+    "unassigned": {
+      "ours": [],
+      "unmix": [
+        2,
+        5,
+        6,
+        7
+      ],
+      "wide": [
+        1,
+        3,
+        6,
+        7,
+        8
+      ]
+    }
+  },
+  "market": {
+    "view": "f_0008",
+    "names": [
+      "travertine",
+      "stone",
+      "vegetation",
+      "fired clay",
+      "sandy soil",
+      "wood"
+    ],
+    "colors": [
+      "#ccb591",
+      "#7882af",
+      "#38903d",
+      "#bb532b",
+      "#e6be46",
+      "#6e4628"
+    ],
+    "rows": 7,
+    "K": {
+      "ours": 6,
+      "unmix": 6,
+      "wide": 6
+    },
+    "unassigned": {
+      "ours": [],
+      "unmix": [
+        2,
+        4,
+        5
+      ],
+      "wide": [
+        4,
+        5
+      ]
+    }
+  },
+  "botanical": {
+    "view": "f_0008",
+    "names": [
+      "travertine",
+      "stone",
+      "vegetation",
+      "fired clay",
+      "sandy soil",
+      "wood"
+    ],
+    "colors": [
+      "#ccb591",
+      "#7882af",
+      "#38903d",
+      "#bb532b",
+      "#e6be46",
+      "#6e4628"
+    ],
+    "rows": 7,
+    "K": {
+      "ours": 6,
+      "unmix": 6,
+      "wide": 6
+    },
+    "unassigned": {
+      "ours": [
+        3
+      ],
+      "unmix": [
+        0,
+        3,
+        4,
+        5
+      ],
+      "wide": [
+        5
+      ]
+    }
+  },
+  "study": {
+    "view": "f_0054",
+    "names": [
+      "wood",
+      "paper",
+      "ink",
+      "stone",
+      "ceramic"
+    ],
+    "colors": [
+      "#6e4628",
+      "#ebe1c3",
+      "#1e1e23",
+      "#6e7887",
+      "#c86e3c"
+    ],
+    "rows": 6,
+    "K": {
+      "ours": 5,
+      "unmix": 5,
+      "wide": 5
+    },
+    "unassigned": {
+      "ours": [
+        2,
+        4
+      ],
+      "unmix": [
+        2,
+        3,
+        4
+      ],
+      "wide": [
+        3
+      ]
+    }
+  },
+  "karst": {
+    "view": "f_0017",
+    "names": [
+      "limestone",
+      "vegetation",
+      "soil",
+      "wood / bark",
+      "water"
+    ],
+    "colors": [
+      "#ccb591",
+      "#38903d",
+      "#e6be46",
+      "#6e4628",
+      "#3c78c8"
+    ],
+    "rows": 6,
+    "K": {
+      "ours": 5,
+      "unmix": 5,
+      "wide": 5
+    },
+    "unassigned": {
+      "ours": [
+        2,
+        3
+      ],
+      "unmix": [
+        2,
+        3
+      ],
+      "wide": [
+        0,
+        3
+      ]
+    }
+  },
+  "city": {
+    "view": "f_0120",
+    "names": [
+      "concrete",
+      "vegetation",
+      "fired clay",
+      "asphalt",
+      "road paint",
+      "soil & bark",
+      "glazing",
+      "facade paint",
+      "metal",
+      "vehicle",
+      "backdrop"
+    ],
+    "colors": [
+      "#dedacd",
+      "#38903d",
+      "#bb532b",
+      "#5f5f66",
+      "#fae11e",
+      "#a0784b",
+      "#233c73",
+      "#e678c8",
+      "#5aaaaa",
+      "#dc1e3c",
+      "#464128"
+    ],
+    "rows": 12,
+    "K": {
+      "ours": 11,
+      "unmix": 11,
+      "wide": 11
+    },
+    "unassigned": {
+      "ours": [
+        4,
+        6,
+        7,
+        10
+      ],
+      "unmix": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "wide": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        10
+      ]
+    }
+  },
+  "office": {
+    "view": "f_0054",
+    "names": [
+      "wood",
+      "laminate",
+      "textile",
+      "vinyl floor",
+      "white paint",
+      "vegetation",
+      "metal",
+      "display"
+    ],
+    "colors": [
+      "#6e4628",
+      "#782832",
+      "#8c50aa",
+      "#a5b4c8",
+      "#fafafa",
+      "#38903d",
+      "#5aaaaa",
+      "#00bec8"
+    ],
+    "rows": 9,
+    "K": {
+      "ours": 8,
+      "unmix": 8,
+      "wide": 8
+    },
+    "unassigned": {
+      "ours": [
+        1,
+        5,
+        6,
+        7
+      ],
+      "unmix": [
+        5,
+        6,
+        7
+      ],
+      "wide": [
+        1,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  },
+  "nvidia": {
+    "view": "f_0081",
+    "names": [
+      "white paint",
+      "glazing",
+      "vegetation",
+      "dark panels",
+      "concrete",
+      "asphalt",
+      "soil & bark",
+      "wood"
+    ],
+    "colors": [
+      "#fafafa",
+      "#233c73",
+      "#38903d",
+      "#192334",
+      "#dedacd",
+      "#5f5f66",
+      "#a0784b",
+      "#6e4628"
+    ],
+    "rows": 9,
+    "K": {
+      "ours": 32,
+      "unmix": 8,
+      "wide": 8
+    },
+    "unassigned": {
+      "ours": [
+        4,
+        6
+      ],
+      "unmix": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "wide": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  }
+}

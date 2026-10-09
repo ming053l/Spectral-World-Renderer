@@ -11,13 +11,12 @@ const scenes=[
 const descriptions={demo:'RGB, near-infrared false colour and material identification, followed by a synchronized three-panel comparison.',rgb:'Visible-light radiance rendered from the learned spectra, using bands near 630 / 550 / 460 nm.',hsi:'Near-infrared false colour from bands near 800 / 650 / 550 nm. Vegetation appears red.',material:'Separate material-share maps on the same fixed 0–1 scale, with RGB for reference. These are model shares, not physical area fractions. An asterisk marks a class without an assigned endmember.'};
 let currentScene='nvidia',currentMode='material';
 const player=document.getElementById('scene-video');
-function updatePlayer(){const wasPlaying=!player.paused;player.pause();const src=`assets/web/${currentScene}_${currentMode}.mp4`;player.preload=wasPlaying?"auto":"none";player.src=src;player.poster=currentMode==='material'?`assets/images/${currentScene}_layers.webp`:`assets/images/${currentScene}_poster.webp`;player.load();if(wasPlaying)player.play().catch(()=>{});document.getElementById('video-download').href=`assets/videos/${currentScene}_${currentMode}.mp4`;document.getElementById('video-status').textContent=wasPlaying?'Loading video…':'Press play to watch. Downloads use the original-quality file.';document.getElementById('scene-name').textContent=scenes.find(s=>s.key===currentScene).name;document.getElementById('mode-description').textContent=descriptions[currentMode];for(const button of document.querySelectorAll('[data-scene]')){const active=button.dataset.scene===currentScene;button.classList.toggle('active',active);if(button.getAttribute('role')==='tab')button.setAttribute('aria-selected',String(active));}for(const button of document.querySelectorAll('[data-mode]')){const active=button.dataset.mode===currentMode;button.classList.toggle('active',active);button.setAttribute('aria-selected',String(active));}const name=scenes.find(s=>s.key===currentScene).name;document.getElementById('wipe-base').src=`assets/images/${currentScene}_rgb.webp`;document.getElementById('wipe-base').alt=`Visible-light render of ${name}`;document.getElementById('wipe-material').src=`assets/images/${currentScene}_material.webp`;document.getElementById('wipe-material').alt=`Predicted materials at the same ${name} camera`;}
+function updatePlayer(){const wasPlaying=!player.paused;player.pause();const src=`assets/web/${currentScene}_${currentMode}.mp4`;player.preload=wasPlaying?"auto":"none";player.src=src;player.poster=currentMode==='material'?`assets/images/${currentScene}_layers.webp`:`assets/images/${currentScene}_poster.webp`;player.load();if(wasPlaying)player.play().catch(()=>{});document.getElementById('video-download').href=`assets/videos/${currentScene}_${currentMode}.mp4`;document.getElementById('video-status').textContent=wasPlaying?'Loading video…':'Press play to watch. Downloads use the original-quality file.';document.getElementById('scene-name').textContent=scenes.find(s=>s.key===currentScene).name;document.getElementById('mode-description').textContent=descriptions[currentMode];for(const button of document.querySelectorAll('[data-scene]')){const active=button.dataset.scene===currentScene;button.classList.toggle('active',active);if(button.getAttribute('role')==='tab')button.setAttribute('aria-selected',String(active));}for(const button of document.querySelectorAll('[data-mode]')){const active=button.dataset.mode===currentMode;button.classList.toggle('active',active);button.setAttribute('aria-selected',String(active));}if(comparisonData){document.getElementById('compare-scene').value=currentScene;refreshComparison(true);}}
 function setScene(key,scroll=false){currentScene=key;updatePlayer();if(scroll)document.getElementById('demo').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
 const grid=document.getElementById('world-grid'),tabs=document.getElementById('scene-tabs');
 for(const scene of scenes){const card=document.createElement('button');card.className='world-card';card.dataset.scene=scene.key;card.setAttribute('aria-label',`Watch ${scene.name} demo`);const image=document.createElement('img');image.src=`assets/images/${scene.key}_rgb.webp`;image.alt=scene.name;image.loading='lazy';const copy=document.createElement('span');copy.className='card-copy';const name=document.createElement('strong');name.textContent=scene.name;const detail=document.createElement('small');detail.textContent=scene.detail;copy.append(name,detail);card.append(image,copy);card.addEventListener('click',()=>setScene(scene.key,true));grid.append(card);const button=document.createElement('button');button.textContent=scene.name;button.dataset.scene=scene.key;button.setAttribute('role','tab');button.setAttribute('aria-selected',String(scene.key===currentScene));if(scene.key===currentScene)button.classList.add('active');button.addEventListener('click',()=>setScene(scene.key));tabs.append(button);}
 for(const button of document.querySelectorAll('[data-mode]'))button.addEventListener('click',()=>{currentMode=button.dataset.mode;updatePlayer();});
 for(const list of document.querySelectorAll('[role="tablist"]'))list.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;const buttons=[...list.querySelectorAll('[role="tab"]')];const index=buttons.indexOf(document.activeElement);if(index<0)return;event.preventDefault();let next=event.key==='Home'?0:event.key==='End'?buttons.length-1:(index+(event.key==='ArrowRight'?1:-1)+buttons.length)%buttons.length;buttons[next].focus();buttons[next].click();});
-document.getElementById('wipe-range').addEventListener('input',event=>document.getElementById('wipe').style.setProperty('--split',`${event.target.value}%`));
 document.getElementById('copy-citation').addEventListener('click',async()=>{const text=document.getElementById('bibtex').textContent;const button=document.getElementById('copy-citation');try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(text);else{const area=document.createElement('textarea');area.value=text;area.style.position='fixed';area.style.opacity='0';document.body.append(area);area.select();if(!document.execCommand('copy'))throw Error('Clipboard unavailable');area.remove();}button.textContent='Copied';document.getElementById('copy-status').textContent='Citation copied to clipboard.';setTimeout(()=>button.textContent='Copy BibTeX',2000);}catch{button.textContent='Select BibTeX';const range=document.createRange();range.selectNodeContents(document.getElementById('bibtex'));const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);document.getElementById('copy-status').textContent='Citation selected. Copy using your keyboard.';}});
 const status = document.getElementById('video-status');
 player.addEventListener('waiting',()=>{status.textContent='Buffering…';});
@@ -35,3 +34,39 @@ if ('IntersectionObserver' in window) {
 for(const v of [teaser,player])v.addEventListener('play',()=>{for(const other of [teaser,player])if(other!==v)other.pause();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){teaser.pause();player.pause();}});
 motion.addEventListener('change',()=>{if(motion.matches)teaser.pause();});
+
+let comparisonData=null;
+const compareScene=document.getElementById('compare-scene');
+const compareMethod=document.getElementById('compare-method');
+const compareMode=document.getElementById('compare-mode');
+const compareMaterial=document.getElementById('compare-material');
+for(const scene of scenes){const option=new Option(scene.name,scene.key);compareScene.add(option);}
+compareScene.value=currentScene;
+function refreshComparison(resetMaterial=false){
+ if(!comparisonData)return;
+ const key=compareScene.value,data=comparisonData[key],method=compareMethod.value;
+ if(resetMaterial||!compareMaterial.options.length){compareMaterial.replaceChildren(...data.names.map((name,i)=>new Option(name,String(i))));}
+ const shares=compareMode.value==='shares',material=Number(compareMaterial.value),row=shares?material+1:0;
+ document.getElementById('compare-material-label').hidden=!shares;
+ document.getElementById('baseline-title').textContent=compareMethod.selectedOptions[0].text;
+ for(const [id,m] of [['baseline',method],['ours','ours'],['gt','gt']]){
+  const image=document.getElementById(`compare-${id}`),src=`assets/comparison/${key}_${m}.webp`;
+  if(image.getAttribute('src')!==src)image.src=src;
+  image.style.height=`${data.rows*100}%`;image.style.transform=`translateY(${-100*row/data.rows}%)`;
+  image.alt=`${scenes.find(s=>s.key===key).name}, ${m==='gt'?'ground truth':m==='ours'?'Abundance-GS':compareMethod.selectedOptions[0].text}, ${shares?data.names[material]:'material labels'}, evaluation view ${data.view}`;
+ }
+ for(const id of ['baseline','ours'])document.getElementById(`${id}-caption`).textContent=shares?'Model share':'Mapped material labels';
+ document.getElementById('gt-caption').textContent=shares?'Visible-area fraction':'Material labels';
+ const legend=document.getElementById('comparison-legend');legend.replaceChildren();
+ if(shares){const scale=document.createElement('span');scale.className='share-scale';scale.innerHTML='<span>0</span><i></i><span>1</span>';legend.append(scale);}
+ else data.names.forEach((name,i)=>{const item=document.createElement('span'),dot=document.createElement('i');dot.style.backgroundColor=data.colors[i];item.append(dot,document.createTextNode(name));legend.append(item);});
+ let note=`Evaluation view ${data.view} · Same camera in all three panels. `;
+ note+=shares?'Model shares show normalized learned contributions; GT shows visible-area fractions. These are different quantities, not a physical abundance accuracy score. ':'Colors identify the same material classes across all panels. ';
+ note+='Gray indicates unscored or unavailable pixels. ';
+ if(data.K.ours!==data.K[method])note+=`Endmembers: ours ${data.K.ours}, baseline ${data.K[method]}. `;
+ if(shares){for(const [m,label] of [[method,'The baseline'],['ours','Our model']])if(data.unassigned[m].includes(material))note+=`${label} has no endmember assigned to this class. `;}
+ document.getElementById('comparison-note').textContent=note;
+}
+compareScene.addEventListener('change',()=>refreshComparison(true));
+for(const control of [compareMethod,compareMode,compareMaterial])control.addEventListener('change',()=>refreshComparison());
+fetch('assets/comparison/manifest.json').then(response=>{if(!response.ok)throw Error('Comparison unavailable');return response.json();}).then(data=>{comparisonData=data;refreshComparison(true);}).catch(()=>{document.getElementById('comparison-note').textContent='Comparison could not load. Please refresh to try again.';});

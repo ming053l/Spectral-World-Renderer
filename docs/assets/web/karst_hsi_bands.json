@@ -1,0 +1,16 @@
+{
+  "scene": "karst",
+  "frames": 120,
+  "fps": 30,
+  "wavelengths_nm": [
+    455.55555555555554,
+    553.3333333333334,
+    633.3333333333334,
+    651.1111111111111,
+    802.2222222222222
+  ],
+  "radiance_scale": 0.69873046875,
+  "gamma": 2.2,
+  "display": "Single bands in grayscale, shared exposure across all wavelengths and frames; RGB reference uses the same scale. Uncovered pixels are gray.",
+  "source": "Existing native Gaussian camera renders; no retraining or interpolated image frames."
+}

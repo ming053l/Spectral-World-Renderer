@@ -2,7 +2,7 @@
 
 ### Towards Verifiable 3D Hyperspectral Unmixing
 
-**Chia-Ming Lee<sup>1,2</sup> · Yu-Jou Hsiao<sup>3</sup> · Ming-Ching Chang<sup>1</sup> · Xin Li<sup>1</sup> · Yu-Lun Liu<sup>2</sup> · Chih-Chung Hsu<sup>2</sup>**
+**Chia-Ming Lee<sup>1,2</sup> · Yu-Jou Hsiao<sup>3</sup> · Ming-Ching Chang<sup>1</sup> · Xin Li<sup>1</sup> · Yu-Lun Liu<sup>2</sup> · Chih-Chung Hsu<sup>2,3</sup>**
 
 <sup>1</sup>University at Albany, State University of New York · <sup>2</sup>National Yang Ming Chiao Tung University · <sup>3</sup>National Cheng Kung University
 

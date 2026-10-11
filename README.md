@@ -21,6 +21,21 @@
 - 3.7–12.9× faster training than the unmixing baselines.
 - Highest PSNR on each real-capture source (NeSpoF, HSI-SC, HS-NeRF).
 
+## Citation
+
+If you find this work useful, please cite:
+
+```bibtex
+@article{lee2026swr,
+  title   = {Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing},
+  author  = {Lee, Chia-Ming and Hsiao, Yu-Jou and Chang, Ming-Ching and
+             Li, Xin and Liu, Yu-Lun and Hsu, Chih-Chung},
+  journal = {Preprint, under review},
+  year    = {2026},
+  url     = {https://ming053l.github.io/Spectral-World-Renderer/}
+}
+```
+
 ## Repository contents
 
 This repository hosts the project page, the paper, the supplementary material and rendered clips. Research code and datasets are not part of this release.
@@ -42,18 +57,6 @@ python -m http.server 8000 --directory docs
 ```
 
 Then open <http://localhost:8000>. GitHub Pages deploys `docs/` through `.github/workflows/pages.yml` on every push to `main` that changes `docs/`; in **Settings → Pages**, the source must be **GitHub Actions**.
-
-## Citation
-
-```bibtex
-@article{lee2027swr,
-  title   = {Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing},
-  author  = {Lee, Chia-Ming and Hsiao, Yu-Jou and Chang, Ming-Ching and
-             Li, Xin and Liu, Yu-Lun and Hsu, Chih-Chung},
-  journal = {Preprint, under review},
-  year    = {2026}
-}
-```
 
 ## Acknowledgements
 

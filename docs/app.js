@@ -99,6 +99,15 @@ function selectTab(tabs, active) {
 const players = [];
 function stopOthers(except) { for (const p of players) if (p !== except && !p.video.paused) p.video.pause(); }
 document.addEventListener('visibilitychange', () => { if (document.hidden) for (const p of players) p.video.pause(); });
+/* Posters load only when their player approaches the viewport. */
+const posterIO = 'IntersectionObserver' in window ? new IntersectionObserver(es => {
+  for (const e of es) if (e.isIntersecting) { const v = e.target; if (v.dataset.poster) v.poster = v.dataset.poster; v.dataset.near = '1'; posterIO.unobserve(v); }
+}, {rootMargin: '600px 0px'}) : null;
+function lazyPoster(v, url) {
+  v.dataset.poster = url;
+  if (!posterIO || v.dataset.near) { v.poster = url; return; }
+  posterIO.observe(v);
+}
 const io = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
   for (const e of entries) {
     const p = players.find(x => x.video === e.target); if (!p) continue;
@@ -131,7 +140,7 @@ function setSource(video, src, keepTime, shouldPlay) {
     const hasQuery = QUERY_WORLDS.some(q => q.key === w.key);
     const s = document.createElement('article');
     s.className = 'slide';
-    s.innerHTML = `<img src="assets/worlds/${w.key}.webp" width="800" height="450" loading="lazy" decoding="async" alt="Rendered view of the ${w.name} world">
+    s.innerHTML = `<img src="assets/worlds/${w.key}-400.webp" srcset="assets/worlds/${w.key}-400.webp 400w, assets/worlds/${w.key}.webp 800w" sizes="(max-width:600px) 82vw, (max-width:960px) 50vw, 300px" width="800" height="450" loading="lazy" decoding="async" alt="Rendered view of the ${w.name} world">
       <div class="body"><h3>${w.name}</h3><span class="meta">${w.setting} · ${w.classes} classes (${w.rare} rare) · ${w.spectra} specimens</span>
       <button type="button"${hasQuery ? '' : ' disabled'}>${hasQuery ? 'Query this world →' : 'Shown in the figures below'}</button></div>`;
     if (hasQuery) s.querySelector('button').addEventListener('click', () => {
@@ -228,7 +237,7 @@ function applyQuerySource(keepTime) {
   for (const w of QUERY_WORLDS) {
     const b = document.createElement('button');
     b.type = 'button'; b.dataset.world = w.key;
-    b.innerHTML = `<img src="assets/worlds/${w.key}.webp" width="800" height="450" loading="lazy" decoding="async" alt=""><span>${w.name}</span>`;
+    b.innerHTML = `<img src="assets/worlds/${w.key}-400.webp" width="400" height="225" loading="lazy" decoding="async" alt=""><span>${w.name}</span>`;
     b.setAttribute('aria-label', `World: ${w.name}`);
     b.addEventListener('click', () => setQueryWorld(w.key));
     box.append(b);
@@ -249,8 +258,8 @@ function setQueryWorld(key) {
     b.addEventListener('click', () => { qp.userPaused = false; setChip(c.id); });
     chips.append(b);
   });
-  qVideo.poster = `assets/query/${qWorld.key}_poster.webp`;
-  qRgb.poster = qVideo.poster;
+  lazyPoster(qVideo, `assets/query/${qWorld.key}_poster.webp`);
+  lazyPoster(qRgb, `assets/query/${qWorld.key}_poster.webp`);
   setChip(qChip.id, false);
 }
 function setChip(id, keepTime = true) {
@@ -350,7 +359,7 @@ const tp = makePlayer(tVideo, () => { if (tp.ready) return; tp.ready = true; set
 function setTetra(k) {
   tKey = k;
   selectTab([...document.querySelectorAll('#tetra-worlds [role="tab"]')], document.querySelector(`#tetra-worlds [data-world="${k}"]`));
-  tVideo.poster = `assets/tetra/${k}.webp`;
+  lazyPoster(tVideo, `assets/tetra/${k}.webp`);
   if (tp.ready) setSource(tVideo, `assets/tetra/${k}.mp4`, false, tp.visible && autoplayOK() && !tp.userPaused);
 }
 tVideo.addEventListener('click', () => togglePlayer(tp));

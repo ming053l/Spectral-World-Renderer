@@ -14,9 +14,9 @@
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="style.css?v=5">
-<script src="app.js?v=5" defer></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="style.css?v=perf1">
+<script src="app.js?v=perf1" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -64,7 +64,7 @@
     <h2 class="tagline" id="tagline">Query <span class="hl">any material</span> in hyperspectral 3D worlds</h2>
     <figure>
       <button class="zoom" type="button" data-full="assets/fig/teaser_grid.webp" aria-label="Open the teaser figure at full resolution">
-        <img src="assets/fig/teaser_grid-1200.webp" srcset="assets/fig/teaser_grid-1200.webp 1200w, assets/fig/teaser_grid.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="541" decoding="async" alt="Rendered inputs of Forbidden City, Market, Botanical, City and Office, each followed by five material queries, such as white marble, fired clay, stone, asphalt and vinyl floor, and the material layers that Abundance-GS recovers.">
+        <img src="assets/fig/teaser_grid-1200.webp" srcset="assets/fig/teaser_grid-800.webp 800w, assets/fig/teaser_grid-1200.webp 1200w, assets/fig/teaser_grid.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="541" decoding="async" alt="Rendered inputs of Forbidden City, Market, Botanical, City and Office, each followed by five material queries, such as white marble, fired clay, stone, asphalt and vinyl floor, and the material layers that Abundance-GS recovers.">
       </button>
       <figcaption><b>From hyperspectral worlds to separate material layers.</b> Spectral World Renderer generates indoor and outdoor worlds whose material composition is known by construction; from their multi-view hyperspectral images, Abundance-GS recovers materials as separate layers. Each layer colours, in a test view, the surfaces whose dominant endmember maps to one material.</figcaption>
     </figure>
@@ -119,7 +119,7 @@
     <p class="text-block">Real multi-view hyperspectral datasets are tabletop or turntable captures without material labels or sub-pixel proportions, which cannot be annotated reliably by hand. Spectral World Renderer therefore generates worlds rather than annotating captures.</p>
     <figure class="fig">
       <button class="zoom" type="button" data-full="assets/fig/swr_workflow.webp" aria-label="Open the workflow figure at full resolution">
-        <img src="assets/fig/swr_workflow-1200.webp" srcset="assets/fig/swr_workflow-1200.webp 1200w, assets/fig/swr_workflow.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="598" loading="lazy" decoding="async" alt="Workflow diagram: reference photographs and a short brief guide a coding agent that writes an executable world; library-measured spectra are assigned to surfaces; one shared sub-pixel rendering produces hyperspectral and RGB observations with per-pixel materials; layout and rendering checks return flawed worlds for revision.">
+        <img src="assets/fig/swr_workflow-1200.webp" srcset="assets/fig/swr_workflow-800.webp 800w, assets/fig/swr_workflow-1200.webp 1200w, assets/fig/swr_workflow.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="598" loading="lazy" decoding="async" alt="Workflow diagram: reference photographs and a short brief guide a coding agent that writes an executable world; library-measured spectra are assigned to surfaces; one shared sub-pixel rendering produces hyperspectral and RGB observations with per-pixel materials; layout and rendering checks return flawed worlds for revision.">
       </button>
       <figcaption><b>The Spectral World Renderer.</b> From reference photographs and a short brief, a coding agent writes an executable world whose every surface carries a library-measured spectrum. One shared sub-pixel rendering produces the hyperspectral and RGB observations together with the material of every pixel, so the ground truth is exact for the rendered world; checks on layout and rendering return flawed worlds for revision before release.</figcaption>
     </figure>
@@ -133,7 +133,7 @@
     <p class="text-block">Spectral radiance fields reconstruct spectra without decomposing them, and unmixing rendered spectra afterwards cannot separate what compositing has already mixed. Abundance-GS resolves the mixture before compositing.</p>
     <figure class="fig">
       <button class="zoom" type="button" data-full="assets/fig/method_overview.webp" aria-label="Open the Abundance-GS overview figure at full resolution">
-        <img src="assets/fig/method_overview-1200.webp" srcset="assets/fig/method_overview-1200.webp 1200w, assets/fig/method_overview.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="460" loading="lazy" decoding="async" alt="Overview of Abundance-GS: an RGB anchor fixes the geometry; each Gaussian carries band-independent harmonic features; at every ray intersection a shared decoder outputs abundances and an intensity that mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances.">
+        <img src="assets/fig/method_overview-1200.webp" srcset="assets/fig/method_overview-800.webp 800w, assets/fig/method_overview-1200.webp 1200w, assets/fig/method_overview.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="460" loading="lazy" decoding="async" alt="Overview of Abundance-GS: an RGB anchor fixes the geometry; each Gaussian carries band-independent harmonic features; at every ray intersection a shared decoder outputs abundances and an intensity that mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances.">
       </button>
       <figcaption><b>Overview of Abundance-GS.</b> An RGB anchor fixes the geometry, and each Gaussian carries harmonic features whose size does not depend on the number of bands. At every ray intersection, a shared decoder maps the interpolated feature to abundances and an intensity, which mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances. Clusters of multi-view appearance initialize the endmembers and regularize their assignment, so no material label enters training.</figcaption>
     </figure>
@@ -224,7 +224,7 @@
 
     <figure class="fig" style="margin-top:22px">
       <button class="zoom" type="button" data-full="assets/fig/bench_layers.webp" aria-label="Open the material layer comparison at full resolution">
-        <img src="assets/fig/bench_layers-1200.webp" srcset="assets/fig/bench_layers-1200.webp 1200w, assets/fig/bench_layers.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="874" loading="lazy" decoding="async" alt="Material layers across the eight worlds: for each world, the rendered input, the ground-truth layer of one material, and the layers of UnMix-NeRF, 3DGS plus VCA, and Abundance-GS with their IoU; Abundance-GS has the highest IoU in every row.">
+        <img src="assets/fig/bench_layers-1200.webp" srcset="assets/fig/bench_layers-800.webp 800w, assets/fig/bench_layers-1200.webp 1200w, assets/fig/bench_layers.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="874" loading="lazy" decoding="async" alt="Material layers across the eight worlds: for each world, the rendered input, the ground-truth layer of one material, and the layers of UnMix-NeRF, 3DGS plus VCA, and Abundance-GS with their IoU; Abundance-GS has the highest IoU in every row.">
       </button>
       <figcaption><b>Material layers across the eight worlds.</b> Each row tints one material by its abundance in a test view; IoU uses summed abundance &gt; 0.5 against the true mask. Unmixing rendered spectra afterwards (3DGS + VCA) or inside a radiance field (UnMix-NeRF) spreads the material over unrelated surfaces, whereas Abundance-GS recovers the layer closest to the ground truth.</figcaption>
     </figure>
@@ -270,7 +270,7 @@
     <h3 class="sub" style="margin-top:0">What the decoder learns</h3>
     <figure class="fig">
       <button class="zoom" type="button" data-full="assets/fig/decoder_analysis.webp" aria-label="Open the decoder analysis figure at full resolution">
-        <img src="assets/fig/decoder_analysis-1200.webp" srcset="assets/fig/decoder_analysis-1200.webp 1200w, assets/fig/decoder_analysis.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="759" loading="lazy" decoding="async" alt="Decoder analysis on test views of Market, City and Office: RGB, ground-truth direct share of illumination, composited intensity, ground-truth material, dominant endmember, and the change of abundances under viewing-direction changes, with summary plots.">
+        <img src="assets/fig/decoder_analysis-1200.webp" srcset="assets/fig/decoder_analysis-800.webp 800w, assets/fig/decoder_analysis-1200.webp 1200w, assets/fig/decoder_analysis.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="759" loading="lazy" decoding="async" alt="Decoder analysis on test views of Market, City and Office: RGB, ground-truth direct share of illumination, composited intensity, ground-truth material, dominant endmember, and the change of abundances under viewing-direction changes, with summary plots.">
       </button>
       <figcaption><b>Intensity carries shading; endmembers carry material and illumination mode.</b> Test views of Market (K = 24), City (K = 32) and Office (K = 32). The composited intensity follows the direct share of the illumination, and each material occupies distinct endmembers in sun and in shadow, so the over-complete dictionary represents illumination modes within a class.</figcaption>
     </figure>
@@ -289,7 +289,7 @@
     </div>
     <figure class="fig" style="margin-top:18px">
       <button class="zoom" type="button" data-full="assets/fig/tetra_supp.webp" aria-label="Open the bounding tetrahedra figure at full resolution">
-        <img src="assets/fig/tetra_supp-1200.webp" srcset="assets/fig/tetra_supp-1200.webp 1200w, assets/fig/tetra_supp.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="912" loading="lazy" decoding="async" alt="Bounding tetrahedra on test views: the rendering, the tetrahedra weighted by opacity and visibility, the tetrahedra coloured by the dominant class decoded at each Gaussian centre, and the rendered material map.">
+        <img src="assets/fig/tetra_supp-1200.webp" srcset="assets/fig/tetra_supp-800.webp 800w, assets/fig/tetra_supp-1200.webp 1200w, assets/fig/tetra_supp.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="912" loading="lazy" decoding="async" alt="Bounding tetrahedra on test views: the rendering, the tetrahedra weighted by opacity and visibility, the tetrahedra coloured by the dominant class decoded at each Gaussian centre, and the rendered material map.">
       </button>
       <figcaption><b>Bounding tetrahedra on test views.</b> Columns show the rendering, the tetrahedra weighted by opacity and visibility, the tetrahedra coloured by the dominant class decoded at each Gaussian centre, and the rendered material map. The colouring reproduces the class layout of the rendered map: the median visible Gaussian places more than 98 % of its centre abundance on one class.</figcaption>
     </figure>

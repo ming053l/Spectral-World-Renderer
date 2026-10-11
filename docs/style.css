@@ -37,7 +37,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .authors,.affils{list-style:none;padding:0;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;font-family:var(--display)}
 .authors{font-size:1.25rem;gap:2px 0;max-width:860px}
 .authors li:not(:last-child)::after{content:",";color:var(--text);margin-right:.45em}
-.authors .name{color:var(--accent)}
+.authors .name{color:var(--accent);text-decoration:none}
+.authors a.name:hover,.authors a.name:focus-visible{text-decoration:underline}
 .authors sup,.affils sup{font-size:.62em;margin-left:1px}
 .affils{font-size:1.05rem;gap:2px 18px;margin-top:6px;color:var(--text)}
 .affils sup{margin-right:2px}

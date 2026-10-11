@@ -1,42 +1,376 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing</title>
-<meta name="description" content="Spectral World Renderer creates verifiable hyperspectral worlds. Abundance-GS learns a compact 3D representation for spectral rendering and material decomposition.">
-<meta property="og:title" content="Spectral World Renderer"><meta property="og:description" content="Towards Verifiable 3D Hyperspectral Unmixing"><meta property="og:type" content="website"><meta property="og:url" content="https://ming053l.github.io/Spectral-World-Renderer/">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg"><link rel="stylesheet" href="style.css?v=office-refined1"><script src="app.js?v=office-refined1" defer></script>
+<meta name="description" content="Spectral World Renderer generates hyperspectral worlds with known material composition. Abundance-GS decodes abundances over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so every primitive carries queryable abundances.">
+<meta name="theme-color" content="#0B1426">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing">
+<meta property="og:description" content="Hyperspectral worlds with known material composition, and a compact Gaussian representation whose primitives carry queryable abundances.">
+<meta property="og:url" content="https://ming053l.github.io/Spectral-World-Renderer/">
+<meta property="og:image" content="https://ming053l.github.io/Spectral-World-Renderer/assets/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css?v=3">
+<script src="app.js?v=3" defer></script>
 </head>
 <body>
-<nav class="nav" aria-label="Page sections"><a class="wordmark" href="#top"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 25V18M9 25V9M15 25V4M21 25V12M27 25V20" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>SWR</a><div><a href="#worlds">Worlds</a><a href="#method">Method</a><a href="#results">Results</a><a href="#resources">Resources</a></div></nav>
-<main>
-<header class="hero" id="top">
-<p class="eyebrow">HYPERSPECTRAL WORLDS · 3D MATERIAL ANALYSIS</p>
-<h1>Spectral World Renderer</h1><h2 class="subtitle">Towards Verifiable 3D Hyperspectral Unmixing</h2>
-<div class="authors"><span>Chia-Ming Lee<sup>1,2</sup></span><span>Yu-Jou Hsiao<sup>3</sup></span><span>Ming-Ching Chang<sup>1</sup></span><span>Xin Li<sup>1</sup></span><span>Yu-Lun Liu<sup>2</sup></span><span>Chih-Chung Hsu<sup>2</sup></span></div>
-<p class="affiliations"><span><sup>1</sup> University at Albany, SUNY</span><span><sup>2</sup> National Yang Ming Chiao Tung University</span><span><sup>3</sup> National Cheng Kung University</span></p>
-<div class="resource-buttons"><a class="pill" href="assets/supplementary.pdf" target="_blank" rel="noopener">Supplement</a><a class="pill" href="#demo">Demo videos</a><a class="pill" href="#worlds">SWR-Bench</a></div>
-<div class="hero-media"><video id="teaser" controls muted loop playsinline preload="none" poster="assets/images/teaser-poster.webp"><source src="assets/web/teaser.mp4" type="video/mp4"></video></div>
-<p class="hero-caption">From executable worlds to spectra and materials.<br><span>Eight indoor and outdoor scenes. Aligned observations. Queryable 3D decomposition.</span></p>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Spectral World Renderer, back to top">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#3FD1C0" stroke-width="2.2"/><circle cx="12" cy="12" r="3.6" fill="#F2B24C"/></svg>
+      <span>Spectral World Renderer</span>
+    </a>
+    <div class="nav-links">
+      <a href="#query">Query</a>
+      <a href="#method">Method</a>
+      <a href="#worlds">SWR-Bench</a>
+      <a href="#results">Results</a>
+      <a href="#analysis">Analysis</a>
+      <a href="#citation">BibTeX</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<header class="hero dark" id="top">
+  <div class="wrap">
+    <p class="badge"><i aria-hidden="true"></i>Preprint · under review</p>
+    <h1><span class="spec">Spectral</span> World Renderer</h1>
+    <p class="subtitle">Towards Verifiable 3D Hyperspectral Unmixing</p>
+    <ul class="authors" aria-label="Authors">
+      <li>Chia-Ming Lee<sup>1,2</sup></li>
+      <li>Yu-Jou Hsiao<sup>3</sup></li>
+      <li>Ming-Ching Chang<sup>1</sup></li>
+      <li>Xin Li<sup>1</sup></li>
+      <li>Yu-Lun Liu<sup>2</sup></li>
+      <li>Chih-Chung Hsu<sup>2</sup></li>
+    </ul>
+    <ul class="affils" aria-label="Affiliations">
+      <li><sup>1</sup>University at Albany, State University of New York</li>
+      <li><sup>2</sup>National Yang Ming Chiao Tung University</li>
+      <li><sup>3</sup>National Cheng Kung University</li>
+    </ul>
+    <div class="actions">
+      <span class="btn" role="link" aria-disabled="true" title="Paper release in preparation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>Paper <small>coming soon</small></span>
+      <span class="btn" role="link" aria-disabled="true" title="Supplement release in preparation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Supplement <small>coming soon</small></span>
+      <span class="btn" role="link" aria-disabled="true" title="Code release in preparation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg>Code <small>coming soon</small></span>
+      <a class="btn" href="#video">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Video</a>
+      <a class="btn" href="#citation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 7h4v4H7zM7 11c0 3-1 5-3 6M15 7h4v4h-4zM15 11c0 3-1 5-3 6"/></svg>BibTeX</a>
+    </div>
+    <div class="hero-video" id="video">
+      <video id="promo" class="managed" controls playsinline preload="none" poster="assets/video/swr_promo_poster.webp" aria-label="Spectral World Renderer overview video, 85 seconds, with music">
+        <source data-src="assets/video/swr_promo.mp4" type="video/mp4">
+      </video>
+      <button class="play-overlay" id="promo-play" type="button" aria-label="Play the overview video (85 seconds, with sound)">
+        <span class="disc"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+        <span>Watch the overview · 1:25</span>
+      </button>
+    </div>
+  </div>
 </header>
-<section class="section abstract" id="abstract"><div class="section-heading"><h2>Understanding what a 3D world is made of</h2><p>Geometry and semantics describe a scene. Spectra provide evidence of its materials.</p></div><p>Hyperspectral imaging offers material-specific spectral evidence, but acquisition cost, limited composition annotations and expensive multi-view unmixing make scene-scale analysis difficult. <strong>Spectral World Renderer</strong> couples verifiable hyperspectral simulation with efficient 3D material decomposition.</p><p>A coding agent translates reference images and text into executable scene programs. Measured material spectra and shared rendering samples produce aligned hyperspectral observations, material labels and subpixel material proportions. <strong>Abundance-GS</strong> learns a shared spectral dictionary and local mixture field in a compact Gaussian representation, with an appearance-guided prior that helps retain initially distinct assignments.</p><p>The two components allow us to evaluate spectral reconstruction and material decomposition together—and reveal when faithful spectra hide incorrect material assignments.</p></section>
-<section class="section worlds" id="worlds"><div class="section-heading"><p class="eyebrow">SWR-BENCH</p><h2>Eight worlds, one verifiable pipeline</h2><p>Architecture, vegetation, infrastructure and indoor materials at scene scale.</p></div><div class="world-grid" id="world-grid"></div><div class="dataset-strip"><div><strong>8</strong><span>indoor & outdoor worlds</span></div><div><strong>64</strong><span>spectral bands</span></div><div><strong>420–980</strong><span>wavelengths in nm</span></div><div><strong>Clean + noisy</strong><span>paired observations</span></div></div></section>
-<section class="section demos" id="demo"><div class="section-heading"><h2>Explore a world through spectra and materials</h2><p>Switch scenes to explore RGB, individual spectral bands and separate material layers.</p></div><div class="scene-tabs" id="scene-tabs" role="tablist" aria-label="Scenes"></div><div class="demo-toolbar"><div class="mode-tabs" role="tablist" aria-label="Video representation"><button data-mode="demo" role="tab" aria-selected="false">Overview</button><button data-mode="rgb" role="tab" aria-selected="false">RGB</button><button data-mode="hsi" role="tab" aria-selected="false">HSI bands</button><button data-mode="material" role="tab" aria-selected="true" class="active">Material layers</button></div><a id="video-download" class="text-link" href="assets/videos/nvidia_material.mp4" download>Download video <span aria-hidden="true">↓</span></a></div><div class="player"><video id="scene-video" controls muted loop playsinline preload="none" poster="assets/images/nvidia_layers.webp"><source src="assets/web/nvidia_material.mp4" type="video/mp4"></video></div><p id="video-status" class="media-note" role="status" aria-live="polite">Press play to watch. Downloads use the original-quality file.</p><div class="demo-description"><h3 id="scene-name">NVIDIA HQ</h3><p id="mode-description">Separate material-share maps on the same fixed 0–1 scale, with RGB for reference. These are model shares, not physical area fractions. An asterisk marks a class without an assigned endmember.</p></div><p id="office-refinement-note" class="media-note" hidden>Office refinement: K = 128 with multi-view spectral initialization. Display recovery is partial. The original benchmark figure below is retained for reference.</p><p class="media-note">Videos render the existing Abundance-GS models along continuous camera paths. Material layers use native 30 fps views; the HSI band comparison uses the same native 30 fps paths. Office uses the refined model and the same path in all four modes; other scenes retain their original Overview and RGB paths. RGB uses visible bands near 630 / 550 / 460 nm; HSI bands shows individual wavelengths near 456 / 553 / 633 / 651 / 802 nm at a shared exposure. Overview shows RGB and display shares for Office, and retains the near-infrared false-colour composite for other scenes. Display exposure is fixed within each scene.</p>
-<section class="method-comparison" aria-labelledby="comparison-title">
-<div class="comparison-heading"><h3 id="comparison-title">Compare material reconstruction</h3><p>Choose a scene and a baseline to compare its material predictions with ours and ground truth at the same evaluation camera.</p></div>
-<div class="comparison-controls"><label>Scene<select id="compare-scene"></select></label><label>Compare with<select id="compare-method"><option value="wide">3DGS + VCA/NNLS</option><option value="unmix">UnMix-NeRF</option></select></label><label>Show<select id="compare-mode"><option value="shares">Separate materials</option><option value="labels">Material labels</option></select></label><label id="compare-material-label">Material<select id="compare-material"></select></label></div>
-<div class="comparison-panels"><figure><figcaption><strong id="baseline-title">3DGS + VCA/NNLS</strong><span id="baseline-caption">Model share</span></figcaption><div class="comparison-frame"><img id="compare-baseline" alt="Baseline material prediction"></div></figure><figure class="comparison-ours"><figcaption><strong>Abundance-GS <span class="ours-tag">Ours</span></strong><span id="ours-caption">Model share</span></figcaption><div class="comparison-frame"><img id="compare-ours" alt="Our material prediction"></div></figure><figure><figcaption><strong>Ground truth</strong><span id="gt-caption">Visible-area fraction</span></figcaption><div class="comparison-frame"><img id="compare-gt" alt="Ground-truth material"></div></figure></div>
-<div id="comparison-legend" class="comparison-legend"></div><p id="comparison-note" class="comparison-note" role="status">Loading comparison…</p>
+
+<section class="tldr dark" aria-labelledby="tldr-title">
+  <div class="wrap">
+    <div class="tldr-card">
+      <h2 class="label" id="tldr-title">TL;DR</h2>
+      <p class="big"><strong>Spectral World Renderer</strong> generates indoor and outdoor hyperspectral worlds whose material composition is known by construction. <strong>Abundance-GS</strong> decodes abundances over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so that every primitive carries queryable abundances and a 3D decomposition can be verified against known composition.</p>
+      <div class="stats">
+        <div class="stat"><b>8 / 8</b><span>worlds with the best or on-par material identification (mIoU)</span></div>
+        <div class="stat"><b>6<em>min</em> 37<em>s</em></b><span>complete City pipeline, from RGB anchor to decoder</span></div>
+        <div class="stat"><b>34.9</b><span>labelled views per second: spectra and label maps at 960 × 540 × 64</span></div>
+        <div class="stat"><b>3.7–12.8×</b><span>faster training than the unmixing baselines</span></div>
+      </div>
+      <details class="abstract">
+        <summary>Abstract</summary>
+        <p>Semantic models recognize what a 3D scene contains, but not what it is made of. Hyperspectral imaging provides material evidence, yet costly acquisition, missing composition annotations and expensive multi-view unmixing hinder its use at scene scale. We present Spectral World Renderer, in which a coding agent turns reference images and text into executable scene programs; measured spectra and shared rendering samples then yield aligned hyperspectral observations, material labels and sub-pixel proportions, so that a 3D decomposition can be verified. The resulting SWR-Bench comprises eight indoor and outdoor worlds with material and illumination variation. Abundance-GS decodes mixtures over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so every primitive carries queryable abundances, and a multi-view appearance regularization assigns endmembers to distinct appearances without material labels. It leads or ties identification in all eight worlds, has the best mean PSNR on real captures, trains 3.7–12.8× faster than unmixing baselines and separates RGB metamers.</p>
+      </details>
+    </div>
+    <figure class="fig-light" style="margin-top:28px">
+      <button class="zoom" type="button" data-full="assets/fig/teaser_grid.webp" aria-label="Open the teaser figure at full resolution">
+        <img src="assets/fig/teaser_grid-1200.webp" srcset="assets/fig/teaser_grid-1200.webp 1200w, assets/fig/teaser_grid.webp 2400w" sizes="(max-width:1160px) 100vw, 1120px" width="1200" height="541" loading="lazy" decoding="async" alt="Rendered inputs of Forbidden City, Market, Botanical, City and Office, each followed by five material queries, such as white marble, fired clay, stone, asphalt and vinyl floor, and the material layers that Abundance-GS recovers.">
+      </button>
+      <figcaption><b>From hyperspectral worlds to separate material layers.</b> Spectral World Renderer generates indoor and outdoor worlds whose material composition is known by construction; from their multi-view hyperspectral images, Abundance-GS recovers materials as separate layers. Each layer colours, in a test view, the surfaces whose dominant endmember maps to one material.</figcaption>
+    </figure>
+  </div>
 </section>
+
+<section class="query dark" id="query" aria-labelledby="query-title">
+  <div class="wrap">
+    <div class="head">
+      <span class="kicker">Interactive</span>
+      <h2 id="query-title">Query a material</h2>
+      <p>Choose a world, then a material. The rendered view greys out and the surfaces that carry the queried material light up in teal, frame by frame along a continuous camera path. Wavelength chips show single spectral bands instead.</p>
+    </div>
+    <div class="world-tabs" role="tablist" aria-label="World" id="query-worlds"></div>
+    <div class="query-stage">
+      <div class="player">
+        <video id="query-video" class="managed" muted loop playsinline preload="none" aria-describedby="query-desc"></video>
+        <div class="searchbar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span id="query-term">rgb</span><span class="caret"></span>
+        </div>
+        <span class="loading" id="query-loading" hidden>Loading…</span>
+      </div>
+      <div class="query-panel">
+        <h3 id="chips-label">Query</h3>
+        <div class="chips" id="query-chips" role="group" aria-labelledby="chips-label"></div>
+        <div class="legend-bar" id="query-legend" aria-hidden="true"><span>0</span><i></i><span>1</span></div>
+        <p class="query-desc" id="query-desc" aria-live="polite"></p>
+        <p class="fine">Abundances come from Abundance-GS models trained without material labels. Each endmember is assigned to a class through a frozen training-view map; the teal layer sums the abundances of the endmembers assigned to the queried class. Quantitative results are reported in the paper.</p>
+      </div>
+    </div>
+
+    <div class="beyond">
+      <div>
+        <span class="kicker">Application</span>
+        <h3>Seeing beyond RGB</h3>
+        <p>Living leaves differ from materials of the same colour beyond the visible range: chlorophyll absorbs red light and leaf tissue reflects near-infrared light, producing a red edge near 700&nbsp;nm that minerals and dry leaves lack. In City, foliage-coloured mineral leaves are only 2° from foliage in RGB but 42° apart in spectrum, so they receive endmembers of their own.</p>
+        <p>Because abundances are stored on explicit, rasterizable Gaussians, a material query is a selection over primitives that is consistent across views and requires neither labels nor a per-image classifier. The mineral-leaf query retrieves no ordinary tree, whereas the equivalent RGB query retrieves eleven.</p>
+      </div>
+      <figure class="fig-light">
+        <button class="zoom" type="button" data-full="assets/fig/app_query.webp" aria-label="Open the material query figure at full resolution">
+          <img src="assets/fig/app_query-1200.webp" width="1200" height="1469" loading="lazy" decoding="async" alt="Paper figure on material queries in City: an RGB colour query also retrieves ordinary trees, whereas the query on per-Gaussian abundances retrieves only the mineral-leaf crowns; Abundance-GS also separates dry crowns from healthy foliage.">
+        </button>
+      </figure>
+    </div>
+  </div>
 </section>
-<section class="section method" id="method"><div class="section-heading"><p class="eyebrow">SPECTRAL WORLD RENDERER</p><h2>From visual references to inspectable worlds</h2><p>Scene programs make geometry, material assignment, illumination and cameras explicit.</p></div><figure class="diagram"><img src="assets/images/world-authoring.webp" loading="lazy" alt="Reference images and a text brief guide world authoring, spectrum assignment, shared rendering and validation"><figcaption>Reference images and text guide coding-agent authoring. Shared subpixel samples align spectral observations with composition truth; layout, support and rendering checks guide revisions.</figcaption></figure><div class="method-points"><article><span>01</span><h3>Author the world</h3><p>Specify structure, objects, material families, lighting and camera paths in executable code.</p></article><article><span>02</span><h3>Render aligned evidence</h3><p>Assign measured spectra and jointly sample radiance, material identities and subpixel proportions.</p></article><article><span>03</span><h3>Validate before release</h3><p>Check support, collisions, camera coverage and observation–label alignment.</p></article></div>
-<div class="section-heading secondary"><p class="eyebrow">ABUNDANCE-GS</p><h2>A decomposition inside the 3D representation</h2><p>Compact RGB geometry anchors a spatial mixture field and shared spectral dictionary.</p></div><figure class="diagram"><img src="assets/images/abundance-gs.webp" loading="lazy" alt="RGB anchor geometry, harmonic features, appearance-guided initialization and local material decoding"><figcaption>At each ray intersection, the decoder predicts mixture coefficients and intensity. Common visibility weights render spectra and latent shares before or alongside spatial queries.</figcaption></figure><div class="prior-block"><div><h3>Retain initially distinct appearances</h3><p>Joint spectral shape and brightness prototypes initialize the dictionary. A weak, persistent assignment prior regularizes allocation throughout optimization, without material supervision.</p><p>Learned mixture coefficients are evaluated against physical composition separately; they are not assumed to equal surface coverage.</p></div><img src="assets/images/appearance-prior.webp" loading="lazy" alt="Appearance-guided initialization and persistent assignment prior"></div></section>
-<section class="section results" id="results"><div class="section-heading"><h2>Reconstruction and identification, side by side</h2><p>A faithful spectral image does not by itself establish a correct material decomposition.</p></div><figure class="full-figure"><img src="assets/images/comparison.webp" loading="lazy" alt="Eight-scene material comparison among UnMix-NeRF, 3DGS plus VCA and Abundance-GS"><figcaption>Material truth, baseline predictions and Abundance-GS across the eight worlds. Full protocols, capacities and additional testing views are reported in the paper and supplement.</figcaption></figure><div class="result-details"><article><h3>Appearance-guided allocation</h3><img src="assets/images/prior-comparison.webp" loading="lazy" alt="Matched Forbidden City models without and with the persistent assignment prior"><p>At matched K = 32 in Forbidden City, retaining the prior recovers white-marble assignments. Closely related spectra and low-support materials remain challenging.</p></article><article><h3>Real spectral observations</h3><img src="assets/images/real-capture.webp" loading="lazy" alt="204-band real apple capture and Abundance-GS spectral reconstruction"><p>Real captures test spectral fidelity and representation efficiency beyond the simulated worlds.</p></article></div><div class="efficiency"><div class="efficiency-copy"><h3>Fast enough to explore a decomposition</h3><p>Compact geometry and a shared dictionary reduce the cost of learning and querying spectral appearance.</p><p class="media-note">Reference City pipelines; includes startup and loading, excludes shared preparation and testing.</p></div><div class="timings"><div><span>Abundance-GS</span><i style="--bar:7.67%;--colour:#315dae"></i><strong>6.5 min</strong></div><div><span>UnMix-NeRF</span><i style="--bar:28.56%;--colour:#9daabf"></i><strong>24.3 min</strong></div><div><span>3DGS + VCA/NNLS</span><i style="--bar:100%;--colour:#b6c0d0"></i><strong>85 min</strong></div></div></div></section>
-<section class="section resources" id="resources"><div class="section-heading"><h2>Resources</h2><p>Explore the rendered worlds and supplementary material.</p></div><div class="download-cards"><a href="assets/supplementary.pdf" target="_blank" rel="noopener"><span class="file-type">PDF</span><h3>Supplement</h3><p>Complete results, NHT analysis and additional views.</p><span class="arrow">↗</span></a><a href="#demo"><span class="file-type">MP4</span><h3>Scene demos</h3><p>Watch or download each scene in four representations.</p><span class="arrow">↓</span></a></div><div class="citation"><div><h3>Citation</h3><button id="copy-citation" type="button">Copy BibTeX</button></div><pre id="bibtex">@misc{lee2026spectralworldrenderer,
-  title = {Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing},
-  author = {Chia-Ming Lee and Yu-Jou Hsiao and Ming-Ching Chang and Xin Li
-            and Yu-Lun Liu and Chih-Chung Hsu},
-  year = {2026}
-}</pre><p id="copy-status" class="sr-only" aria-live="polite"></p></div></section>
-</main><footer><p>Spectral World Renderer · Abundance-GS</p><p>Page and demo presentation inspired by <a href="https://linjohnss.github.io/longsplat/" target="_blank" rel="noopener">LongSplat</a>. All displayed results are from this project.</p></footer>
-</body></html>
+
+<section class="block" id="method" aria-labelledby="method-title">
+  <div class="wrap">
+    <div class="head">
+      <span class="kicker">How it works · Data</span>
+      <h2 id="method-title">Worlds whose composition is known by construction</h2>
+      <p>Real multi-view hyperspectral datasets are tabletop or turntable captures without material labels or sub-pixel proportions, which cannot be annotated reliably by hand. Spectral World Renderer therefore generates worlds rather than annotating captures.</p>
+    </div>
+    <figure class="fig">
+      <button class="zoom" type="button" data-full="assets/fig/swr_workflow.webp" aria-label="Open the Spectral World Renderer workflow figure at full resolution">
+        <img src="assets/fig/swr_workflow-1200.webp" srcset="assets/fig/swr_workflow-1200.webp 1200w, assets/fig/swr_workflow.webp 2400w" sizes="(max-width:1160px) 100vw, 1120px" width="1200" height="598" loading="lazy" decoding="async" alt="Workflow diagram: reference photographs and a short brief guide a coding agent that writes an executable world; library-measured spectra are assigned to surfaces; one shared sub-pixel rendering produces hyperspectral and RGB observations with per-pixel materials; layout and rendering checks return flawed worlds for revision.">
+      </button>
+      <figcaption><b>The Spectral World Renderer.</b> From reference photographs and a short brief, a coding agent writes an executable world whose every surface carries a library-measured spectrum. One shared sub-pixel rendering produces the hyperspectral and RGB observations together with the material of every pixel, so the ground truth is exact for the rendered world; checks on layout and rendering return flawed worlds for revision before release.</figcaption>
+    </figure>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><h3>Generate the world</h3><p>A coding agent turns reference images and text into an executable scene program that fixes geometry, materials, illumination and cameras.</p></div>
+      <div class="step"><span class="n">2</span><h3>Ground it in measurements</h3><p>Every material is assigned measured spectra, with specimen variation and changes in spectral shape between sunlight and shade.</p></div>
+      <div class="step"><span class="n">3</span><h3>Render aligned evidence</h3><p>Shared sub-pixel samples render RGB and hyperspectral observations together with material labels and area proportions.</p></div>
+    </div>
+
+    <div class="head sub-head">
+      <span class="kicker">How it works · Representation</span>
+      <h2>Abundance-GS: abundances at every ray intersection</h2>
+      <p>Spectral radiance fields reconstruct spectra without decomposing them, and unmixing rendered spectra afterwards cannot separate what compositing has already mixed. Abundance-GS resolves the mixture before compositing.</p>
+    </div>
+    <figure class="fig">
+      <button class="zoom" type="button" data-full="assets/fig/method_overview.webp" aria-label="Open the Abundance-GS overview figure at full resolution">
+        <img src="assets/fig/method_overview-1200.webp" srcset="assets/fig/method_overview-1200.webp 1200w, assets/fig/method_overview.webp 2400w" sizes="(max-width:1160px) 100vw, 1120px" width="1200" height="460" loading="lazy" decoding="async" alt="Overview of Abundance-GS: an RGB anchor fixes the geometry; each Gaussian carries band-independent harmonic features; at every ray intersection a shared decoder outputs abundances and an intensity that mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances.">
+      </button>
+      <figcaption><b>Overview of Abundance-GS.</b> An RGB anchor fixes the geometry, and each Gaussian carries harmonic features whose size does not depend on the number of bands. At every ray intersection, a shared decoder maps the interpolated feature to abundances and an intensity, which mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances. Clusters of multi-view appearance initialize the endmembers and regularize their assignment, so no material label enters training.</figcaption>
+    </figure>
+    <div class="steps">
+      <div class="step"><span class="n">A</span><h3>Band-independent storage</h3><p>An RGB-trained anchor provides compact geometry, and each Gaussian stores a feature instead of a spectrum, so storage does not grow with the number of bands.</p></div>
+      <div class="step"><span class="n">B</span><h3>Decode before compositing</h3><p>A shared decoder maps the feature at every ray intersection to abundances over a scene-wide endmember dictionary, so every Gaussian carries queryable abundances.</p></div>
+      <div class="step"><span class="n">C</span><h3>Separate intensity and appearance regularization</h3><p>A separate intensity absorbs shading, and a multi-view appearance regularization assigns an over-complete set of endmembers to distinct appearances.</p></div>
+    </div>
+
+    <div class="split">
+      <figure class="fig">
+        <button class="zoom" type="button" data-full="assets/fig/appearance_prior.webp" aria-label="Open the appearance regularization figure at full resolution">
+          <img src="assets/fig/appearance_prior-1200.webp" width="1200" height="859" loading="lazy" decoding="async" alt="Forbidden City example: white marble and grey masonry differ four-fold in brightness but only 3.8 degrees in spectral shape; clustering pixels of all training views by shape and brightness separates them; with the regularization, marble obtains its own layer.">
+        </button>
+      </figure>
+      <div>
+        <span class="kicker">Multi-view appearance regularization</span>
+        <h3>Keeping similar materials apart without labels</h3>
+        <p>Because the intensity absorbs brightness, a single endmember can explain two spectrally similar materials: in Forbidden City, white marble is four times brighter than grey masonry but only 3.8° apart in spectral shape.</p>
+        <p>Clustering the pixels of all training views by spectral shape and brightness separates such appearances, and every view shares the same clusters. Each cluster initializes its own endmember, and the assignment is retained as a weak regularizer during training, which gives marble its own layer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block alt" id="worlds" aria-labelledby="worlds-title">
+  <div class="wrap">
+    <div class="head">
+      <span class="kicker">SWR-Bench</span>
+      <h2 id="worlds-title">Eight indoor and outdoor worlds</h2>
+      <p>Each world provides multi-view RGB and 64-band hyperspectral observations, material labels and area proportions rendered from shared samples, so that spectral fidelity and material identity are scored separately.</p>
+    </div>
+    <div class="worlds-grid" id="worlds-grid"></div>
+    <div class="facts" role="list">
+      <div role="listitem"><b>64</b><span>bands, 420–980 nm</span></div>
+      <div role="listitem"><b>96–240</b><span>views per world</span></div>
+      <div role="listitem"><b>5–11</b><span>material classes per world</span></div>
+      <div role="listitem"><b>Labels + proportions</b><span>sampled with the observations</span></div>
+      <div role="listitem"><b>Clean + noisy</b><span>observations; training uses noisy views</span></div>
+    </div>
+
+    <div class="seg" role="tablist" aria-label="Simulated observation figure" id="hsi-tabs">
+      <button role="tab" aria-selected="true" aria-controls="hsi-fig" data-hsi="1" title="Forbidden City, Market, Botanical, NVIDIA HQ">Forbidden City to NVIDIA HQ</button>
+      <button role="tab" aria-selected="false" aria-controls="hsi-fig" data-hsi="2" title="Study, Karst, City, Office">Study to Office</button>
+    </div>
+    <figure class="fig" id="hsi-fig" role="tabpanel">
+      <button class="zoom" type="button" data-full="assets/fig/swr_hsi_1.webp" id="hsi-zoom" aria-label="Open the simulated hyperspectral observations figure at full resolution">
+        <img id="hsi-img" src="assets/fig/swr_hsi_1-1200.webp" width="1200" height="1148" loading="lazy" decoding="async" alt="Simulated hyperspectral observations of one test view per world: narrow bands, a colour-infrared composite, apparent reflectance against the library reflectance, and clean and noisy crops of the 900 nm band.">
+      </button>
+      <figcaption><b>Simulated hyperspectral observations.</b> Narrow bands share one exposure per world, so brightness differences between bands follow the radiance; the colour-infrared composite (R, G, B = 847, 651, 553 nm) renders vegetation red. Outdoor apparent reflectance reproduces the library reflectance, including chlorophyll absorption near 670 nm and the red edge; path-traced interiors deviate through interreflection and residual Monte Carlo variance. Bottom: clean and noisy crops of the 900 nm band.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="block" id="results" aria-labelledby="results-title">
+  <div class="wrap">
+    <div class="head">
+      <span class="kicker">Results</span>
+      <h2 id="results-title">Fidelity and identification, measured separately</h2>
+      <p>Abundance-GS identifies materials best or on par in every world and learns the endmembers closest to the true spectra. A lower spectral angle does not imply better identification: in Market and Study, 3DGS with post-hoc unmixing reaches a lower SAM but a far lower mIoU.</p>
+    </div>
+    <div class="seg metric-tabs" role="tablist" aria-label="Metric" id="metric-tabs">
+      <button role="tab" aria-selected="true" data-metric="miou">mIoU ↑</button>
+      <button role="tab" aria-selected="false" data-metric="psnr">PSNR ↑</button>
+      <button role="tab" aria-selected="false" data-metric="sam">SAM ↓</button>
+      <button role="tab" aria-selected="false" data-metric="em">EM ↓</button>
+    </div>
+    <div class="table-wrap" role="tabpanel" aria-labelledby="metric-tabs">
+      <table id="bench-table">
+        <caption id="bench-caption"></caption>
+        <thead><tr><th scope="col">World</th><th scope="col"><span class="long">UnMix-NeRF</span><span class="short" aria-hidden="true">UnMix</span></th><th scope="col"><span class="long">3DGS + VCA / NNLS</span><span class="short" aria-hidden="true">3DGS+VCA</span></th><th scope="col" class="ours"><span class="long">Abundance-GS</span><span class="short" aria-hidden="true">Ours</span></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <figure class="fig" style="margin-top:40px">
+      <button class="zoom" type="button" data-full="assets/fig/bench_layers.webp" aria-label="Open the material layer comparison at full resolution">
+        <img src="assets/fig/bench_layers-1200.webp" srcset="assets/fig/bench_layers-1200.webp 1200w, assets/fig/bench_layers.webp 2400w" sizes="(max-width:1160px) 100vw, 1120px" width="1200" height="874" loading="lazy" decoding="async" alt="Material layers across the eight worlds: for each world, the rendered input, the ground-truth layer of one material, and the layers of UnMix-NeRF, 3DGS plus VCA, and Abundance-GS with their IoU; Abundance-GS has the highest IoU in every row.">
+      </button>
+      <figcaption><b>Material layers across the eight worlds.</b> Each row tints one material by its abundance in a test view; IoU uses summed abundance &gt; 0.5 against the true mask. Unmixing rendered spectra afterwards (3DGS + VCA) or inside a radiance field (UnMix-NeRF) spreads the material over unrelated surfaces, whereas Abundance-GS recovers the layer closest to the ground truth.</figcaption>
+    </figure>
+
+    <div class="results-grid">
+      <div class="card">
+        <h3>Efficiency</h3>
+        <p>The City pipeline covers all four stages, from RGB anchor to decoder. Rendering throughput counts views per second with spectra and label maps at 960 × 540 × 64.</p>
+        <div class="metric-label">City training time (lower is better)</div>
+        <div class="hbars" id="train-bars"></div>
+        <div class="metric-label">Mean rendering throughput (higher is better)</div>
+        <div class="hbars" id="fps-bars"></div>
+        <p class="fine" style="color:var(--muted)">Abundance-GS uses an optimized fused fp16 decoder that skips hits with weight below 10<sup>−4</sup> (99.97&nbsp;% identical labels); baselines use their reference code. Throughput is the mean over Market, Botanical, Study and Karst.</p>
+      </div>
+      <div class="card">
+        <h3>Real captures</h3>
+        <p>Without material ground truth, real captures test spectral fidelity. Abundance-GS has the highest PSNR on each real source; on HS-NeRF, 3DGS reaches a lower mean and 95th-percentile angle, the cost of a shared, noise-suppressing dictionary.</p>
+        <div class="table-wrap" style="box-shadow:none">
+          <table class="mini">
+            <thead><tr><th scope="col">Source</th><th scope="col">PSNR ↑<br><span class="th-sub">baseline · ours</span></th><th scope="col">SAM ↓<br><span class="th-sub">baseline · ours</span></th></tr></thead>
+            <tbody>
+              <tr><th scope="row">NeSpoF<span class="row-sub">21 bands · HyperGS</span></th><td>28.36 · <b class="win">29.39</b></td><td>4.58 · <b class="win">3.86</b></td></tr>
+              <tr><th scope="row">HSI-SC apple<span class="row-sub">204 bands · HyperGS</span></th><td>27.95 · <b class="win">30.67</b></td><td>1.64 · <b class="win">1.35</b></td></tr>
+              <tr><th scope="row">HS-NeRF<span class="row-sub">128 / 141 bands · 3DGS</span></th><td>26.32 · <b class="win">26.51</b></td><td><b class="win base">5.71</b> · 5.97</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figure style="margin-top:18px">
+          <button class="zoom" type="button" data-full="assets/fig/real_apple.webp" aria-label="Open the real capture figure at full resolution">
+            <img src="assets/fig/real_apple-1200.webp" width="1200" height="729" loading="lazy" decoding="async" alt="204-band HSI-SC apple capture: spectra rendered by the baselines and by Abundance-GS, with an inset of the Abundance-GS abundance layers.">
+          </button>
+          <figcaption><b>204-band real capture.</b> On the HSI-SC apple, Abundance-GS renders the most faithful spectra in this view; inset: its abundance layers. Means over 4 NeSpoF and 5 HS-NeRF scenes; the baseline is the best PSNR of 3DGS, HyperGS and DD-HGS. Bold marks the better value of each pair.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block alt" id="analysis" aria-labelledby="analysis-title">
+  <div class="wrap">
+    <div class="head">
+      <span class="kicker">Analysis</span>
+      <h2 id="analysis-title">What the representation learns</h2>
+      <p>The decoded quantities can be compared directly with the stored ground truth, and the abundances that a query selects are attributes of individual Gaussians.</p>
+    </div>
+    <div class="analysis-stack">
+      <div>
+        <figure class="fig">
+          <button class="zoom" type="button" data-full="assets/fig/decoder_analysis.webp" aria-label="Open the decoder analysis figure at full resolution">
+            <img src="assets/fig/decoder_analysis-1200.webp" srcset="assets/fig/decoder_analysis-1200.webp 1200w, assets/fig/decoder_analysis.webp 2400w" sizes="(max-width:1160px) 100vw, 1120px" width="1200" height="759" loading="lazy" decoding="async" alt="Decoder analysis on test views of Market, City and Office: RGB, ground-truth direct share of illumination, composited intensity, ground-truth material, dominant endmember, and the change of abundances under viewing-direction changes, with summary plots.">
+          </button>
+          <figcaption><b>Intensity carries shading; endmembers carry material and illumination mode.</b> Test views of Market (K = 24), City (K = 32) and Office (K = 32). The composited intensity follows the direct share of the illumination, and each material occupies distinct endmembers in sun and in shadow, so the over-complete dictionary represents illumination modes within a class.</figcaption>
+        </figure>
+        <ul class="facts-list">
+          <li>Within one specimen, the logarithm of the composited intensity correlates with that of the true radiance (r = 0.97 on Market, 0.87 on City).</li>
+          <li>The sun or shadow state explains 84 % and 67 % of the within-class variance of the intensity, but only 3 % and 15 % of the variance of the class mass.</li>
+          <li>Abundances change little with the viewing direction on the Lambertian worlds (total variation at most 0.04 within 45°).</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="head" style="margin-bottom:24px">
+          <h3 style="font-size:24px;margin-bottom:10px">Primitives as material carriers</h3>
+          <p>Each Gaussian is enclosed by the regular tetrahedron of its canonical frame, scaled, rotated and translated with the Gaussian. The clips dissolve from these bounding tetrahedra into the rendered view along the camera path of the material queries above.</p>
+        </div>
+        <div class="world-tabs tetra-tabs" role="tablist" aria-label="World for the tetrahedra clip" id="tetra-worlds"></div>
+        <div class="tetra-player">
+          <div class="player">
+            <video id="tetra-video" class="managed" muted loop playsinline preload="none" aria-label="Bounding tetrahedra of the Gaussians dissolving into the rendered view"></video>
+          </div>
+        </div>
+        <figure class="fig" style="margin-top:28px">
+          <button class="zoom" type="button" data-full="assets/fig/tetra_supp.webp" aria-label="Open the bounding tetrahedra figure at full resolution">
+            <img src="assets/fig/tetra_supp-1200.webp" srcset="assets/fig/tetra_supp-1200.webp 1200w, assets/fig/tetra_supp.webp 2400w" sizes="(max-width:1160px) 100vw, 1120px" width="1200" height="912" loading="lazy" decoding="async" alt="Bounding tetrahedra on test views: the rendering, the tetrahedra weighted by opacity and visibility, the tetrahedra coloured by the dominant class decoded at each Gaussian centre, and the rendered material map.">
+          </button>
+          <figcaption><b>Bounding tetrahedra on test views.</b> Columns show the rendering, the tetrahedra weighted by opacity and visibility, the tetrahedra coloured by the dominant class decoded at each Gaussian centre, and the rendered material map. The colouring reproduces the class layout of the rendered map: the median visible Gaussian places more than 98 % of its centre abundance on one class.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cite dark" id="citation" aria-labelledby="cite-title">
+  <div class="wrap">
+    <div class="head">
+      <span class="kicker">Citation</span>
+      <h2 id="cite-title">BibTeX</h2>
+    </div>
+    <div class="bib">
+      <button class="copy" id="copy-bib" type="button">Copy</button>
+<pre id="bibtex">@article{lee2027swr,
+  title   = {Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing},
+  author  = {Lee, Chia-Ming and Hsiao, Yu-Jou and Chang, Ming-Ching and
+             Li, Xin and Liu, Yu-Lun and Hsu, Chih-Chung},
+  journal = {Preprint, under review},
+  year    = {2026}
+}</pre>
+      <p class="sr-only" id="copy-status" aria-live="polite"></p>
+    </div>
+    <div class="links-row">
+      <span class="btn" role="link" aria-disabled="true">Paper <small>coming soon</small></span>
+      <span class="btn" role="link" aria-disabled="true">Code <small>coming soon</small></span>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Spectral World Renderer · Abundance-GS · SWR-Bench</span>
+    <span>All renders and results on this page are produced by this project.</span>
+  </div>
+</footer>
+
+<dialog class="lightbox" id="lightbox" aria-label="Figure at full resolution">
+  <button class="close" type="button" aria-label="Close">×</button>
+  <img alt="">
+</dialog>
+</body>
+</html>

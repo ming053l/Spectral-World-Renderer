@@ -2,64 +2,55 @@
 
 ### Towards Verifiable 3D Hyperspectral Unmixing
 
-**Chia-Ming Lee · Yu-Jou Hsiao · Ming-Ching Chang · Xin Li · Yu-Lun Liu · Chih-Chung Hsu**
+**Chia-Ming Lee<sup>1,2</sup> · Yu-Jou Hsiao<sup>3</sup> · Ming-Ching Chang<sup>1</sup> · Xin Li<sup>1</sup> · Yu-Lun Liu<sup>2</sup> · Chih-Chung Hsu<sup>2</sup>**
 
-University at Albany, SUNY · National Yang Ming Chiao Tung University · National Cheng Kung University
+<sup>1</sup>University at Albany, State University of New York · <sup>2</sup>National Yang Ming Chiao Tung University · <sup>3</sup>National Cheng Kung University
 
-[**Project page**](https://ming053l.github.io/Spectral-World-Renderer/) · [Supplement](docs/assets/supplementary.pdf) · [Demo video](docs/assets/videos/teaser.mp4)
+[**Project page**](https://ming053l.github.io/Spectral-World-Renderer/) · [Overview video](docs/assets/video/swr_promo.mp4) · Code (coming soon)
 
-![Spectral World Renderer: eight indoor and outdoor worlds](docs/assets/images/worlds.webp)
+![Material queries and their recovered layers in five SWR-Bench worlds](docs/assets/fig/teaser_grid-1200.webp)
 
-Spectral World Renderer couples verifiable hyperspectral simulation with efficient 3D material decomposition. Reference images and a text brief guide executable world authoring; measured spectra and shared rendering samples produce aligned spectral observations, material labels and subpixel material proportions.
+**Spectral World Renderer** generates indoor and outdoor hyperspectral worlds whose material composition is known by construction. A coding agent turns reference images and text into executable scene programs; measured spectra and shared sub-pixel rendering samples then yield aligned hyperspectral observations, material labels and area proportions, so that a 3D decomposition can be verified.
 
-**SWR-Bench** contains eight indoor and outdoor worlds. **Abundance-GS** embeds a shared endmember dictionary and local mixture field in a compact Gaussian representation, enabling spectral rendering and spatial material queries. Appearance-guided initialization and a persistent assignment prior help retain initially distinct allocations.
+**SWR-Bench** comprises eight indoor and outdoor worlds with material and illumination variation, rendered with 64 bands from 420 to 980 nm.
 
-Joint evaluation distinguishes spectral reconstruction quality from material identification and agreement with physical composition.
+**Abundance-GS** decodes abundances over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so every primitive carries queryable abundances. A multi-view appearance regularization assigns endmembers to distinct appearances without material labels.
 
-## Rendered worlds
+- Best or on-par material identification in all eight worlds (Table 2).
+- Complete City pipeline in 6 min 37 s; 34.9 labelled views/s with spectra and label maps.
+- 3.7–12.8× faster training than the unmixing baselines.
+- Highest PSNR on each real-capture source (NeSpoF, HSI-SC, HS-NeRF).
 
-| Scene | Combined demo | RGB | HSI false colour | Materials |
-| --- | --- | --- | --- | --- |
-| Forbidden City | [Watch](docs/assets/videos/forbidden_city_demo.mp4) | [RGB](docs/assets/videos/forbidden_city_rgb.mp4) | [HSI](docs/assets/videos/forbidden_city_hsi.mp4) | [Materials](docs/assets/videos/forbidden_city_material.mp4) |
-| NVIDIA HQ | [Watch](docs/assets/videos/nvidia_demo.mp4) | [RGB](docs/assets/videos/nvidia_rgb.mp4) | [HSI](docs/assets/videos/nvidia_hsi.mp4) | [Materials](docs/assets/videos/nvidia_material.mp4) |
-| Karst valley | [Watch](docs/assets/videos/karst_demo.mp4) | [RGB](docs/assets/videos/karst_rgb.mp4) | [HSI](docs/assets/videos/karst_hsi.mp4) | [Materials](docs/assets/videos/karst_material.mp4) |
-| City | [Watch](docs/assets/videos/city_demo.mp4) | [RGB](docs/assets/videos/city_rgb.mp4) | [HSI](docs/assets/videos/city_hsi.mp4) | [Materials](docs/assets/videos/city_material.mp4) |
-| Market | [Watch](docs/assets/videos/market_demo.mp4) | [RGB](docs/assets/videos/market_rgb.mp4) | [HSI](docs/assets/videos/market_hsi.mp4) | [Materials](docs/assets/videos/market_material.mp4) |
-| Botanical | [Watch](docs/assets/videos/botanical_demo.mp4) | [RGB](docs/assets/videos/botanical_rgb.mp4) | [HSI](docs/assets/videos/botanical_hsi.mp4) | [Materials](docs/assets/videos/botanical_material.mp4) |
-| Song study | [Watch](docs/assets/videos/study_demo.mp4) | [RGB](docs/assets/videos/study_rgb.mp4) | [HSI](docs/assets/videos/study_hsi.mp4) | [Materials](docs/assets/videos/study_material.mp4) |
-| Office | [Watch](docs/assets/videos/office_demo.mp4) | [RGB](docs/assets/videos/office_rgb.mp4) | [HSI](docs/assets/videos/office_hsi.mp4) | [Materials](docs/assets/videos/office_material.mp4) |
+## Repository contents
 
-The Materials links now show separate per-class model-share maps, rendered at native 30 fps on a short camera path, with RGB for reference. Unassigned classes are marked explicitly. These shares are not physical area fractions. Each original combined demo shows RGB, HSI false colour, the earlier single-label material display and a synchronized comparison. Frames are rendered from the existing Abundance-GS models along continuous camera paths; they are not generated by diffusion or optical-flow interpolation. RGB is a visible-band composite near 630/550/460 nm; HSI uses a near-infrared composite near 800/650/550 nm. Videos use fixed display exposure within each scene and frozen training-view class mappings.
+This repository hosts the project page, the paper, the supplementary material and rendered clips. Research code and datasets are not part of this release.
 
-## Release status
+```
+docs/
+  index.html, style.css, app.js   static page, no build step
+  assets/fig/                      paper figures rasterized for the web (WebP)
+  assets/video/                    overview video (H.264, 1080p) and poster
+  assets/query/                    material-query clips (720p) per world and material
+  assets/tetra/                    bounding-tetrahedra clips (720p)
+  assets/worlds/                   SWR-Bench world thumbnails
+```
 
-This repository currently hosts the **project page, supplementary material and rendered demos**. Research code and full datasets are not included in this website release.
-
-## Playback
-
-The site loads a lightweight H.264 stream for the selected scene and pauses videos outside the viewport. Only one video plays at a time. Download buttons retain the higher-quality files under `docs/assets/videos/`; browser streams live under `docs/assets/web/`. Material-layer videos use the same fixed 0–1 scale for every class.
-
-## Website
-
-The project page is a dependency-free static site under `docs/`. To preview locally:
+## Local preview
 
 ```bash
 python -m http.server 8000 --directory docs
 ```
 
-GitHub Pages deployment is handled by `.github/workflows/pages.yml`. In repository **Settings → Pages**, choose **GitHub Actions** as the source. Subsequent changes to `docs/` publish automatically.
+Then open <http://localhost:8000>. GitHub Pages deploys `docs/` through `.github/workflows/pages.yml` on every push to `main` that changes `docs/`; in **Settings → Pages**, the source must be **GitHub Actions**.
 
 ## Citation
 
 ```bibtex
-@misc{lee2026spectralworldrenderer,
-  title = {Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing},
-  author = {Chia-Ming Lee and Yu-Jou Hsiao and Ming-Ching Chang and Xin Li
-            and Yu-Lun Liu and Chih-Chung Hsu},
-  year = {2026}
+@article{lee2027swr,
+  title   = {Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing},
+  author  = {Lee, Chia-Ming and Hsiao, Yu-Jou and Chang, Ming-Ching and
+             Li, Xin and Liu, Yu-Lun and Hsu, Chih-Chung},
+  journal = {Preprint, under review},
+  year    = {2026}
 }
 ```
-
-## Acknowledgements
-
-Project-page and demo presentation inspired by [LongSplat](https://linjohnss.github.io/longsplat/). All displayed scenes, renders and experimental results are from Spectral World Renderer.

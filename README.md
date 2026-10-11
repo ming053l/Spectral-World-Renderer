@@ -6,7 +6,7 @@
 
 <sup>1</sup>University at Albany, State University of New York · <sup>2</sup>National Yang Ming Chiao Tung University · <sup>3</sup>National Cheng Kung University
 
-[**Project page**](https://ming053l.github.io/Spectral-World-Renderer/) · [Overview video](https://www.youtube.com/watch?v=Llgn9jqMXOQ) · Code (coming soon)
+[**Project page**](https://ming053l.github.io/Spectral-World-Renderer/) · [Overview video](https://www.youtube.com/watch?v=5eKuSb7DITo) · Code (coming soon)
 
 ![Material queries and their recovered layers in five SWR-Bench worlds](docs/assets/fig/teaser_grid-1200.webp)
 

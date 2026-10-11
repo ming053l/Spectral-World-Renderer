@@ -211,12 +211,21 @@ const qp = makePlayer(qVideo, () => {
 /* The RGB layer follows the main clip. */
 qVideo.addEventListener('play', () => { if (!qRgb.hidden) qRgb.play().catch(() => {}); });
 qVideo.addEventListener('pause', () => qRgb.pause());
-qVideo.addEventListener('seeked', () => { if (!qRgb.hidden) qRgb.currentTime = qVideo.currentTime; });
+qVideo.addEventListener('seeked', () => { if (!qRgb.hidden) { qRgbSeeking = true; qRgb.currentTime = qVideo.currentTime; } });
+/* Keep the RGB layer running and aligned: restart it if it stalls, nudge the rate for small drift,
+   and seek only for large offsets (one seek at a time, so a slow decoder is never re-seeked into a freeze). */
+let qRgbSeeking = false;
+qRgb.addEventListener('seeked', () => { qRgbSeeking = false; });
 setInterval(() => {
-  if (qRgb.hidden || qVideo.paused || qRgb.readyState < 2) return;
-  const d = qRgb.currentTime - qVideo.currentTime;
-  if (Math.abs(d) > 0.08 && Math.abs(d) < qVideo.duration - 0.5) qRgb.currentTime = qVideo.currentTime;
-}, 250);
+  if (qRgb.hidden || qVideo.paused) { qRgb.playbackRate = 1; return; }
+  if (qRgb.paused && qRgb.readyState >= 2) qRgb.play().catch(() => {});
+  if (qRgb.readyState < 2 || qRgbSeeking || !qVideo.duration) return;
+  const dur = qVideo.duration;
+  let d = qRgb.currentTime - qVideo.currentTime;
+  if (d > dur / 2) d -= dur; else if (d < -dur / 2) d += dur;   // loop wrap
+  if (Math.abs(d) > 0.4) { qRgbSeeking = true; qRgb.currentTime = qVideo.currentTime % (qRgb.duration || dur); qRgb.playbackRate = 1; }
+  else qRgb.playbackRate = Math.abs(d) < 0.03 ? 1 : Math.min(1.1, Math.max(0.9, 1 - d * 2));
+}, 200);
 qVideo.addEventListener('waiting', () => { qStatus.hidden = false; });
 qVideo.addEventListener('playing', () => { qStatus.hidden = true; });
 qVideo.addEventListener('canplay', () => { qStatus.hidden = true; });

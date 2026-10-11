@@ -227,3 +227,5 @@ dialog.lightbox .close{position:fixed;top:12px;right:12px;width:40px;height:40px
   .copy{position:static;margin-bottom:8px}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.track{scroll-behavior:auto}*{transition:none!important}}
+
+.related{list-style:none;padding:0;margin:1rem 0 0}.related li{padding:.7rem 0;border-top:1px solid #eee;line-height:1.55}.related li:last-child{border-bottom:1px solid #eee}.related .venue{color:var(--accent);font-weight:500;margin-right:.25em}.lead-in{margin:0}

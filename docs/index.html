@@ -15,8 +15,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap">
-<link rel="stylesheet" href="style.css?v=perf1">
-<script src="app.js?v=perf1" defer></script>
+<link rel="stylesheet" href="style.css?v=perf2">
+<script src="app.js?v=perf2" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -293,6 +293,20 @@
       </button>
       <figcaption><b>Bounding tetrahedra on test views.</b> Columns show the rendering, the tetrahedra weighted by opacity and visibility, the tetrahedra coloured by the dominant class decoded at each Gaussian centre, and the rendered material map. The colouring reproduces the class layout of the rendered map: the median visible Gaussian places more than 98 % of its centre abundance on one class.</figcaption>
     </figure>
+  </div>
+</section>
+
+<!-- Related work -->
+<section class="section" id="related">
+  <div class="container">
+    <h2>Related work</h2>
+    <p class="lead-in">Spectral World Renderer builds on and compares with these works on spectral unmixing, hyperspectral reconstruction and 3D scene queries.</p>
+    <ul class="related">
+      <li><span class="venue">[ICCV 2025]</span> <b>UnMix-NeRF: Spectral Unmixing Meets Neural Radiance Fields</b><br>Spectral unmixing inside a neural radiance field; the material-identification baseline on SWR-Bench.</li>
+      <li><span class="venue">[CVPR 2025]</span> <b>HyperGS: Hyperspectral 3D Gaussian Splatting</b><br>Hyperspectral Gaussian splatting through a latent spectral representation; a fidelity baseline on real captures.</li>
+      <li><span class="venue">[ECCV 2026]</span> <b>Neural Harmonic Textures for High-Quality Primitive Based Neural Reconstruction</b><br>Harmonic features interpolated within each primitive; the feature field that Abundance-GS decodes into abundances.</li>
+      <li><span class="venue">[ICCV 2023]</span> <b>LERF: Language Embedded Radiance Fields</b><br>Open-vocabulary queries lifted into 3D; the query interface that material queries follow.</li>
+    </ul>
   </div>
 </section>
 

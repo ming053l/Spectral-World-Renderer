@@ -128,16 +128,16 @@ function swapClip(video, src, poster, loadingEl) {
 
 /* ---------- Hero video ---------- */
 const promo = $('#promo'), promoPlay = $('#promo-play');
-register(promo);
 promoPlay.addEventListener('click', () => {
-  loadSrc(promo);
-  promo.muted = false;
+  const f = document.createElement('iframe');
+  f.src = 'https://www.youtube-nocookie.com/embed/' + promo.dataset.yt + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+  f.title = 'Spectral World Renderer overview video';
+  f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  f.allowFullscreen = true;
+  promo.replaceChildren(f);
   promoPlay.hidden = true;
-  promo.play().catch(() => { promo.muted = true; promo.play().catch(() => {}); });
-  promo.focus({preventScroll: true});
+  document.querySelectorAll('video').forEach(v => v.pause());
 });
-promo.addEventListener('play', () => { promoPlay.hidden = true; loadSrc(promo); });
-if (io) io.observe(promo);
 
 /* ---------- Material query ---------- */
 const qVideo = $('#query-video'), qLoading = $('#query-loading');

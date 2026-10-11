@@ -1,17 +1,15 @@
 'use strict';
 /* Spectral World Renderer project page.
-   - Lazy media: videos carry no src until they are needed.
-   - Only one video plays at a time; videos pause when scrolled out of view or when the tab is hidden. */
+   - Media are lazy: videos receive a source only when they come into view or are requested.
+   - Only one clip player runs at a time; players pause off-screen and when the tab is hidden.
+   - The overview video is a click-to-load youtube-nocookie embed. */
 
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const saveData = !!(navigator.connection && navigator.connection.saveData);
 const $ = (s, r = document) => r.querySelector(s);
+const autoplayOK = () => !reduceMotion.matches && !saveData;
 
 /* ---------- Data ---------- */
-const RGB_DESC = 'Visible composite near 630 / 550 / 460 nm, rendered from the learned spectra.';
-const MAT_DESC = name => `Teal intensity shows the abundance of ${name} on a fixed 0–1 scale; all other surfaces are shown in grey.`;
-const BAND_DESC = (nm, extra) => `Single band near ${nm} nm. Both band views share one fixed exposure, so brightness is comparable between wavelengths. ${extra}`;
-
 const QUERY_WORLDS = [
   {key: 'nvidia', name: 'NVIDIA HQ', chips: [
     {id: 'rgb', label: 'RGB', kind: 'rgb'},
@@ -59,6 +57,7 @@ const WORLDS = [
   {key: 'city', name: 'City', setting: 'outdoor', classes: 11, rare: 5, spectra: 56},
   {key: 'office', name: 'Office', setting: 'indoor', classes: 8, rare: 3, spectra: 35},
 ];
+const NAMES = Object.fromEntries(WORLDS.map(w => [w.key, w.name]));
 
 /* Table 2: [PSNR, SAM, mIoU, EM] for UnMix-NeRF, 3DGS + VCA / NNLS, Abundance-GS. */
 const TABLE2 = {
@@ -72,214 +71,244 @@ const TABLE2 = {
   office:         [[25.33, 6.65, 0.11, 18.8], [25.01, 5.03, 0.17, 41.3], [27.54, 4.31, 0.53, 3.3]],
 };
 const METRICS = {
-  psnr: {i: 0, label: 'PSNR (dB)', higher: true, digits: 2, max: 36,
+  psnr: {i: 0, label: 'PSNR (dB)', higher: true, digits: 2,
     note: 'PSNR on foreground pixels against clean truth; methods train on noisy views.'},
-  sam: {i: 1, label: 'SAM (degrees)', higher: false, digits: 2, max: 16,
-    note: 'Mean spectral angle in degrees on foreground pixels; a lower SAM does not by itself imply better identification.'},
-  miou: {i: 2, label: 'mIoU', higher: true, digits: 2, max: 1,
-    note: 'Dominant-endmember mIoU on test views. Each endmember is assigned to the class holding most of the training pixels it dominates; this map is then frozen. No material label enters training; validation labels only select K.'},
-  em: {i: 3, label: 'EM (degrees)', higher: false, digits: 1, max: 45,
+  sam: {i: 1, label: 'SAM (degrees)', higher: false, digits: 2,
+    note: 'Mean spectral angle on foreground pixels; a lower SAM does not by itself imply better identification.'},
+  miou: {i: 2, label: 'mIoU', higher: true, digits: 2,
+    note: 'Dominant-endmember mIoU on test views. Each endmember is assigned to the class holding most of the training pixels it dominates, and this map is then frozen. No material label enters training; validation labels only select K.'},
+  em: {i: 3, label: 'EM (degrees)', higher: false, digits: 1,
     note: 'Mean angle between each class’s mean spectrum over pure training pixels and its learned endmember under one-to-one assignment.'},
 };
 
-/* ---------- Video manager ---------- */
-const managed = new Set();
-function loadSrc(video) {
-  const source = video.querySelector('source[data-src]');
-  if (source && !source.getAttribute('src')) { source.src = source.dataset.src; video.load(); }
+/* ---------- Shared helpers ---------- */
+function tabKeys(e) {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+  const tabs = [...e.currentTarget.querySelectorAll('[role="tab"]')];
+  const i = tabs.indexOf(document.activeElement); if (i < 0) return;
+  e.preventDefault();
+  const n = e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+  tabs[n].focus(); tabs[n].click();
 }
-function register(video) {
-  managed.add(video);
-  video.addEventListener('play', () => { for (const v of managed) if (v !== video && !v.paused) v.pause(); });
+function selectTab(tabs, active) {
+  for (const t of tabs) { const on = t === active; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; }
 }
-document.addEventListener('visibilitychange', () => { if (document.hidden) for (const v of managed) v.pause(); });
 
-/* Clip players: muted loops that start when sufficiently visible and pause when they leave the viewport. */
-const autoplayOK = () => !reduceMotion.matches && !saveData;
-const visible = new Map();
+/* ---------- Clip players ---------- */
+/* A player is {video, load(), visible, userPaused}. Only one plays at a time. */
+const players = [];
+function stopOthers(except) { for (const p of players) if (p !== except && !p.video.paused) p.video.pause(); }
+document.addEventListener('visibilitychange', () => { if (document.hidden) for (const p of players) p.video.pause(); });
 const io = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
   for (const e of entries) {
-    const v = e.target, show = e.intersectionRatio >= 0.5;
-    visible.set(v, show);
-    if (!show) { if (!v.paused) v.pause(); continue; }
-    if (v.dataset.auto === '1' && autoplayOK() && v.dataset.userPaused !== '1') {
-      if (!v.getAttribute('src')) v.dispatchEvent(new Event('needsrc'));
-      v.play().catch(() => {});
-    }
+    const p = players.find(x => x.video === e.target); if (!p) continue;
+    p.visible = e.intersectionRatio >= 0.5;
+    if (!p.visible) { if (!p.video.paused) p.video.pause(); continue; }
+    if (autoplayOK() && !p.userPaused) { p.load(); p.video.play().catch(() => {}); }
   }
 }, {threshold: [0, 0.5]}) : null;
-
-/* Swap the source of a clip player while keeping its playback position (all clips of a world share one camera path). */
-function swapClip(video, src, poster, loadingEl) {
-  const t = video.currentTime || 0, wasPlaying = !video.paused || (video.dataset.auto === '1' && visible.get(video) && autoplayOK());
+function makePlayer(video, load) {
+  const p = {video, load, visible: false, userPaused: false, ready: false};
+  players.push(p);
+  video.addEventListener('play', () => stopOthers(p));
+  if (io) io.observe(video);
+  return p;
+}
+/* Swap a source while keeping the playback position (clips of one world share a camera path). */
+function setSource(video, src, keepTime, shouldPlay) {
   if (video.getAttribute('src') === src) return;
-  if (poster) video.poster = poster;
-  video.preload = 'auto'; /* with preload="none" a new source would not load until play() */
+  const t = keepTime ? video.currentTime || 0 : 0;
+  video.preload = 'auto';
   video.src = src;
-  if (wasPlaying) video.play().catch(() => {});
-  if (loadingEl) loadingEl.hidden = false;
-  video.addEventListener('loadedmetadata', () => {
-    if (t && t < video.duration) video.currentTime = t;
-    if (wasPlaying) video.play().catch(() => {});
-  }, {once: true});
-  video.addEventListener('canplay', () => { if (loadingEl) loadingEl.hidden = true; }, {once: true});
-  video.addEventListener('error', () => { if (loadingEl) { loadingEl.hidden = false; loadingEl.textContent = 'Clip unavailable'; } }, {once: true});
+  video.addEventListener('loadedmetadata', () => { if (t && t < video.duration) video.currentTime = t; }, {once: true});
+  if (shouldPlay) video.play().catch(() => {});
 }
 
-/* ---------- Hero video ---------- */
-const promo = $('#promo'), promoPlay = $('#promo-play');
-promoPlay.addEventListener('click', () => {
-  const f = document.createElement('iframe');
-  f.src = 'https://www.youtube-nocookie.com/embed/' + promo.dataset.yt + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
-  f.title = 'Spectral World Renderer overview video';
-  f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-  f.allowFullscreen = true;
-  promo.replaceChildren(f);
-  promoPlay.hidden = true;
-  document.querySelectorAll('video').forEach(v => v.pause());
-});
-
-/* ---------- Material query ---------- */
-const qVideo = $('#query-video'), qLoading = $('#query-loading');
-qVideo.dataset.auto = '1';
-register(qVideo);
-let qWorld = QUERY_WORLDS[0], qChip = qWorld.chips[1];
-
-function renderQueryTabs() {
-  const tabs = $('#query-worlds');
-  for (const w of QUERY_WORLDS) {
-    const b = document.createElement('button');
-    b.className = 'tab'; b.type = 'button'; b.setAttribute('role', 'tab');
-    b.dataset.world = w.key; b.textContent = w.name;
-    b.addEventListener('click', () => setQueryWorld(w.key));
-    tabs.append(b);
-  }
-  tabs.addEventListener('keydown', tabKeys);
-}
-function setQueryWorld(key, chipId) {
-  qWorld = QUERY_WORLDS.find(w => w.key === key) || QUERY_WORLDS[0];
-  const keep = qWorld.chips.find(c => c.id === (chipId || (qChip && qChip.id)) && c.kind !== 'rgb')
-    || qWorld.chips.find(c => c.kind === (qChip && qChip.kind) && c.kind === 'band') || qWorld.chips[1];
-  for (const b of document.querySelectorAll('#query-worlds .tab')) {
-    const on = b.dataset.world === qWorld.key;
-    b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1;
-  }
-  const chips = $('#query-chips'); chips.replaceChildren();
-  for (const c of qWorld.chips) {
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = `chip ${c.kind}`; b.dataset.chip = c.id;
-    b.innerHTML = '<i aria-hidden="true"></i>';
-    b.append(c.label);
-    b.addEventListener('click', () => setChip(c.id));
-    chips.append(b);
-  }
-  qVideo.currentTime = 0;
-  qVideo.removeAttribute('src');
-  setChip(keep.id, true);
-}
-function setChip(id, fresh) {
-  qChip = qWorld.chips.find(c => c.id === id) || qWorld.chips[0];
-  for (const b of document.querySelectorAll('#query-chips .chip')) b.setAttribute('aria-pressed', String(b.dataset.chip === qChip.id));
-  $('#query-term').textContent = qChip.kind === 'rgb' ? 'rgb' : qChip.label;
-  const legend = $('#query-legend');
-  legend.hidden = qChip.kind === 'rgb';
-  legend.classList.toggle('band', qChip.kind === 'band');
-  let desc;
-  if (qChip.kind === 'rgb') desc = RGB_DESC;
-  else if (qChip.kind === 'mat') desc = MAT_DESC(qChip.label);
-  else desc = BAND_DESC(qChip.nm, qChip.nm > 800 ? 'In the near-infrared, vegetation reflects strongly, whereas most building materials do not.' : 'Green light, within the visible range.');
-  $('#query-desc').textContent = `${qWorld.name} · ${desc}`;
-  qVideo.setAttribute('aria-label', `${qWorld.name}: ${qChip.kind === 'rgb' ? 'RGB rendering' : qChip.kind === 'band' ? qChip.label + ' band' : 'abundance of ' + qChip.label}`);
-  const src = `assets/query/${qWorld.key}_${qChip.id}.mp4`, poster = `assets/query/${qWorld.key}_poster.webp`;
-  if (fresh) qVideo.poster = poster;
-  if (qVideo.dataset.ready === '1') swapClip(qVideo, src, poster, qLoading);
-  else qVideo.dataset.pending = src;
-}
-qVideo.addEventListener('needsrc', () => {
-  qVideo.dataset.ready = '1';
-  if (qVideo.dataset.pending) { swapClip(qVideo, qVideo.dataset.pending, null, qLoading); }
-});
-/* Clicking the player toggles playback (also makes it usable when autoplay is disabled). */
-qVideo.parentElement.addEventListener('click', () => {
-  if (qVideo.dataset.ready !== '1') qVideo.dispatchEvent(new Event('needsrc'));
-  if (qVideo.paused) { qVideo.dataset.userPaused = '0'; qVideo.play().catch(() => {}); }
-  else { qVideo.dataset.userPaused = '1'; qVideo.pause(); }
-});
-renderQueryTabs();
-setQueryWorld('nvidia', 'glass');
-if (io) io.observe(qVideo);
-/* Without autoplay, the first chip click should still start playback. */
-$('#query-chips').addEventListener('click', () => {
-  if (qVideo.dataset.ready !== '1') qVideo.dispatchEvent(new Event('needsrc'));
-  if (!autoplayOK() && qVideo.paused) setTimeout(() => qVideo.play().catch(() => {}), 50);
-});
-
-/* ---------- Worlds gallery ---------- */
-(function renderWorlds() {
-  const grid = $('#worlds-grid');
+/* ---------- Worlds carousel ---------- */
+(function carousel() {
+  const track = $('#worlds-track'), dots = $('#worlds-dots');
   for (const w of WORLDS) {
-    const card = document.createElement('article');
-    card.className = 'world';
     const hasQuery = QUERY_WORLDS.some(q => q.key === w.key);
-    card.innerHTML = `<img src="assets/worlds/${w.key}.webp" width="800" height="450" loading="lazy" decoding="async" alt="Rendered view of the ${w.name} world">
-      <div class="body"><h3>${w.name}</h3>
-      <div class="meta"><span class="io">${w.setting}</span><span>${w.classes} classes</span><span>${w.rare} rare</span><span>${w.spectra} specimens</span></div>
-      <button type="button" class="go"${hasQuery ? '' : ' disabled'}>${hasQuery ? 'Query this world →' : 'Shown in the figures below'}</button></div>`;
-    if (hasQuery) card.querySelector('.go').addEventListener('click', () => {
+    const s = document.createElement('article');
+    s.className = 'slide';
+    s.innerHTML = `<img src="assets/worlds/${w.key}.webp" width="800" height="450" loading="lazy" decoding="async" alt="Rendered view of the ${w.name} world">
+      <div class="body"><h3>${w.name}</h3><span class="meta">${w.setting} · ${w.classes} classes (${w.rare} rare) · ${w.spectra} specimens</span>
+      <button type="button"${hasQuery ? '' : ' disabled'}>${hasQuery ? 'Query this world →' : 'Shown in the figures below'}</button></div>`;
+    if (hasQuery) s.querySelector('button').addEventListener('click', () => {
       setQueryWorld(w.key);
       $('#query').scrollIntoView({behavior: reduceMotion.matches ? 'auto' : 'smooth'});
-      const tab = document.querySelector(`#query-worlds .tab[data-world="${w.key}"]`); if (tab) tab.focus({preventScroll: true});
+      const b = document.querySelector(`#query-worlds button[data-world="${w.key}"]`); if (b) b.focus({preventScroll: true});
     });
-    grid.append(card);
+    track.append(s);
   }
+  const slides = [...track.children];
+  const perView = () => Math.max(1, Math.round(track.clientWidth / slides[0].getBoundingClientRect().width));
+  const pages = () => Math.ceil(slides.length / perView());
+  function renderDots() {
+    dots.replaceChildren();
+    for (let i = 0; i < pages(); i++) {
+      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', `Show worlds, page ${i + 1}`);
+      b.addEventListener('click', () => go(i)); dots.append(b);
+    }
+    syncDots();
+  }
+  function page() { return Math.round(track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth) * (pages() - 1)) || 0; }
+  function syncDots() { const p = page(); [...dots.children].forEach((d, i) => d.setAttribute('aria-current', String(i === p))); }
+  function go(i) { const n = pages(); i = (i + n) % n; const idx = Math.min(slides.length - 1, i * perView()); track.scrollTo({left: slides[idx].offsetLeft - track.offsetLeft - 4, behavior: reduceMotion.matches ? 'auto' : 'smooth'}); }
+  $('#worlds .prev').addEventListener('click', () => go(page() - 1));
+  $('#worlds .next').addEventListener('click', () => go(page() + 1));
+  track.addEventListener('scroll', () => requestAnimationFrame(syncDots), {passive: true});
+  track.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); go(page() + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(page() - 1); } });
+  addEventListener('resize', renderDots);
+  renderDots();
 })();
 
-/* Simulated observation figure tabs */
+/* ---------- Overview video (YouTube, click to load) ---------- */
+(function promoVideo() {
+  const promo = $('#promo'), play = $('#promo-play');
+  play.addEventListener('click', () => {
+    const f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + promo.dataset.yt + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+    f.title = 'Spectral World Renderer overview video';
+    f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    f.allowFullscreen = true;
+    promo.replaceChildren(f);
+    for (const p of players) { p.video.pause(); p.userPaused = true; }
+    f.focus();
+  });
+})();
+
+/* ---------- Simulated observation tabs ---------- */
 (function hsiTabs() {
   const tabs = [...document.querySelectorAll('#hsi-tabs [role="tab"]')];
   for (const t of tabs) t.addEventListener('click', () => {
-    for (const o of tabs) { o.setAttribute('aria-selected', String(o === t)); o.tabIndex = o === t ? 0 : -1; }
+    selectTab(tabs, t);
     const n = t.dataset.hsi;
     $('#hsi-img').src = `assets/fig/swr_hsi_${n}-1200.webp`;
     $('#hsi-zoom').dataset.full = `assets/fig/swr_hsi_${n}.webp`;
-    $('#hsi-img').alt = n === '1'
-      ? 'Simulated hyperspectral observations of Forbidden City, Market, Botanical and NVIDIA HQ: narrow bands, a colour-infrared composite, apparent reflectance and clean and noisy 900 nm crops.'
-      : 'Simulated hyperspectral observations of Study, Karst, City and Office: narrow bands, a colour-infrared composite, apparent reflectance and clean and noisy 900 nm crops.';
+    $('#hsi-img').alt = `Simulated hyperspectral observations of ${t.textContent.replace(/ · /g, ', ')}: narrow bands, a colour-infrared composite, apparent reflectance and clean and noisy 900 nm crops.`;
   });
-  tabs.forEach((t, i) => t.tabIndex = i ? -1 : 0);
   $('#hsi-tabs').addEventListener('keydown', tabKeys);
 })();
 
+/* ---------- Material query with RGB comparison ---------- */
+const qVideo = $('#query-video'), qRgb = $('#query-rgb'), qStatus = $('#query-status'), qPlayer = $('#query-player');
+let qWorld = QUERY_WORLDS[0], qChip = qWorld.chips[1];
+const qp = makePlayer(qVideo, () => {
+  if (qp.ready) return;
+  qp.ready = true;
+  applyQuerySource(false);
+});
+/* The RGB layer follows the main clip. */
+qVideo.addEventListener('play', () => { if (!qRgb.hidden) qRgb.play().catch(() => {}); });
+qVideo.addEventListener('pause', () => qRgb.pause());
+qVideo.addEventListener('seeked', () => { if (!qRgb.hidden) qRgb.currentTime = qVideo.currentTime; });
+setInterval(() => {
+  if (qRgb.hidden || qVideo.paused || qRgb.readyState < 2) return;
+  const d = qRgb.currentTime - qVideo.currentTime;
+  if (Math.abs(d) > 0.08 && Math.abs(d) < qVideo.duration - 0.5) qRgb.currentTime = qVideo.currentTime;
+}, 250);
+qVideo.addEventListener('waiting', () => { qStatus.hidden = false; });
+qVideo.addEventListener('playing', () => { qStatus.hidden = true; });
+qVideo.addEventListener('canplay', () => { qStatus.hidden = true; });
+qVideo.addEventListener('error', () => { qStatus.hidden = false; qStatus.textContent = 'Clip unavailable'; });
+
+function applyQuerySource(keepTime) {
+  if (!qp.ready) return;
+  const playing = !qVideo.paused || (qp.visible && autoplayOK() && !qp.userPaused);
+  setSource(qVideo, `assets/query/${qWorld.key}_${qChip.id}.mp4`, keepTime, playing);
+  if (qChip.kind !== 'rgb') {
+    setSource(qRgb, `assets/query/${qWorld.key}_rgb.mp4`, false, false);
+    const sync = () => { qRgb.currentTime = qVideo.currentTime; if (!qVideo.paused) qRgb.play().catch(() => {}); };
+    if (qRgb.readyState >= 1) sync(); else qRgb.addEventListener('loadedmetadata', sync, {once: true});
+  }
+}
+(function renderWorldThumbs() {
+  const box = $('#query-worlds');
+  for (const w of QUERY_WORLDS) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.dataset.world = w.key;
+    b.innerHTML = `<img src="assets/worlds/${w.key}.webp" width="800" height="450" loading="lazy" decoding="async" alt=""><span>${w.name}</span>`;
+    b.setAttribute('aria-label', `World: ${w.name}`);
+    b.addEventListener('click', () => setQueryWorld(w.key));
+    box.append(b);
+  }
+})();
+function setQueryWorld(key) {
+  const prev = qChip;
+  qWorld = QUERY_WORLDS.find(w => w.key === key) || QUERY_WORLDS[0];
+  qChip = qWorld.chips.find(c => c.id === prev.id && c.kind !== 'rgb')
+    || (prev.kind === 'band' && qWorld.chips.find(c => c.kind === 'band'))
+    || (prev.kind === 'rgb' && qWorld.chips[0]) || qWorld.chips[1];
+  for (const b of document.querySelectorAll('#query-worlds button')) b.setAttribute('aria-pressed', String(b.dataset.world === qWorld.key));
+  const chips = $('#query-chips'); chips.replaceChildren();
+  qWorld.chips.forEach((c, i) => {
+    if (i && c.kind !== qWorld.chips[i - 1].kind && c.kind === 'band') { const s = document.createElement('span'); s.className = 'sep'; s.setAttribute('aria-hidden', 'true'); chips.append(s); }
+    const b = document.createElement('button');
+    b.type = 'button'; b.dataset.chip = c.id; b.textContent = c.label;
+    b.addEventListener('click', () => { qp.userPaused = false; setChip(c.id); });
+    chips.append(b);
+  });
+  qVideo.poster = `assets/query/${qWorld.key}_poster.webp`;
+  qRgb.poster = qVideo.poster;
+  setChip(qChip.id, false);
+}
+function setChip(id, keepTime = true) {
+  qChip = qWorld.chips.find(c => c.id === id) || qWorld.chips[0];
+  for (const b of document.querySelectorAll('#query-chips button')) b.setAttribute('aria-pressed', String(b.dataset.chip === qChip.id));
+  const compare = qChip.kind !== 'rgb';
+  qRgb.hidden = !compare; $('#query-divider').hidden = !compare; $('#query-split').hidden = !compare;
+  $('#label-l').hidden = !compare; $('#label-r').hidden = !compare;
+  $('#label-r').textContent = qChip.kind === 'band' ? qChip.label : 'Abundance';
+  if (!compare) qRgb.pause();
+  $('#query-term').textContent = qChip.kind === 'rgb' ? 'rgb' : qChip.label;
+  let desc;
+  if (qChip.kind === 'rgb') desc = 'Visible composite near 630 / 550 / 460 nm, rendered from the learned spectra.';
+  else if (qChip.kind === 'mat') desc = `Teal intensity shows the abundance of ${qChip.label} on a fixed 0–1 scale; all other surfaces are shown in grey.`;
+  else desc = `Single band near ${qChip.nm} nm; both band views share one fixed exposure, so brightness is comparable between wavelengths.` + (qChip.nm > 800 ? ' In the near-infrared, vegetation reflects strongly, whereas most building materials do not.' : '');
+  $('#query-desc').textContent = `${qWorld.name}: ${desc}`;
+  qVideo.setAttribute('aria-label', `${qWorld.name}: ${qChip.kind === 'rgb' ? 'RGB rendering' : qChip.kind === 'band' ? qChip.label + ' band' : 'abundance of ' + qChip.label}`);
+  applyQuerySource(keepTime);
+}
+$('#query-split').addEventListener('input', e => qPlayer.style.setProperty('--split', e.target.value + '%'));
+/* Clicking the player (outside the divider) toggles playback; also the way to start it without autoplay. */
+qPlayer.addEventListener('dblclick', () => togglePlayer(qp));
+qPlayer.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'k') { e.preventDefault(); togglePlayer(qp); } });
+$('#query-chips').addEventListener('click', () => { qp.load(); if (qVideo.paused) qVideo.play().catch(() => {}); });
+/* Visible play/pause buttons (WCAG 2.2.2). */
+for (const [btn, p] of [[$('#query-pp'), qp], [$('#tetra-pp'), null]]) {
+  btn.addEventListener('click', e => { e.stopPropagation(); togglePlayer(p || tp); });
+}
+function syncPP(btn, v) { const playing = !v.paused; btn.setAttribute('aria-label', playing ? 'Pause clip' : 'Play clip'); btn.textContent = playing ? '❚❚' : '▶'; }
+for (const [id, v] of [['#query-pp', qVideo], ['#tetra-pp', $('#tetra-video')]]) for (const ev of ['play', 'pause']) v.addEventListener(ev, () => syncPP($(id), v));
+function togglePlayer(p) {
+  p.load();
+  if (p.video.paused) { p.userPaused = false; p.video.play().catch(() => {}); } else { p.userPaused = true; p.video.pause(); }
+}
+setQueryWorld('nvidia');
+
 /* ---------- Table 2 ---------- */
-const NAMES = Object.fromEntries(WORLDS.map(w => [w.key, w.name]));
 function renderTable(metric) {
   const m = METRICS[metric], body = $('#bench-table tbody');
   body.replaceChildren();
-  const fmt = v => v.toFixed(m.digits);
   const means = [0, 0, 0];
   for (const w of WORLDS) {
-    const rows = TABLE2[w.key], vals = rows.map(r => r[m.i]);
+    const vals = TABLE2[w.key].map(r => r[m.i]);
     vals.forEach((v, j) => means[j] += v / WORLDS.length);
     const best = m.higher ? Math.max(...vals) : Math.min(...vals);
     const tr = document.createElement('tr');
-    tr.innerHTML = `<th scope="row">${NAMES[w.key]}<span class="setting">${w.setting}</span></th>` + vals.map((v, j) => {
-      const pct = Math.max(2, Math.min(100, 100 * v / m.max));
-      return `<td class="${j === 2 ? 'ours ' : ''}${v === best ? 'best' : ''}"><span class="cell"><span class="bar" aria-hidden="true"><i style="width:${pct}%"></i></span>${fmt(v)}</span></td>`;
-    }).join('');
+    tr.innerHTML = `<th scope="row">${w.name}<span class="setting">${w.setting}</span></th>` +
+      vals.map((v, j) => `<td class="${j === 2 ? 'ours ' : ''}${v === best ? 'best' : ''}">${v.toFixed(m.digits)}</td>`).join('');
     body.append(tr);
   }
   const tr = document.createElement('tr'); tr.className = 'mean';
-  tr.innerHTML = `<th scope="row">Mean of eight worlds</th>` + means.map((v, j) => `<td class="${j === 2 ? 'ours' : ''}">${v.toFixed(m.digits)}</td>`).join('');
+  tr.innerHTML = '<th scope="row">Mean</th>' + means.map((v, j) => `<td class="${j === 2 ? 'ours' : ''}">${v.toFixed(m.digits)}</td>`).join('');
   body.append(tr);
-  $('#bench-caption').textContent = `${m.label}, ${m.higher ? 'higher' : 'lower'} is better; the amber dot marks the best value in each world. ${m.note} Source: Table 2 of the paper (label-free material identification and spectral fidelity on SWR-Bench).`;
+  $('#bench-caption').textContent = `${m.label}, ${m.higher ? 'higher' : 'lower'} is better; the amber dot marks the best value in each world. ${m.note} Source: Table 2 of the paper.`;
 }
 (function metricTabs() {
   const tabs = [...document.querySelectorAll('#metric-tabs [role="tab"]')];
-  for (const t of tabs) t.addEventListener('click', () => {
-    for (const o of tabs) { o.setAttribute('aria-selected', String(o === t)); o.tabIndex = o === t ? 0 : -1; }
-    renderTable(t.dataset.metric);
-  });
-  tabs.forEach((t, i) => t.tabIndex = i ? -1 : 0);
+  for (const t of tabs) t.addEventListener('click', () => { selectTab(tabs, t); renderTable(t.dataset.metric); });
   $('#metric-tabs').addEventListener('keydown', tabKeys);
   renderTable('miou');
 })();
@@ -289,8 +318,8 @@ function bars(el, items, max) {
   for (const it of items) {
     const w = 100 * it.v / max, inside = w > 70;
     const row = document.createElement('div');
-    row.className = 'hbar' + (it.ours ? ' ours' : '');
-    row.innerHTML = `<span class="name">${it.name}</span><span class="track"><span class="fill" style="width:${w}%"></span><span class="val${inside ? ' inside' : ''}" style="--w:${w}%">${it.label}</span></span>`;
+    row.className = 'hbar' + (it.ours ? ' ours-row' : '');
+    row.innerHTML = `<span class="name">${it.name}</span><span class="track2"><span class="fill" style="width:${w}%"></span><span class="val${inside ? ' inside' : ''}" style="--w:${w}%">${it.label}</span></span>`;
     el.append(row);
   }
 }
@@ -306,42 +335,26 @@ bars($('#fps-bars'), [
 /* ---------- Tetrahedra clips ---------- */
 const TETRA = ['market', 'forbidden_city', 'botanical', 'karst', 'study', 'city', 'nvidia'];
 const tVideo = $('#tetra-video');
-tVideo.dataset.auto = '1';
-register(tVideo);
 let tKey = TETRA[0];
+const tp = makePlayer(tVideo, () => { if (tp.ready) return; tp.ready = true; setSource(tVideo, `assets/tetra/${tKey}.mp4`, false, false); });
 (function tetraTabs() {
-  const tabs = $('#tetra-worlds');
+  const box = $('#tetra-worlds');
   for (const k of TETRA) {
     const b = document.createElement('button');
-    b.type = 'button'; b.className = 'tab'; b.setAttribute('role', 'tab'); b.dataset.world = k; b.textContent = NAMES[k];
+    b.type = 'button'; b.setAttribute('role', 'tab'); b.dataset.world = k; b.textContent = NAMES[k];
     b.addEventListener('click', () => setTetra(k));
-    tabs.append(b);
+    box.append(b);
   }
-  tabs.addEventListener('keydown', tabKeys);
+  box.addEventListener('keydown', tabKeys);
 })();
 function setTetra(k) {
   tKey = k;
-  for (const b of document.querySelectorAll('#tetra-worlds .tab')) { const on = b.dataset.world === k; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; }
+  selectTab([...document.querySelectorAll('#tetra-worlds [role="tab"]')], document.querySelector(`#tetra-worlds [data-world="${k}"]`));
   tVideo.poster = `assets/tetra/${k}.webp`;
-  if (tVideo.dataset.ready === '1') { tVideo.preload = 'auto'; tVideo.src = `assets/tetra/${k}.mp4`; if (visible.get(tVideo) && autoplayOK()) tVideo.play().catch(() => {}); }
+  if (tp.ready) setSource(tVideo, `assets/tetra/${k}.mp4`, false, tp.visible && autoplayOK() && !tp.userPaused);
 }
-tVideo.addEventListener('needsrc', () => { tVideo.dataset.ready = '1'; tVideo.preload = 'auto'; tVideo.src = `assets/tetra/${tKey}.mp4`; });
-tVideo.parentElement.addEventListener('click', () => {
-  if (tVideo.dataset.ready !== '1') tVideo.dispatchEvent(new Event('needsrc'));
-  if (tVideo.paused) { tVideo.dataset.userPaused = '0'; tVideo.play().catch(() => {}); } else { tVideo.dataset.userPaused = '1'; tVideo.pause(); }
-});
+tVideo.addEventListener('click', () => togglePlayer(tp));
 setTetra(tKey);
-if (io) io.observe(tVideo);
-
-/* ---------- Tabs: arrow-key navigation ---------- */
-function tabKeys(e) {
-  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
-  const tabs = [...e.currentTarget.querySelectorAll('[role="tab"]')];
-  const i = tabs.indexOf(document.activeElement); if (i < 0) return;
-  e.preventDefault();
-  const n = e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
-  tabs[n].focus(); tabs[n].click();
-}
 
 /* ---------- Lightbox ---------- */
 const box = $('#lightbox');
@@ -366,12 +379,3 @@ $('#copy-bib').addEventListener('click', async () => {
   }
   setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
 });
-
-/* ---------- Active section in the navigation ---------- */
-if ('IntersectionObserver' in window) {
-  const links = [...document.querySelectorAll('.nav-links a')];
-  const obs = new IntersectionObserver(entries => {
-    for (const e of entries) if (e.isIntersecting) for (const a of links) a.setAttribute('aria-current', String(a.getAttribute('href') === '#' + e.target.id));
-  }, {rootMargin: '-45% 0px -50% 0px'});
-  for (const a of links) { const s = document.querySelector(a.getAttribute('href')); if (s) obs.observe(s); }
-}

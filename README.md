@@ -6,7 +6,7 @@
 
 <sup>1</sup>University at Albany, State University of New York · <sup>2</sup>National Yang Ming Chiao Tung University · <sup>3</sup>National Cheng Kung University
 
-[**Project page**](https://ming053l.github.io/Spectral-World-Renderer/) · [Overview video](docs/assets/video/swr_promo.mp4) · Code (coming soon)
+[**Project page**](https://ming053l.github.io/Spectral-World-Renderer/) · [Overview video](https://www.youtube.com/watch?v=Llgn9jqMXOQ) · Code (coming soon)
 
 ![Material queries and their recovered layers in five SWR-Bench worlds](docs/assets/fig/teaser_grid-1200.webp)
 
@@ -29,7 +29,7 @@ This repository hosts the project page, the paper, the supplementary material an
 docs/
   index.html, style.css, app.js   static page, no build step
   assets/fig/                      paper figures rasterized for the web (WebP)
-  assets/video/                    overview video (H.264, 1080p) and poster
+  assets/video/                    poster frame of the overview video (hosted on YouTube)
   assets/query/                    material-query clips (720p) per world and material
   assets/tetra/                    bounding-tetrahedra clips (720p)
   assets/worlds/                   SWR-Bench world thumbnails
@@ -54,3 +54,7 @@ Then open <http://localhost:8000>. GitHub Pages deploys `docs/` through `.github
   year    = {2026}
 }
 ```
+
+## Acknowledgements
+
+Website layout adapted from the [Nerfies](https://nerfies.github.io/) template, as used by [LongSplat](https://linjohnss.github.io/longsplat/).

@@ -18,7 +18,7 @@
 
 - Best or on-par material identification in all eight worlds (Table 2).
 - Complete City pipeline in 6 min 37 s; 34.9 labelled views/s with spectra and label maps.
-- 3.7–12.8× faster training than the unmixing baselines.
+- 3.7–12.9× faster training than the unmixing baselines.
 - Highest PSNR on each real-capture source (NeSpoF, HSI-SC, HS-NeRF).
 
 ## Repository contents

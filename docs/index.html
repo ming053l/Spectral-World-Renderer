@@ -64,9 +64,9 @@
     <h2 class="tagline" id="tagline">Query <span class="hl">any material</span> in hyperspectral 3D worlds</h2>
     <figure>
       <button class="zoom" type="button" data-full="assets/fig/teaser_grid.webp" aria-label="Open the teaser figure at full resolution">
-        <img src="assets/fig/teaser_grid-1200.webp" srcset="assets/fig/teaser_grid-800.webp 800w, assets/fig/teaser_grid-1200.webp 1200w, assets/fig/teaser_grid.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="541" decoding="async" alt="Rendered inputs of Forbidden City, Market, Botanical, City and Office, each followed by five material queries, such as white marble, fired clay, stone, asphalt and vinyl floor, and the material layers that Abundance-GS recovers.">
+        <img src="assets/fig/teaser_grid-1200.webp" srcset="assets/fig/teaser_grid-800.webp 800w, assets/fig/teaser_grid-1200.webp 1200w, assets/fig/teaser_grid.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="537" decoding="async" alt="Rendered inputs of Forbidden City, Market, Botanical, City and Office, each followed by four material-name queries, such as white marble, fired clay, stone and asphalt, and one further query mode: a name combination, a click on shadowed wood, a near-infrared index, a living-leaf reference spectrum, and the material layers that Abundance-GS recovers.">
       </button>
-      <figcaption><b>From hyperspectral worlds to separate material layers.</b> Spectral World Renderer generates indoor and outdoor worlds whose material composition is known by construction; from their multi-view hyperspectral images, Abundance-GS recovers materials as separate layers. Each layer colours, in a test view, the surfaces whose dominant endmember maps to one material.</figcaption>
+      <figcaption><b>From hyperspectral worlds to separate material layers.</b> Spectral World Renderer generates indoor and outdoor worlds of known material composition; from their multi-view hyperspectral images, Abundance-GS recovers separate material layers. Each layer colours the test-view surfaces retrieved by a material name, a click (amber), a reference spectrum, a band index or name combinations.</figcaption>
     </figure>
   </div>
 </section>
@@ -198,10 +198,11 @@
       <div class="text-block">
         <p>Living leaves differ from materials of the same colour beyond the visible range: chlorophyll absorbs red light and leaf tissue reflects near-infrared light, producing a red edge near 700&nbsp;nm that minerals and dry leaves lack. In City, foliage-coloured mineral leaves are only 2° from foliage in RGB but 42° apart in spectrum, so they receive endmembers of their own.</p>
         <p>Because abundances are stored on explicit, rasterizable Gaussians, a material query is a selection over primitives that is consistent across views and requires neither labels nor a per-image classifier. The mineral-leaf query retrieves no ordinary tree, whereas the equivalent RGB query retrieves eleven.</p>
+        <p>A measured spectrum can also serve as the query. With the sun and sky illumination factored out, a pixel clicked in shadow retrieves 77&nbsp;% of the sunlit part of its material, against 10&nbsp;% for an RGB colour query (mean over four worlds), in about 3&nbsp;ms per query.</p>
       </div>
       <figure class="fig">
         <button class="zoom" type="button" data-full="assets/fig/app_query.webp" aria-label="Open the material query figure at full resolution">
-          <img src="assets/fig/app_query-1200.webp" width="1200" height="1469" loading="lazy" decoding="async" alt="Paper figure on material queries in City: an RGB colour query also retrieves ordinary trees, whereas the query on per-Gaussian abundances retrieves only the mineral-leaf crowns; Abundance-GS also separates dry crowns from healthy foliage.">
+          <img src="assets/fig/app_query-1200.webp" width="1200" height="1469" loading="lazy" decoding="async" alt="Paper figure on material queries in City: an RGB colour query also retrieves ordinary trees, whereas the query on per-Gaussian abundances retrieves only the mineral-leaf crowns; Abundance-GS also separates dry crowns from healthy foliage; a spectrum clicked on shadowed limestone in Karst also retrieves the sunlit rock, which the RGB colour query misses.">
         </button>
       </figure>
     </div>

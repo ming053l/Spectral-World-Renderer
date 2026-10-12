@@ -19,9 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-Third-party components in code/abundance_gs/third_party/ and the files adapted
-from third-party projects (code/abundance_gs/scene_loader.py, from 3D Gaussian
-Splatting, Inria; code/abundance_gs/nht/trainer.py, from neural-harmonic-textures,
-Apache-2.0) are not covered by this license; they remain under their own
-licenses, listed in code/abundance_gs/third_party/THIRD_PARTY.md.

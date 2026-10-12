@@ -1,0 +1,12 @@
+{
+  "description": "NeSpoF real captures (scene1-4): reference preset, K = 16; every 5th TRAIN view is held out of HSI supervision (RGB still uses it); scored on the pack's own TEST views",
+  "anchor": {
+    "resolution": "512"
+  },
+  "decoder": {
+    "preset": "reference",
+    "materials": 16,
+    "train_max_views": 0,
+    "val_every_n_train": 5
+  }
+}

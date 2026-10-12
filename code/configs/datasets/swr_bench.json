@@ -1,0 +1,29 @@
+{
+  "description": "SWR-Bench (synthetic, paper main table): decoder trained on the 480x270 half-resolution pack, evaluated at native 960x540 against the clean and the noisy cubes; materials by the scene's benchmark scorer (TRAIN-calibrated many-to-one slot->class map, frozen for TEST)",
+  "anchor": {
+    "resolution": "1"
+  },
+  "decoder": {
+    "preset": "standard",
+    "train_max_views": 0,
+    "val_every_n_train": 0
+  },
+  "data": {
+    "clean_hsi_subdir": "hsi"
+  },
+  "eval": {
+    "foreground": "coverage",
+    "scorer_args": [
+      "--dataset",
+      "{dataset}",
+      "--predictions",
+      "{predictions}",
+      "--endmembers",
+      "{endmembers}",
+      "--split",
+      "test",
+      "--output",
+      "{report}"
+    ]
+  }
+}

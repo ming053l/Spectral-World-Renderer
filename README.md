@@ -11,7 +11,7 @@
 [![Project page](https://img.shields.io/badge/Project-Page-0B7A75?style=for-the-badge)](https://ming053l.github.io/Spectral-World-Renderer/)
 [![Paper](https://img.shields.io/badge/Paper-PDF%20%2B%20supplement-B31B1B?style=for-the-badge)](https://ming053l.github.io/Spectral-World-Renderer/assets/paper.pdf)
 [![Video](https://img.shields.io/badge/Video-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=5eKuSb7DITo)
-![Code](https://img.shields.io/badge/Code-coming%20soon-6E7781?style=for-the-badge)
+[![Code](https://img.shields.io/badge/Code-Abundance--GS-24292F?style=for-the-badge&logo=github)](code/)
 
 **See what a 3D scene is made of, not only how it looks.**
 
@@ -51,6 +51,17 @@ A spectral query takes about 3 ms.
 | Real captures (NeSpoF, HSI-SC, HS-NeRF) | highest PSNR on each source | Table 5 |
 | Mineral-leaf query in City | no ordinary tree retrieved | RGB query: eleven ordinary trees |
 
+## Code
+
+The Abundance-GS implementation is in [`code/`](code/). See [`code/README.md`](code/README.md) for installation, data roots and the training and evaluation stages; third-party components and their licences are listed in [`code/abundance_gs/third_party/THIRD_PARTY.md`](code/abundance_gs/third_party/THIRD_PARTY.md).
+
+```bash
+cd code
+env/setup.sh                 # environment, pinned packages and CUDA extensions
+abgs run  --scene market --workdir $W     # all stages for one scene (see code/README.md for data roots)
+abgs eval --scene market --output $W/eval
+```
+
 ## Citation
 
 If you find this work useful, please cite:
@@ -68,9 +79,10 @@ If you find this work useful, please cite:
 
 ## Repository contents
 
-This repository hosts the project page, the paper with its supplementary material, and rendered clips. Research code and datasets are not part of this release.
+This repository hosts the Abundance-GS code, the project page, the paper with its supplementary material, and rendered clips. Datasets are not part of this release.
 
 ```
+code/                              Abundance-GS: installation, stages and configs in code/README.md
 docs/
   index.html, style.css, app.js   static page, no build step
   assets/paper.pdf                 paper and supplementary material

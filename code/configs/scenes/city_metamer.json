@@ -1,0 +1,37 @@
+{
+  "extends": "swr_bench",
+  "description": "SWR-Bench City variant (metameric substitute): reference preset, K = 12 (number of material classes), seed 42",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/swr_bench/city_metamer/anchor_input",
+    "noisy_dataset": "${ABGS_DATA_ROOT}/swr_bench/city_metamer/noisy",
+    "clean_dataset": "${ABGS_DATA_ROOT}/swr_bench/city_metamer/clean",
+    "clean_hsi_subdir": "hsi",
+    "label_space": "classes12"
+  },
+  "anchor": {
+    "resolution": "1"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/city_metamer/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/city_metamer/eval"
+  },
+  "decoder": {
+    "preset": "reference",
+    "materials": 12
+  },
+  "eval": {
+    "scorer": "city",
+    "scorer_args": [
+      "--eval-dir",
+      "{output}",
+      "--dataset",
+      "{dataset}"
+    ]
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/city_metamer/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/city_metamer/source/ckpt.pt",
+    "model": "${ABGS_MODELS_ROOT}/city_metamer/decoder/model_ema.pt",
+    "eval_dir": "${ABGS_MODELS_ROOT}/city_metamer/eval"
+  }
+}

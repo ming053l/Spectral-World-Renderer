@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "abundance-gs"
+version = "1.0.0"
+description = "Abundance-GS: hyperspectral unmixing with Gaussian splatting and a per-hit abundance decoder"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0 (package); third-party licences in abundance_gs/third_party/THIRD_PARTY.md" }
+# The runtime packages (torch 2.9.1+cu126, tiny-cuda-nn, ...) come from the environment built by env/setup.sh,
+# pinned in env/requirements.lock.
+dependencies = []
+
+[project.scripts]
+abgs = "abundance_gs.entry:main"
+
+[tool.setuptools.packages.find]
+include = ["abundance_gs*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.cu", "*.cuh", "*.h", "*.hpp", "*.inl", "*.cpp", "*.md", "LICENSE*", "*.txt", "glm/**/*"]

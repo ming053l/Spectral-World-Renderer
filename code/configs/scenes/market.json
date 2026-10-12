@@ -1,0 +1,42 @@
+{
+  "extends": "swr_bench",
+  "description": "SWR-Bench Market, main-table model K = 24, standard preset, seed 42",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/swr_bench/market/anchor_input",
+    "noisy_dataset": "${ABGS_DATA_ROOT}/swr_bench/market/noisy",
+    "clean_dataset": "${ABGS_DATA_ROOT}/swr_bench/market/clean",
+    "clean_hsi_subdir": "hsi",
+    "label_space": "primary6"
+  },
+  "anchor": {
+    "resolution": "1"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/market/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/market/eval"
+  },
+  "decoder": {
+    "materials": 24
+  },
+  "eval": {
+    "scorer": "benchmark"
+  },
+  "views": {
+    "figures": [
+      "f_0000",
+      "f_0144",
+      "f_0160"
+    ],
+    "retain": [
+      "f_0000",
+      "f_0008"
+    ]
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/market/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/market/source/ckpt.pt",
+    "clusters": "${ABGS_MODELS_ROOT}/market/clusters_K24",
+    "model": "${ABGS_MODELS_ROOT}/market/decoder/model_ema.pt",
+    "eval_dir": "${ABGS_MODELS_ROOT}/market/eval"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "extends": "swr_bench",
+  "description": "SWR-Bench City variant (stress): reference preset, K = 11 (number of material classes), seed 42",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/swr_bench/city_stress/anchor_input",
+    "noisy_dataset": "${ABGS_DATA_ROOT}/swr_bench/city_stress/noisy",
+    "clean_dataset": "${ABGS_DATA_ROOT}/swr_bench/city_stress/clean",
+    "clean_hsi_subdir": "hsi",
+    "label_space": "classes11"
+  },
+  "anchor": {
+    "resolution": "1"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/city_stress/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/city_stress/eval"
+  },
+  "decoder": {
+    "preset": "reference",
+    "materials": 11
+  },
+  "eval": {
+    "scorer": "city",
+    "scorer_args": [
+      "--eval-dir",
+      "{output}",
+      "--dataset",
+      "{dataset}"
+    ]
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/city_stress/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/city_stress/source/ckpt.pt",
+    "model": "${ABGS_MODELS_ROOT}/city_stress/decoder/model_ema.pt",
+    "eval_dir": "${ABGS_MODELS_ROOT}/city_stress/eval"
+  }
+}

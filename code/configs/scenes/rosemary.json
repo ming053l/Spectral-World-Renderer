@@ -1,0 +1,22 @@
+{
+  "extends": "hs_nerf",
+  "description": "HS-NeRF rosemary: real capture, reference preset, K = 16, seed 42",
+  "scene_id": "hsnerf_rosemary",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/hs_nerf/rosemary/anchor_input"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/rosemary/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/rosemary/eval"
+  },
+  "pack_export": {
+    "state": "${ABGS_MODELS_ROOT}/rosemary/reference/state.pt",
+    "source_path": "${ABGS_DATA_ROOT}/hs_nerf/rosemary/source",
+    "anchor": "${ABGS_MODELS_ROOT}/rosemary/reference/anchor"
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/rosemary/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/rosemary/source/ckpt.pt",
+    "model": "${ABGS_MODELS_ROOT}/rosemary/decoder/model_ema.pt"
+  }
+}

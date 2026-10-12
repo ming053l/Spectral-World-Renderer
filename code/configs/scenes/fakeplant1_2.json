@@ -1,0 +1,22 @@
+{
+  "extends": "hs_nerf",
+  "description": "HS-NeRF fakeplant1_2: real capture, reference preset, K = 16, seed 42",
+  "scene_id": "hsnerf_fakeplant1_2",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/hs_nerf/fakeplant1_2/anchor_input"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/fakeplant1_2/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/fakeplant1_2/eval"
+  },
+  "pack_export": {
+    "state": "${ABGS_MODELS_ROOT}/fakeplant1_2/reference/state.pt",
+    "source_path": "${ABGS_DATA_ROOT}/hs_nerf/fakeplant1_2/source",
+    "anchor": "${ABGS_MODELS_ROOT}/fakeplant1_2/reference/anchor"
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/fakeplant1_2/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/fakeplant1_2/source/ckpt.pt",
+    "model": "${ABGS_MODELS_ROOT}/fakeplant1_2/decoder/model_ema.pt"
+  }
+}

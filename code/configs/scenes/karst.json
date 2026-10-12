@@ -1,0 +1,42 @@
+{
+  "extends": "swr_bench",
+  "description": "SWR-Bench Karst, main-table model K = 16, standard preset, seed 42",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/swr_bench/karst/anchor_input",
+    "noisy_dataset": "${ABGS_DATA_ROOT}/swr_bench/karst/noisy",
+    "clean_dataset": "${ABGS_DATA_ROOT}/swr_bench/karst/clean",
+    "clean_hsi_subdir": "hsi",
+    "label_space": "classes5"
+  },
+  "anchor": {
+    "resolution": "1"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/karst/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/karst/eval"
+  },
+  "decoder": {
+    "materials": 16
+  },
+  "eval": {
+    "scorer": "protocol"
+  },
+  "views": {
+    "figures": [
+      "f_0005",
+      "f_0107",
+      "f_0143"
+    ],
+    "retain": [
+      "f_0005",
+      "f_0011"
+    ]
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/karst/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/karst/source/ckpt.pt",
+    "clusters": "${ABGS_MODELS_ROOT}/karst/clusters_K16",
+    "model": "${ABGS_MODELS_ROOT}/karst/decoder/model_ema.pt",
+    "eval_dir": "${ABGS_MODELS_ROOT}/karst/eval"
+  }
+}

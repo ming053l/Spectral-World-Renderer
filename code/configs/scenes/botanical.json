@@ -1,0 +1,42 @@
+{
+  "extends": "swr_bench",
+  "description": "SWR-Bench Botanical, main-table model K = 24, standard preset, seed 42",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/swr_bench/botanical/anchor_input",
+    "noisy_dataset": "${ABGS_DATA_ROOT}/swr_bench/botanical/noisy",
+    "clean_dataset": "${ABGS_DATA_ROOT}/swr_bench/botanical/clean",
+    "clean_hsi_subdir": "hsi",
+    "label_space": "primary6"
+  },
+  "anchor": {
+    "resolution": "1"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/botanical/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/botanical/eval"
+  },
+  "decoder": {
+    "materials": 24
+  },
+  "eval": {
+    "scorer": "benchmark"
+  },
+  "views": {
+    "figures": [
+      "f_0000",
+      "f_0152",
+      "f_0136"
+    ],
+    "retain": [
+      "f_0000",
+      "f_0008"
+    ]
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/botanical/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/botanical/source/ckpt.pt",
+    "clusters": "${ABGS_MODELS_ROOT}/botanical/clusters_K24",
+    "model": "${ABGS_MODELS_ROOT}/botanical/decoder/model_ema.pt",
+    "eval_dir": "${ABGS_MODELS_ROOT}/botanical/eval"
+  }
+}

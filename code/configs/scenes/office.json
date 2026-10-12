@@ -1,0 +1,42 @@
+{
+  "extends": "swr_bench",
+  "description": "SWR-Bench Office, main-table model K = 24, standard preset, seed 42",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/swr_bench/office/anchor_input",
+    "noisy_dataset": "${ABGS_DATA_ROOT}/swr_bench/office/noisy",
+    "clean_dataset": "${ABGS_DATA_ROOT}/swr_bench/office/clean",
+    "clean_hsi_subdir": "hsi_clean",
+    "label_space": "reflective8"
+  },
+  "anchor": {
+    "resolution": "1"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/office/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/office/eval"
+  },
+  "decoder": {
+    "materials": 24
+  },
+  "eval": {
+    "scorer": "song_office"
+  },
+  "views": {
+    "figures": [
+      "f_0006",
+      "f_0030",
+      "f_0091"
+    ],
+    "retain": [
+      "f_0006",
+      "f_0007"
+    ]
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/office/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/office/source/ckpt.pt",
+    "clusters": "${ABGS_MODELS_ROOT}/office/clusters_K24",
+    "model": "${ABGS_MODELS_ROOT}/office/decoder/model_ema.pt",
+    "eval_dir": "${ABGS_MODELS_ROOT}/office/eval"
+  }
+}

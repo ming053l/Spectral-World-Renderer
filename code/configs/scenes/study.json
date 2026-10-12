@@ -1,0 +1,42 @@
+{
+  "extends": "swr_bench",
+  "description": "SWR-Bench Study, main-table model K = 24, standard preset, seed 42",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/swr_bench/study/anchor_input",
+    "noisy_dataset": "${ABGS_DATA_ROOT}/swr_bench/study/noisy",
+    "clean_dataset": "${ABGS_DATA_ROOT}/swr_bench/study/clean",
+    "clean_hsi_subdir": "hsi_clean",
+    "label_space": "reflective5"
+  },
+  "anchor": {
+    "resolution": "1"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/study/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/study/eval"
+  },
+  "decoder": {
+    "materials": 24
+  },
+  "eval": {
+    "scorer": "song_study"
+  },
+  "views": {
+    "figures": [
+      "f_0006",
+      "f_0031",
+      "f_0019"
+    ],
+    "retain": [
+      "f_0006",
+      "f_0007"
+    ]
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/study/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/study/source/ckpt.pt",
+    "clusters": "${ABGS_MODELS_ROOT}/study/clusters_K24",
+    "model": "${ABGS_MODELS_ROOT}/study/decoder/model_ema.pt",
+    "eval_dir": "${ABGS_MODELS_ROOT}/study/eval"
+  }
+}

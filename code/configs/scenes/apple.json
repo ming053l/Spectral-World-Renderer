@@ -1,0 +1,22 @@
+{
+  "extends": "hsi_sc",
+  "description": "HSI-SC apple: real capture, reference preset, K = 16, seed 42",
+  "scene_id": "hsi_sc_apple",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/hsi_sc/apple/anchor_input"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/apple/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/apple/eval"
+  },
+  "pack_export": {
+    "state": "${ABGS_MODELS_ROOT}/apple/reference/state.pt",
+    "source_path": "${ABGS_DATA_ROOT}/hsi_sc/apple/source",
+    "anchor": "${ABGS_MODELS_ROOT}/apple/reference/anchor"
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/apple/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/apple/source/ckpt.pt",
+    "model": "${ABGS_MODELS_ROOT}/apple/decoder/model_ema.pt"
+  }
+}

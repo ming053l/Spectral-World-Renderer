@@ -1,0 +1,45 @@
+{
+  "extends": "swr_bench",
+  "description": "SWR-Bench City, main-table model K = 32, standard preset, seed 42",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/swr_bench/city/anchor_input",
+    "noisy_dataset": "${ABGS_DATA_ROOT}/swr_bench/city/noisy",
+    "clean_dataset": "${ABGS_DATA_ROOT}/swr_bench/city/clean",
+    "clean_hsi_subdir": "hsi",
+    "label_space": "classes11"
+  },
+  "anchor": {
+    "resolution": "1"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/city/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/city/eval"
+  },
+  "decoder": {
+    "materials": 32
+  },
+  "eval": {
+    "scorer": "city",
+    "scorer_args": [
+      "--eval-dir",
+      "{output}",
+      "--dataset",
+      "{dataset}",
+      "--keep-predictions"
+    ]
+  },
+  "views": {
+    "figures": [
+      "f_0000",
+      "f_0032",
+      "f_0016"
+    ]
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/city/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/city/source/ckpt.pt",
+    "clusters": "${ABGS_MODELS_ROOT}/city/clusters_K32",
+    "model": "${ABGS_MODELS_ROOT}/city/decoder/model_ema.pt",
+    "eval_dir": "${ABGS_MODELS_ROOT}/city/eval"
+  }
+}

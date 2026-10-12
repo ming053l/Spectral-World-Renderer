@@ -1,0 +1,20 @@
+# Python packages of the Abundance-GS environment (python 3.10). Versions are those the paper's runs used.
+--extra-index-url https://download.pytorch.org/whl/cu126
+torch==2.9.1+cu126
+torchvision==0.24.1+cu126
+numpy==1.26.4
+torchmetrics==1.8.2
+lightning-utilities==0.15.3
+imageio==2.38.0
+plyfile==1.1.3
+pillow==12.3.0
+matplotlib==3.10.9
+tqdm==4.70.1
+ninja==1.13.2
+jaxtyping==0.3.7
+rich==14.3.4
+typing_extensions==4.16.0
+packaging==26.3
+setuptools==79.0.1
+wheel==0.48.0
+scipy==1.15.3

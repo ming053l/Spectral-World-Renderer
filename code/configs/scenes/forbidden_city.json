@@ -1,0 +1,38 @@
+{
+  "extends": "swr_bench",
+  "description": "SWR-Bench Forbidden City, main-table model K = 32, standard preset, seed 42",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/swr_bench/forbidden_city/anchor_input",
+    "noisy_dataset": "${ABGS_DATA_ROOT}/swr_bench/forbidden_city/noisy",
+    "clean_dataset": "${ABGS_DATA_ROOT}/swr_bench/forbidden_city/clean",
+    "clean_hsi_subdir": "hsi",
+    "label_space": "classes9"
+  },
+  "anchor": {
+    "resolution": "1"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/forbidden_city/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/forbidden_city/eval"
+  },
+  "decoder": {
+    "materials": 32
+  },
+  "eval": {
+    "scorer": "merged"
+  },
+  "views": {
+    "figures": [
+      "f_0116",
+      "f_0024",
+      "f_0040"
+    ]
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/forbidden_city/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/forbidden_city/source/ckpt.pt",
+    "clusters": "${ABGS_MODELS_ROOT}/forbidden_city/clusters_K32",
+    "model": "${ABGS_MODELS_ROOT}/forbidden_city/decoder/model_ema.pt",
+    "eval_dir": "${ABGS_MODELS_ROOT}/forbidden_city/eval"
+  }
+}

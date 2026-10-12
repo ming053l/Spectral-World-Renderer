@@ -1,0 +1,22 @@
+{
+  "extends": "nespof",
+  "description": "NeSpoF scene1: real capture, reference preset, K = 16, seed 42",
+  "scene_id": "nespof_scene1",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/nespof/nespof_scene1/anchor_input"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/nespof_scene1/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/nespof_scene1/eval"
+  },
+  "pack_export": {
+    "state": "${ABGS_MODELS_ROOT}/nespof_scene1/reference/state.pt",
+    "source_path": "${ABGS_DATA_ROOT}/nespof/nespof_scene1/source",
+    "anchor": "${ABGS_MODELS_ROOT}/nespof_scene1/reference/anchor"
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/nespof_scene1/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/nespof_scene1/source/ckpt.pt",
+    "model": "${ABGS_MODELS_ROOT}/nespof_scene1/decoder/model_ema.pt"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "extends": "swr_bench",
+  "description": "SWR-Bench City variant (morning illumination): reference preset, K = 11 (number of material classes), seed 42",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/swr_bench/city_illum_am/anchor_input",
+    "noisy_dataset": "${ABGS_DATA_ROOT}/swr_bench/city_illum_am/noisy",
+    "clean_dataset": "${ABGS_DATA_ROOT}/swr_bench/city_illum_am/clean",
+    "clean_hsi_subdir": "hsi",
+    "label_space": "classes11"
+  },
+  "anchor": {
+    "resolution": "1"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/city_illum_am/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/city_illum_am/eval"
+  },
+  "decoder": {
+    "preset": "reference",
+    "materials": 11
+  },
+  "eval": {
+    "scorer": "city",
+    "scorer_args": [
+      "--eval-dir",
+      "{output}",
+      "--dataset",
+      "{dataset}"
+    ]
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/city_illum_am/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/city_illum_am/source/ckpt.pt",
+    "model": "${ABGS_MODELS_ROOT}/city_illum_am/decoder/model_ema.pt",
+    "eval_dir": "${ABGS_MODELS_ROOT}/city_illum_am/eval"
+  }
+}

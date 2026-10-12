@@ -1,0 +1,22 @@
+{
+  "extends": "hs_nerf",
+  "description": "HS-NeRF basil: real capture, reference preset, K = 16, seed 42",
+  "scene_id": "hsnerf_basil",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/hs_nerf/basil/anchor_input"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/basil/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/basil/eval"
+  },
+  "pack_export": {
+    "state": "${ABGS_MODELS_ROOT}/basil/reference/state.pt",
+    "source_path": "${ABGS_DATA_ROOT}/hs_nerf/basil/source",
+    "anchor": "${ABGS_MODELS_ROOT}/basil/reference/anchor"
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/basil/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/basil/source/ckpt.pt",
+    "model": "${ABGS_MODELS_ROOT}/basil/decoder/model_ema.pt"
+  }
+}

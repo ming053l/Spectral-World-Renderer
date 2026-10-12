@@ -1,0 +1,47 @@
+{
+  "extends": "swr_bench",
+  "description": "SWR-Bench NVIDIA HQ, main-table model K = 32, standard preset, seed 42",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/swr_bench/nvidia_hq/anchor_input",
+    "noisy_dataset": "${ABGS_DATA_ROOT}/swr_bench/nvidia_hq/noisy",
+    "clean_dataset": "${ABGS_DATA_ROOT}/swr_bench/nvidia_hq/clean",
+    "clean_hsi_subdir": "hsi",
+    "label_space": "classes8"
+  },
+  "anchor": {
+    "resolution": "1"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/nvidia_hq/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/nvidia_hq/eval"
+  },
+  "decoder": {
+    "materials": 32
+  },
+  "eval": {
+    "scorer": "nvidia",
+    "foreground": "surface",
+    "scorer_args": [
+      "--eval-dir",
+      "{output}",
+      "--dataset",
+      "{dataset}",
+      "--clean-dataset",
+      "{clean_dataset}"
+    ]
+  },
+  "views": {
+    "figures": [
+      "f_0142",
+      "f_0232",
+      "f_0217"
+    ]
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/nvidia_hq/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/nvidia_hq/source/ckpt.pt",
+    "clusters": "${ABGS_MODELS_ROOT}/nvidia_hq/clusters_K32",
+    "model": "${ABGS_MODELS_ROOT}/nvidia_hq/decoder/model_ema.pt",
+    "eval_dir": "${ABGS_MODELS_ROOT}/nvidia_hq/eval"
+  }
+}

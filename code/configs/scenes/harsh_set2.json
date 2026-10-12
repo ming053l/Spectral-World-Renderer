@@ -1,0 +1,22 @@
+{
+  "extends": "hs_nerf",
+  "description": "HS-NeRF harsh_set2: real capture, reference preset, K = 16, seed 42",
+  "scene_id": "hsnerf_harsh_set2",
+  "data": {
+    "anchor_scene": "${ABGS_DATA_ROOT}/hs_nerf/harsh_set2/anchor_input"
+  },
+  "packs": {
+    "train": "${ABGS_DATA_ROOT}/packs/harsh_set2/train",
+    "eval": "${ABGS_DATA_ROOT}/packs/harsh_set2/eval"
+  },
+  "pack_export": {
+    "state": "${ABGS_MODELS_ROOT}/harsh_set2/reference/state.pt",
+    "source_path": "${ABGS_DATA_ROOT}/hs_nerf/harsh_set2/source",
+    "anchor": "${ABGS_MODELS_ROOT}/harsh_set2/reference/anchor"
+  },
+  "paper_model": {
+    "anchor_ply": "${ABGS_MODELS_ROOT}/harsh_set2/anchor/point_cloud.ply",
+    "source": "${ABGS_MODELS_ROOT}/harsh_set2/source/ckpt.pt",
+    "model": "${ABGS_MODELS_ROOT}/harsh_set2/decoder/model_ema.pt"
+  }
+}

@@ -4,7 +4,7 @@
 
 ### Towards Verifiable 3D Hyperspectral Unmixing
 
-**Chia-Ming Lee<sup>1,2</sup> · Yu-Jou Hsiao<sup>3</sup> · Ming-Ching Chang<sup>1</sup> · Xin Li<sup>1</sup> · Yu-Lun Liu<sup>2</sup> · Chih-Chung Hsu<sup>2,3</sup>**
+**[Chia-Ming Lee](https://ming053l.github.io/)<sup>1,2</sup> · Yu-Jou Hsiao<sup>3</sup> · [Ming-Ching Chang](https://www.albany.edu/faculty/mchang2/)<sup>1</sup> · [Xin Li](https://scholar.google.com/citations?user=gMBvzGoAAAAJ&hl=en)<sup>1</sup> · [Yu-Lun Liu](https://yulunalexliu.github.io/)<sup>2</sup> · [Chih-Chung Hsu](https://cchsu.info/)<sup>2,3</sup>**
 
 <sup>1</sup>University at Albany, State University of New York · <sup>2</sup>National Yang Ming Chiao Tung University · <sup>3</sup>National Cheng Kung University
 
@@ -103,6 +103,10 @@ python -m http.server 8000 --directory docs
 ```
 
 Then open <http://localhost:8000>. Python's built-in server does not answer HTTP range requests, so video seeking may be unreliable locally; GitHub Pages serves ranges. GitHub Pages deploys `docs/` through `.github/workflows/pages.yml` on every push to `main` that changes `docs/`; in **Settings → Pages**, the source must be **GitHub Actions**.
+
+## License
+
+The Abundance-GS code is released under the [MIT License](LICENSE). Third-party components in `code/abundance_gs/third_party/` keep their own licences, listed in [`THIRD_PARTY.md`](code/abundance_gs/third_party/THIRD_PARTY.md); this includes the adapted files `code/abundance_gs/scene_loader.py` and `code/abundance_gs/nht/trainer.py`. The components derived from 3D Gaussian Splatting (Inria) are restricted to non-commercial research use.
 
 ## Acknowledgements
 

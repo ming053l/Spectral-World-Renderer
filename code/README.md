@@ -2,6 +2,12 @@
 
 Code for *Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing*.
 
+[Chia-Ming Lee](https://ming053l.github.io/)<sup>1,2</sup> · Yu-Jou Hsiao<sup>3</sup> · [Ming-Ching Chang](https://www.albany.edu/faculty/mchang2/)<sup>1</sup> · [Xin Li](https://scholar.google.com/citations?user=gMBvzGoAAAAJ&hl=en)<sup>1</sup> · [Yu-Lun Liu](https://yulunalexliu.github.io/)<sup>2</sup> · [Chih-Chung Hsu](https://cchsu.info/)<sup>2,3</sup>
+
+<sup>1</sup>University at Albany, State University of New York · <sup>2</sup>National Yang Ming Chiao Tung University · <sup>3</sup>National Cheng Kung University
+
+[Project page](https://ming053l.github.io/Spectral-World-Renderer/) · [Paper + supplement (PDF)](https://ming053l.github.io/Spectral-World-Renderer/assets/paper.pdf) · [Video](https://www.youtube.com/watch?v=5eKuSb7DITo)
+
 An RGB Gaussian-splatting anchor gives the scene geometry. A harmonic-texture feature field is fitted on the anchor
 from the RGB images. A per-hit decoder turns every Gaussian intersection along a camera ray into K abundances over a
 shared endmember dictionary plus an intensity; spectra and abundance maps are obtained by alpha compositing. The
@@ -195,13 +201,19 @@ Paper symbols and code names:
 
 Third-party code and licences: `abundance_gs/third_party/THIRD_PARTY.md`.
 
+## License
+
+MIT License (see [LICENSE](LICENSE)). Third-party code keeps its own licences: `abundance_gs/third_party/THIRD_PARTY.md`; this includes the adapted files `abundance_gs/scene_loader.py` and `abundance_gs/nht/trainer.py`. The components derived from 3D Gaussian Splatting (Inria) are restricted to non-commercial research use.
+
 ## Citation
 
 ```bibtex
-@inproceedings{abundancegs,
-  title     = {Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing},
-  author    = {Anonymous},
-  booktitle = {Under review},
-  year      = {2026}
+@article{lee2026swr,
+  title   = {Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing},
+  author  = {Lee, Chia-Ming and Hsiao, Yu-Jou and Chang, Ming-Ching and
+             Li, Xin and Liu, Yu-Lun and Hsu, Chih-Chung},
+  journal = {Preprint, under review},
+  year    = {2026},
+  url     = {https://ming053l.github.io/Spectral-World-Renderer/}
 }
 ```

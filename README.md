@@ -10,7 +10,7 @@
 
 [![Project page](https://img.shields.io/badge/Project-Page-0B7A75?style=for-the-badge)](https://ming053l.github.io/Spectral-World-Renderer/)
 [![Paper](https://img.shields.io/badge/Paper-PDF%20%2B%20supplement-B31B1B?style=for-the-badge)](https://ming053l.github.io/Spectral-World-Renderer/assets/paper.pdf)
-[![Video](https://img.shields.io/badge/Video-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=5eKuSb7DITo)
+[![Video](https://img.shields.io/badge/Video-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=3FrSH7MaSjU)
 [![Code](https://img.shields.io/badge/Code-Abundance--GS-24292F?style=for-the-badge&logo=github)](code/)
 
 **See what a 3D scene is made of, not only how it looks.**

@@ -6,7 +6,7 @@ Code for *Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing*
 
 <sup>1</sup>University at Albany, State University of New York · <sup>2</sup>National Yang Ming Chiao Tung University · <sup>3</sup>National Cheng Kung University
 
-[Project page](https://ming053l.github.io/Spectral-World-Renderer/) · [Paper + supplement (PDF)](https://ming053l.github.io/Spectral-World-Renderer/assets/paper.pdf) · [Video](https://www.youtube.com/watch?v=5eKuSb7DITo)
+[Project page](https://ming053l.github.io/Spectral-World-Renderer/) · [Paper + supplement (PDF)](https://ming053l.github.io/Spectral-World-Renderer/assets/paper.pdf) · [Video](https://www.youtube.com/watch?v=3FrSH7MaSjU)
 
 An RGB Gaussian-splatting anchor gives the scene geometry. A harmonic-texture feature field is fitted on the anchor
 from the RGB images. A per-hit decoder turns every Gaussian intersection along a camera ray into K abundances over a

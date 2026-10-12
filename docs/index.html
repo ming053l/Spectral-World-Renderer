@@ -62,6 +62,7 @@
 <section class="teaser" aria-labelledby="tagline">
   <div class="container">
     <h2 class="tagline" id="tagline">Query <span class="hl">any material</span> in hyperspectral 3D worlds</h2>
+    <p class="tagline-sub">A camera records how a surface looks; Spectral World Renderer shows what it is made of. Query any surface by name, click, spectrum, band or combination, and verify the answer against worlds of known composition. <a href="#query">Try the material queries&nbsp;→</a></p>
     <figure>
       <button class="zoom" type="button" data-full="assets/fig/teaser_grid.webp" aria-label="Open the teaser figure at full resolution">
         <img src="assets/fig/teaser_grid-1200.webp" srcset="assets/fig/teaser_grid-800.webp 800w, assets/fig/teaser_grid-1200.webp 1200w, assets/fig/teaser_grid.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="537" decoding="async" alt="Rendered inputs of Forbidden City, Market, Botanical, City and Office, each followed by four material-name queries, such as white marble, fired clay, stone and asphalt, and one further query mode: a name combination, a click on shadowed wood, a near-infrared index, a living-leaf reference spectrum, and the material layers that Abundance-GS recovers.">
@@ -176,22 +177,31 @@
     <h2>Results</h2>
 
     <h3 class="sub" style="margin-top:0" id="query">Material queries</h3>
-    <p class="text-block">Choose a material and a world. Drag the divider to compare the RGB rendering (left) with the queried abundance (right): the surfaces that carry the material light up in teal along a continuous camera path. Wavelength tabs show single spectral bands instead.</p>
-    <div class="tabs" id="query-chips" role="group" aria-label="Query"></div>
+    <p class="lead-short">Every Gaussian carries abundances and a spectrum, so a query is a selection over primitives, consistent across views. Pick a world below, choose a query and drag the divider to compare the RGB rendering (left) with the result (right).</p>
+    <ul class="modes" aria-label="Query modes">
+      <li><b>Name</b> a material, e.g. fired clay or water</li>
+      <li><b>Combination</b> of names, e.g. stone ∨ travertine</li>
+      <li><b>Click</b> a shaded pixel: the sunlit parts of the same material are retrieved too</li>
+      <li><b>Spectrum</b> from a library, e.g. a living leaf</li>
+      <li><b>Band</b> or spectral index, e.g. near-infrared</li>
+    </ul>
+    <div class="qchips" id="query-chips" role="group" aria-label="Query"></div>
     <div class="player" id="query-player">
       <video id="query-video" muted loop playsinline preload="none" aria-describedby="query-desc"></video>
       <video id="query-rgb" class="rgb-layer" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
       <div class="divider" id="query-divider" aria-hidden="true"><span>⇆</span></div>
       <span class="label l" id="label-l">RGB</span><span class="label r" id="label-r">Query</span>
       <input type="range" id="query-split" min="0" max="100" value="50" aria-label="Comparison divider position between RGB and the queried layer">
-      <div class="query-chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span id="query-term"></span></div>
+      <svg class="xhair" id="query-xhair" viewBox="-40 -40 80 80" aria-hidden="true" hidden><circle class="pulse" r="22"/><g class="under"><circle r="22"/><path d="M15 0h19M-15 0h-19M0 15v19M0-15v-19"/></g><g class="over"><circle r="22"/><path d="M15 0h19M-15 0h-19M0 15v19M0-15v-19"/></g><circle class="dot" r="2.6"/></svg>
+      <div class="spec-card" id="query-spec" aria-hidden="true" hidden><svg viewBox="0 0 104 44"><path d="M4 40h96" class="base"/><path class="curve" d=""/></svg><span class="ref"></span><span class="ax"></span></div>
+      <div class="query-chip" aria-hidden="true"><span class="qi" id="query-icon"></span><span id="query-term"></span></div>
       <span class="status" id="query-status" hidden>Loading…</span>
       <button class="pp" id="query-pp" type="button" aria-label="Play clip">▶</button>
     </div>
-    <p class="hint">Try selecting different materials and worlds.</p>
+    <p class="hint">Try different query modes and worlds.</p>
     <div class="thumbs" id="query-worlds" role="group" aria-label="World"></div>
     <p class="desc" id="query-desc" aria-live="polite"></p>
-    <p class="fine center">Abundances come from Abundance-GS models trained without material labels. Each endmember is assigned to a class through a frozen training-view map; the teal layer sums the abundances of the endmembers assigned to the queried class on a fixed 0–1 scale. These clips are illustrative; quantitative results are reported below and in the paper.</p>
+    <p class="fine center">Abundances come from Abundance-GS models trained without material labels. A name query sums the abundances of the endmembers assigned to the class through a frozen training-view map, on a fixed 0–1 scale, and a combination sums two classes. Click, spectrum and index queries compare the spectrum of every Gaussian with the clicked spectrum, a library reflectance or a band index under a fixed threshold. These clips are illustrative; quantitative results are reported below and in the paper.</p>
 
     <h3 class="sub">Seeing beyond RGB</h3>
     <div class="split">

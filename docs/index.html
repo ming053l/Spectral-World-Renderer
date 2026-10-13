@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing</title>
-<meta name="description" content="Spectral World Renderer generates hyperspectral worlds with known material composition. Abundance-GS decodes abundances over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so every primitive carries queryable abundances.">
+<meta name="description" content="Spectral World Renderer (SWR) generates hyperspectral worlds with known material composition and decodes abundances over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so every primitive carries queryable abundances.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing">
 <meta property="og:description" content="Hyperspectral worlds with known material composition, and a compact Gaussian representation whose primitives carry queryable abundances.">
@@ -65,9 +65,9 @@
     <p class="tagline-sub">A camera records how a surface looks; Spectral World Renderer shows what it is made of. Query any surface by name, click, spectrum, band or combination, and verify the answer against worlds of known composition. <a href="#query">Try the material queries&nbsp;→</a></p>
     <figure>
       <button class="zoom" type="button" data-full="assets/fig/teaser_grid.webp" aria-label="Open the teaser figure at full resolution">
-        <img src="assets/fig/teaser_grid-1200.webp" srcset="assets/fig/teaser_grid-800.webp 800w, assets/fig/teaser_grid-1200.webp 1200w, assets/fig/teaser_grid.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="537" decoding="async" alt="Rendered inputs of Forbidden City, Market, Botanical, City and Office, each followed by four material-name queries, such as white marble, fired clay, stone and asphalt, and one further query mode: a name combination, a click on shadowed wood, a near-infrared index, a living-leaf reference spectrum, and the material layers that Abundance-GS recovers.">
+        <img src="assets/fig/teaser_grid-1200.webp" srcset="assets/fig/teaser_grid-800.webp 800w, assets/fig/teaser_grid-1200.webp 1200w, assets/fig/teaser_grid.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="537" decoding="async" alt="Rendered inputs of Forbidden City, Market, Botanical, City and Office, each followed by four material-name queries, such as white marble, fired clay, stone and asphalt, and one further query mode: a name combination, a click on shadowed wood, a near-infrared index, a living-leaf reference spectrum, and the material layers that SWR recovers.">
       </button>
-      <figcaption><b>From hyperspectral worlds to separate material layers.</b> Spectral World Renderer generates indoor and outdoor worlds of known material composition; from their multi-view hyperspectral images, Abundance-GS recovers separate material layers. Each layer colours the test-view surfaces retrieved by a material name, a click (amber), a reference spectrum, a band index or name combinations.</figcaption>
+      <figcaption><b>From hyperspectral worlds to separate material layers.</b> The SWR world generator produces indoor and outdoor worlds of known material composition; from their multi-view hyperspectral images, SWR recovers separate material layers. Each layer colours the test-view surfaces retrieved by a material name, a click (amber), a reference spectrum, a band index or name combinations.</figcaption>
     </figure>
   </div>
 </section>
@@ -88,7 +88,7 @@
 <section class="section abstract" id="abstract">
   <div class="container">
     <h2>Abstract</h2>
-    <p class="body">Semantic models recognize what a 3D scene contains, but not what it is made of. Hyperspectral imaging provides material evidence, yet costly acquisition, missing composition annotations and expensive multi-view unmixing hinder its use at scene scale. We present Spectral World Renderer, in which a coding agent turns reference images and text into executable scene programs; measured spectra and shared rendering samples then yield aligned hyperspectral observations, material labels and sub-pixel proportions, so that a 3D decomposition can be verified. The resulting SWR-Bench comprises eight indoor and outdoor worlds with material and illumination variation. Abundance-GS decodes mixtures over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so every primitive carries queryable abundances, and a multi-view appearance regularization assigns endmembers to distinct appearances without material labels. It leads or ties identification in all eight worlds, has the best mean PSNR on real captures, trains 3.7–12.9× faster than unmixing baselines and separates RGB metamers.</p>
+    <p class="body">Semantic models recognize what a 3D scene contains, but not what it is made of. Hyperspectral imaging provides material evidence, yet costly acquisition, missing composition annotations and expensive multi-view unmixing hinder its use at scene scale. We present the Spectral World Renderer (SWR), whose world generator lets a coding agent turn reference images and text into executable scene programs; measured spectra and shared rendering samples then yield aligned hyperspectral observations, material labels and sub-pixel proportions, so that a 3D decomposition can be verified. The resulting SWR-Bench comprises eight indoor and outdoor worlds with material and illumination variation. SWR decodes mixtures over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so every primitive carries queryable abundances, and a multi-view appearance regularization assigns endmembers to distinct appearances without material labels. It leads or ties identification in all eight worlds, has the best mean PSNR on real captures, trains 3.7–12.9× faster than unmixing baselines and separates RGB metamers.</p>
     <div class="highlights" role="list">
       <div role="listitem"><b>8 / 8</b><span>worlds with the best or on-par material identification</span></div>
       <div role="listitem"><b>6 min 37 s</b><span>complete City pipeline, from RGB anchor to decoder</span></div>
@@ -116,13 +116,13 @@
 <section class="section" id="pipeline">
   <div class="container">
     <h2>Pipeline</h2>
-    <h3 class="sub" style="margin-top:0">Spectral World Renderer: worlds with known composition</h3>
-    <p class="text-block">Real multi-view hyperspectral datasets are tabletop or turntable captures without material labels or sub-pixel proportions, which cannot be annotated reliably by hand. Spectral World Renderer therefore generates worlds rather than annotating captures.</p>
+    <h3 class="sub" style="margin-top:0">SWR world generator: worlds with known composition</h3>
+    <p class="text-block">Real multi-view hyperspectral datasets are tabletop or turntable captures without material labels or sub-pixel proportions, which cannot be annotated reliably by hand. The SWR world generator therefore creates worlds rather than annotating captures.</p>
     <figure class="fig">
       <button class="zoom" type="button" data-full="assets/fig/swr_workflow.webp" aria-label="Open the workflow figure at full resolution">
         <img src="assets/fig/swr_workflow-1200.webp" srcset="assets/fig/swr_workflow-800.webp 800w, assets/fig/swr_workflow-1200.webp 1200w, assets/fig/swr_workflow.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="598" loading="lazy" decoding="async" alt="Workflow diagram: reference photographs and a short brief guide a coding agent that writes an executable world; library-measured spectra are assigned to surfaces; one shared sub-pixel rendering produces hyperspectral and RGB observations with per-pixel materials; layout and rendering checks return flawed worlds for revision.">
       </button>
-      <figcaption><b>The Spectral World Renderer.</b> From reference photographs and a short brief, a coding agent writes an executable world whose every surface carries a library-measured spectrum. One shared sub-pixel rendering produces the hyperspectral and RGB observations together with the material of every pixel, so the ground truth is exact for the rendered world; checks on layout and rendering return flawed worlds for revision before release.</figcaption>
+      <figcaption><b>The SWR world generator.</b> From reference photographs and a short brief, a coding agent writes an executable world whose every surface carries a library-measured spectrum. One shared sub-pixel rendering produces the hyperspectral and RGB observations together with the material of every pixel, so the ground truth is exact for the rendered world; checks on layout and rendering return flawed worlds for revision before release.</figcaption>
     </figure>
     <div class="steps">
       <div><h4>Generate the world</h4><p>A coding agent turns reference images and text into an executable scene program that fixes geometry, materials, illumination and cameras.</p></div>
@@ -130,13 +130,13 @@
       <div><h4>Render aligned evidence</h4><p>Shared sub-pixel samples render RGB and hyperspectral observations together with material labels and area proportions.</p></div>
     </div>
 
-    <h3 class="sub">Abundance-GS: abundances at every ray intersection</h3>
-    <p class="text-block">Spectral radiance fields reconstruct spectra without decomposing them, and unmixing rendered spectra afterwards cannot separate what compositing has already mixed. Abundance-GS resolves the mixture before compositing.</p>
+    <h3 class="sub">SWR: unmixing at every ray intersection</h3>
+    <p class="text-block">Spectral radiance fields reconstruct spectra without decomposing them, and unmixing rendered spectra afterwards cannot separate what compositing has already mixed. SWR resolves the mixture before compositing.</p>
     <figure class="fig">
-      <button class="zoom" type="button" data-full="assets/fig/method_overview.webp" aria-label="Open the Abundance-GS overview figure at full resolution">
-        <img src="assets/fig/method_overview-1200.webp" srcset="assets/fig/method_overview-800.webp 800w, assets/fig/method_overview-1200.webp 1200w, assets/fig/method_overview.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="460" loading="lazy" decoding="async" alt="Overview of Abundance-GS: an RGB anchor fixes the geometry; each Gaussian carries band-independent harmonic features; at every ray intersection a shared decoder outputs abundances and an intensity that mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances.">
+      <button class="zoom" type="button" data-full="assets/fig/method_overview.webp" aria-label="Open the SWR overview figure at full resolution">
+        <img src="assets/fig/method_overview-1200.webp" srcset="assets/fig/method_overview-800.webp 800w, assets/fig/method_overview-1200.webp 1200w, assets/fig/method_overview.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="460" loading="lazy" decoding="async" alt="Overview of SWR: an RGB anchor fixes the geometry; each Gaussian carries band-independent harmonic features; at every ray intersection a shared decoder outputs abundances and an intensity that mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances.">
       </button>
-      <figcaption><b>Overview of Abundance-GS.</b> An RGB anchor fixes the geometry, and each Gaussian carries harmonic features whose size does not depend on the number of bands. At every ray intersection, a shared decoder maps the interpolated feature to abundances and an intensity, which mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances. Clusters of multi-view appearance initialize the endmembers and regularize their assignment, so no material label enters training.</figcaption>
+      <figcaption><b>Overview of SWR.</b> An RGB anchor fixes the geometry, and each Gaussian carries harmonic features whose size does not depend on the number of bands. At every ray intersection, a shared decoder maps the interpolated feature to abundances and an intensity, which mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances. Clusters of multi-view appearance initialize the endmembers and regularize their assignment, so no material label enters training.</figcaption>
     </figure>
     <div class="steps">
       <div><h4>Band-independent storage</h4><p>An RGB-trained anchor provides compact geometry, and each Gaussian stores a feature instead of a spectrum, so storage does not grow with the number of bands.</p></div>
@@ -201,7 +201,7 @@
     <p class="hint">Try different query modes and worlds.</p>
     <div class="thumbs" id="query-worlds" role="group" aria-label="World"></div>
     <p class="desc" id="query-desc" aria-live="polite"></p>
-    <p class="fine center">Abundances come from Abundance-GS models trained without material labels. A name query sums the abundances of the endmembers assigned to the class through a frozen training-view map, on a fixed 0–1 scale, and a combination sums two classes. Click, spectrum and index queries compare the spectrum of every Gaussian with the clicked spectrum, a library reflectance or a band index under a fixed threshold. These clips are illustrative; quantitative results are reported below and in the paper.</p>
+    <p class="fine center">Abundances come from SWR models trained without material labels. A name query sums the abundances of the endmembers assigned to the class through a frozen training-view map, on a fixed 0–1 scale, and a combination sums two classes. Click, spectrum and index queries compare the spectrum of every Gaussian with the clicked spectrum, a library reflectance or a band index under a fixed threshold. These clips are illustrative; quantitative results are reported below and in the paper.</p>
 
     <h3 class="sub">Seeing beyond RGB</h3>
     <div class="split">
@@ -212,13 +212,13 @@
       </div>
       <figure class="fig">
         <button class="zoom" type="button" data-full="assets/fig/app_query.webp" aria-label="Open the material query figure at full resolution">
-          <img src="assets/fig/app_query-1200.webp" width="1200" height="1469" loading="lazy" decoding="async" alt="Paper figure on material queries in City: an RGB colour query also retrieves ordinary trees, whereas the query on per-Gaussian abundances retrieves only the mineral-leaf crowns; Abundance-GS also separates dry crowns from healthy foliage; a spectrum clicked on shadowed limestone in Karst also retrieves the sunlit rock, which the RGB colour query misses.">
+          <img src="assets/fig/app_query-1200.webp" width="1200" height="1469" loading="lazy" decoding="async" alt="Paper figure on material queries in City: an RGB colour query also retrieves ordinary trees, whereas the query on per-Gaussian abundances retrieves only the mineral-leaf crowns; SWR also separates dry crowns from healthy foliage; a spectrum clicked on shadowed limestone in Karst also retrieves the sunlit rock, which the RGB colour query misses.">
         </button>
       </figure>
     </div>
 
     <h3 class="sub">Material identification and spectral fidelity on SWR-Bench</h3>
-    <p class="text-block">Abundance-GS identifies materials best or on par in every world and learns the endmembers closest to the true spectra. A lower spectral angle does not imply better identification: in Market and Study, 3DGS with post-hoc unmixing reaches a lower SAM but a far lower mIoU.</p>
+    <p class="text-block">SWR identifies materials best or on par in every world and learns the endmembers closest to the true spectra. A lower spectral angle does not imply better identification: in Market and Study, 3DGS with post-hoc unmixing reaches a lower SAM but a far lower mIoU.</p>
     <div class="tabs" role="tablist" aria-label="Metric" id="metric-tabs">
       <button role="tab" aria-selected="true" data-metric="miou">mIoU ↑</button>
       <button role="tab" aria-selected="false" data-metric="psnr" tabindex="-1">PSNR ↑</button>
@@ -228,16 +228,16 @@
     <div class="table-wrap" role="tabpanel" aria-label="Table 2 results">
       <table id="bench-table">
         <caption id="bench-caption"></caption>
-        <thead><tr><th scope="col">World</th><th scope="col"><span class="long">UnMix-NeRF</span><span class="short" aria-hidden="true">UnMix</span></th><th scope="col"><span class="long">3DGS + VCA / NNLS</span><span class="short" aria-hidden="true">3DGS+VCA</span></th><th scope="col" class="ours"><span class="long">Abundance-GS</span><span class="short" aria-hidden="true">Ours</span></th></tr></thead>
+        <thead><tr><th scope="col">World</th><th scope="col"><span class="long">UnMix-NeRF</span><span class="short" aria-hidden="true">UnMix</span></th><th scope="col"><span class="long">3DGS + VCA / NNLS</span><span class="short" aria-hidden="true">3DGS+VCA</span></th><th scope="col" class="ours"><span class="long">SWR</span><span class="short" aria-hidden="true">Ours</span></th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
 
     <figure class="fig" style="margin-top:22px">
       <button class="zoom" type="button" data-full="assets/fig/bench_layers.webp" aria-label="Open the material layer comparison at full resolution">
-        <img src="assets/fig/bench_layers-1200.webp" srcset="assets/fig/bench_layers-800.webp 800w, assets/fig/bench_layers-1200.webp 1200w, assets/fig/bench_layers.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="874" loading="lazy" decoding="async" alt="Material layers across the eight worlds: for each world, the rendered input, the ground-truth layer of one material, and the layers of UnMix-NeRF, 3DGS plus VCA, and Abundance-GS with their IoU; Abundance-GS has the highest IoU in every row.">
+        <img src="assets/fig/bench_layers-1200.webp" srcset="assets/fig/bench_layers-800.webp 800w, assets/fig/bench_layers-1200.webp 1200w, assets/fig/bench_layers.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="873" loading="lazy" decoding="async" alt="Material layers across the eight worlds: for each world, the rendered input, the ground-truth layer of one material, and the layers of UnMix-NeRF, 3DGS plus VCA, and SWR with their IoU; SWR has the highest IoU in every row.">
       </button>
-      <figcaption><b>Material layers across the eight worlds.</b> Each row tints one material by its abundance in a test view; IoU uses summed abundance &gt; 0.5 against the true mask. Unmixing rendered spectra afterwards (3DGS + VCA) or inside a radiance field (UnMix-NeRF) spreads the material over unrelated surfaces, whereas Abundance-GS recovers the layer closest to the ground truth.</figcaption>
+      <figcaption><b>Material layers across the eight worlds.</b> Each row tints one material by its abundance in a test view; IoU uses summed abundance &gt; 0.5 against the true mask. Unmixing rendered spectra afterwards (3DGS + VCA) or inside a radiance field (UnMix-NeRF) spreads the material over unrelated surfaces, whereas SWR recovers the layer closest to the ground truth.</figcaption>
     </figure>
 
     <div class="two">
@@ -248,11 +248,11 @@
         <div class="hbars" id="train-bars"></div>
         <div class="small-label">Mean rendering throughput (higher is better)</div>
         <div class="hbars" id="fps-bars"></div>
-        <p class="fine">Abundance-GS uses an optimized fused fp16 decoder that skips hits with weight below 10<sup>−4</sup> (99.97&nbsp;% identical labels); baselines use their reference code. Throughput is the mean over Market, Botanical, Study and Karst.</p>
+        <p class="fine">SWR uses an optimized fused fp16 decoder that skips hits with weight below 10<sup>−4</sup> (99.97&nbsp;% identical labels); baselines use their reference code. Throughput is the mean over Market, Botanical, Study and Karst.</p>
       </div>
       <div>
         <h3 class="sub">Real captures</h3>
-        <p>Without material ground truth, real captures test spectral fidelity. Abundance-GS has the highest PSNR on each real source; on HS-NeRF, 3DGS reaches a lower mean and 95th-percentile angle, the cost of a shared, noise-suppressing dictionary.</p>
+        <p>Without material ground truth, real captures test spectral fidelity. SWR has the highest PSNR on each real source; on HS-NeRF, 3DGS reaches a lower mean and 95th-percentile angle, the cost of a shared, noise-suppressing dictionary.</p>
         <div class="table-wrap">
           <table class="mini">
             <thead><tr><th scope="col">Source</th><th scope="col">PSNR ↑<br><span class="row-sub">baseline · ours</span></th><th scope="col">SAM ↓<br><span class="row-sub">baseline · ours</span></th></tr></thead>
@@ -265,9 +265,9 @@
         </div>
         <figure class="fig" style="margin-top:12px">
           <button class="zoom" type="button" data-full="assets/fig/real_apple.webp" aria-label="Open the real capture figure at full resolution">
-            <img src="assets/fig/real_apple-1200.webp" width="1200" height="729" loading="lazy" decoding="async" alt="204-band HSI-SC apple capture: spectra rendered by the baselines and by Abundance-GS, with an inset of the Abundance-GS abundance layers.">
+            <img src="assets/fig/real_apple-1200.webp" width="1200" height="730" loading="lazy" decoding="async" alt="204-band HSI-SC apple capture: spectra rendered by the baselines and by SWR, with an inset of the SWR abundance layers.">
           </button>
-          <figcaption><b>204-band real capture.</b> On the HSI-SC apple, Abundance-GS renders the most faithful spectra in this view. Means over 4 NeSpoF and 5 HS-NeRF scenes; the baseline is the best PSNR of 3DGS, HyperGS and DD-HGS; bold marks the better value of each pair.</figcaption>
+          <figcaption><b>204-band real capture.</b> On the HSI-SC apple, SWR renders the most faithful spectra in this view. Means over 4 NeSpoF and 5 HS-NeRF scenes; the baseline is the best PSNR of 3DGS, HyperGS and DD-HGS; bold marks the better value of each pair.</figcaption>
         </figure>
       </div>
     </div>
@@ -315,11 +315,11 @@
     <ul class="related">
       <li><span class="venue">[ICCV 2025]</span> <b>UnMix-NeRF: Spectral Unmixing Meets Neural Radiance Fields</b><br>Spectral unmixing inside a neural radiance field; the material-identification baseline on SWR-Bench.</li>
       <li><span class="venue">[CVPR 2025]</span> <b>HyperGS: Hyperspectral 3D Gaussian Splatting</b><br>Hyperspectral Gaussian splatting through a latent spectral representation; a fidelity baseline on real captures.</li>
-      <li><span class="venue">[ECCV 2026]</span> <b>Neural Harmonic Textures for High-Quality Primitive Based Neural Reconstruction</b><br>Harmonic features interpolated within each primitive; the feature field that Abundance-GS decodes into abundances.</li>
+      <li><span class="venue">[ECCV 2026]</span> <b>Neural Harmonic Textures for High-Quality Primitive Based Neural Reconstruction</b><br>Harmonic features interpolated within each primitive; the feature field that SWR decodes into abundances.</li>
       <li><span class="venue">[ICCV 2023]</span> <b>LERF: Language Embedded Radiance Fields</b><br>Open-vocabulary queries lifted into 3D; the query interface that material queries follow.</li>
       <li><span class="venue">[CVPR 2024]</span> <b>LangSplat: 3D Language Gaussian Splatting</b><br>Language features attached to 3D Gaussians for fast open-vocabulary queries; material queries are likewise selections over Gaussians, answered by abundances and spectra.</li>
       <li><span class="venue">[3DV 2026]</span> <b>SAMa: Material-Aware 3D Selection and Segmentation</b><br>Material selection in 3D from RGB views; spectra additionally separate surfaces of the same colour but different composition.</li>
-      <li><span class="venue">[ECCV 2022]</span> <b>A Dense Material Segmentation Dataset for Indoor and Outdoor Scene Parsing</b><br>Per-pixel material categories from RGB images; Abundance-GS instead estimates sub-pixel material proportions.</li>
+      <li><span class="venue">[ECCV 2022]</span> <b>A Dense Material Segmentation Dataset for Indoor and Outdoor Scene Parsing</b><br>Per-pixel material categories from RGB images; SWR instead estimates sub-pixel material proportions.</li>
     </ul>
   </div>
 </section>

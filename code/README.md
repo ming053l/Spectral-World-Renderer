@@ -1,6 +1,7 @@
-# Abundance-GS
+# SWR
 
-Code for *Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing*.
+Code for *Spectral World Renderer: Towards Verifiable 3D Hyperspectral Unmixing*. The Python package `abundance_gs`
+and the `abgs` command implement the unmixing representation of SWR (Spectral World Renderer).
 
 [Chia-Ming Lee](https://ming053l.github.io/)<sup>1,2</sup> · Yu-Jou Hsiao<sup>3</sup> · [Ming-Ching Chang](https://www.albany.edu/faculty/mchang2/)<sup>1</sup> · [Xin Li](https://scholar.google.com/citations?user=gMBvzGoAAAAJ&hl=en)<sup>1</sup> · [Yu-Lun Liu](https://yulunalexliu.github.io/)<sup>2</sup> · [Chih-Chung Hsu](https://cchsu.info/)<sup>2,3</sup>
 

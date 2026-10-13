@@ -90,7 +90,7 @@ const WORLDS = [
 ];
 const NAMES = Object.fromEntries(WORLDS.map(w => [w.key, w.name]));
 
-/* Table 2: [PSNR, SAM, mIoU, EM] for UnMix-NeRF, 3DGS + VCA / NNLS, Abundance-GS. */
+/* Table 2: [PSNR, SAM, mIoU, EM] for UnMix-NeRF, 3DGS + VCA / NNLS, SWR. */
 const TABLE2 = {
   forbidden_city: [[26.13, 7.37, 0.19, 27.4], [25.03, 5.05, 0.17, 30.7], [28.37, 4.45, 0.55, 4.4]],
   market:         [[31.87, 3.61, 0.13, 30.9], [30.02, 1.85, 0.24, 26.9], [33.63, 1.95, 0.78, 2.4]],
@@ -452,11 +452,11 @@ function bars(el, items, max) {
   }
 }
 bars($('#train-bars'), [
-  {name: 'Abundance-GS', v: 397, label: '6 min 37 s', ours: true},
+  {name: 'SWR', v: 397, label: '6 min 37 s', ours: true},
   {name: 'UnMix-NeRF', v: 1457, label: '24 min 17 s'},
   {name: '3DGS + VCA / NNLS', v: 5102, label: '85 min 2 s'}], 5102);
 bars($('#fps-bars'), [
-  {name: 'Abundance-GS', v: 34.9, label: '34.9 views/s', ours: true},
+  {name: 'SWR', v: 34.9, label: '34.9 views/s', ours: true},
   {name: '3DGS + VCA / NNLS', v: 3.6, label: '3.6 views/s'},
   {name: 'UnMix-NeRF', v: 0.18, label: '0.18 views/s'}], 34.9);
 

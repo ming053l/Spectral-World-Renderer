@@ -11,7 +11,7 @@
 [![Project page](https://img.shields.io/badge/Project-Page-0B7A75?style=for-the-badge)](https://ming053l.github.io/Spectral-World-Renderer/)
 [![Paper](https://img.shields.io/badge/Paper-PDF%20%2B%20supplement-B31B1B?style=for-the-badge)](https://ming053l.github.io/Spectral-World-Renderer/assets/paper.pdf)
 [![Video](https://img.shields.io/badge/Video-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=3FrSH7MaSjU)
-[![Code](https://img.shields.io/badge/Code-Abundance--GS-24292F?style=for-the-badge&logo=github)](code/)
+[![Code](https://img.shields.io/badge/Code-SWR-24292F?style=for-the-badge&logo=github)](code/)
 
 **See what a 3D scene is made of, not only how it looks.**
 
@@ -23,9 +23,9 @@
 
 Cameras and RGB-based 3D models record colour, so surfaces of the same colour but different composition, such as a green-painted panel and a leaf, look alike. Hyperspectral images separate them, but scenes with known material composition are rare, so a 3D decomposition is hard to verify.
 
-- **Spectral World Renderer** generates indoor and outdoor hyperspectral worlds whose material composition is known by construction. A coding agent turns reference images and text into executable scene programs; measured spectra and shared sub-pixel rendering samples then yield aligned hyperspectral observations, material labels and area proportions.
+- **The SWR world generator** produces indoor and outdoor hyperspectral worlds whose material composition is known by construction. A coding agent turns reference images and text into executable scene programs; measured spectra and shared sub-pixel rendering samples then yield aligned hyperspectral observations, material labels and area proportions.
 - **SWR-Bench** comprises eight indoor and outdoor worlds with material and illumination variation, rendered with 64 bands from 420 to 980 nm.
-- **Abundance-GS** decodes abundances over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so every primitive carries queryable abundances. A multi-view appearance regularization assigns endmembers to distinct appearances without material labels.
+- **SWR** decodes abundances over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so every primitive carries queryable abundances. A multi-view appearance regularization assigns endmembers to distinct appearances without material labels.
 
 ## Query any material
 
@@ -43,7 +43,7 @@ A spectral query takes about 3 ms.
 
 ## Results at a glance
 
-| | Abundance-GS | Reference |
+| | SWR | Reference |
 |---|---|---|
 | Material identification on SWR-Bench | best or on par in all eight worlds | Table 2 |
 | City training, full pipeline | **6 min 37 s** | UnMix-NeRF 24 min 17 s · 3DGS+VCA/NNLS 85 min 2 s |
@@ -53,7 +53,7 @@ A spectral query takes about 3 ms.
 
 ## Code
 
-The Abundance-GS implementation is in [`code/`](code/). See [`code/README.md`](code/README.md) for installation, data roots and the training and evaluation stages; third-party components and their licences are listed in [`code/abundance_gs/third_party/THIRD_PARTY.md`](code/abundance_gs/third_party/THIRD_PARTY.md).
+The SWR implementation is in [`code/`](code/). See [`code/README.md`](code/README.md) for installation, data roots and the training and evaluation stages; third-party components and their licences are listed in [`code/abundance_gs/third_party/THIRD_PARTY.md`](code/abundance_gs/third_party/THIRD_PARTY.md).
 
 ```bash
 cd code
@@ -79,10 +79,10 @@ If you find this work useful, please cite:
 
 ## Repository contents
 
-This repository hosts the Abundance-GS code, the project page, the paper with its supplementary material, and rendered clips. Datasets are not part of this release.
+This repository hosts the SWR code, the project page, the paper with its supplementary material, and rendered clips. Datasets are not part of this release.
 
 ```
-code/                              Abundance-GS: installation, stages and configs in code/README.md
+code/                              SWR: installation, stages and configs in code/README.md
 docs/
   index.html, style.css, app.js   static page, no build step
   assets/paper.pdf                 paper and supplementary material
@@ -106,7 +106,7 @@ Then open <http://localhost:8000>. Python's built-in server does not answer HTTP
 
 ## License
 
-The Abundance-GS code is released under the [MIT License](LICENSE). Third-party components in `code/abundance_gs/third_party/` keep their own licences, listed in [`THIRD_PARTY.md`](code/abundance_gs/third_party/THIRD_PARTY.md); this includes the adapted files `code/abundance_gs/scene_loader.py` and `code/abundance_gs/nht/trainer.py`. The components derived from 3D Gaussian Splatting (Inria) are restricted to non-commercial research use.
+The SWR code is released under the [MIT License](LICENSE). Third-party components in `code/abundance_gs/third_party/` keep their own licences, listed in [`THIRD_PARTY.md`](code/abundance_gs/third_party/THIRD_PARTY.md); this includes the adapted files `code/abundance_gs/scene_loader.py` and `code/abundance_gs/nht/trainer.py`. The components derived from 3D Gaussian Splatting (Inria) are restricted to non-commercial research use.
 
 ## Acknowledgements
 

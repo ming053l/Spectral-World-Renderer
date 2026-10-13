@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Spectral World Renderer: Unified 3D Hyperspectral Unmixing</title>
-<meta name="description" content="Spectral World Renderer (SWR) generates hyperspectral worlds with known material composition and decodes abundances over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so every primitive carries queryable abundances.">
+<meta name="description" content="Spectral World Renderer (SWR) unifies world generation, rendering and unmixing: it generates hyperspectral worlds with known material composition and unmixes inside rendering, so one pass of a compact Gaussian representation renders spectra and queryable material abundances.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Spectral World Renderer: Unified 3D Hyperspectral Unmixing">
-<meta property="og:description" content="Hyperspectral worlds with known material composition, and a compact Gaussian representation whose primitives carry queryable abundances.">
+<meta property="og:description" content="One framework for hyperspectral worlds with known composition and unmixing inside rendering: one pass renders spectra and queryable material abundances.">
 <meta property="og:url" content="https://ming053l.github.io/Spectral-World-Renderer/">
 <meta property="og:image" content="https://ming053l.github.io/Spectral-World-Renderer/assets/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -62,7 +62,7 @@
 <section class="teaser" aria-labelledby="tagline">
   <div class="container">
     <h2 class="tagline" id="tagline">Query <span class="hl">any material</span> in hyperspectral 3D worlds</h2>
-    <p class="tagline-sub">A camera records how a surface looks; Spectral World Renderer shows what it is made of. Query any surface by name, click, spectrum, band or combination, and verify the answer against worlds of known composition. <a href="#query">Try the material queries&nbsp;→</a></p>
+    <p class="tagline-sub">A camera records how a surface looks; Spectral World Renderer shows what it is made of. One framework generates worlds of known composition and unmixes inside rendering, so a single render gives spectra and material abundances. Query any surface by name, click, spectrum, band or combination, and verify the answer against the known composition. <a href="#query">Try the material queries&nbsp;→</a></p>
     <figure>
       <button class="zoom" type="button" data-full="assets/fig/teaser_grid.webp" aria-label="Open the teaser figure at full resolution">
         <img src="assets/fig/teaser_grid-1200.webp" srcset="assets/fig/teaser_grid-800.webp 800w, assets/fig/teaser_grid-1200.webp 1200w, assets/fig/teaser_grid.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="537" decoding="async" alt="Rendered inputs of Forbidden City, Market, Botanical, City and Office, each followed by four material-name queries, such as white marble, fired clay, stone and asphalt, and one further query mode: a name combination, a click on shadowed wood, a near-infrared index, a living-leaf reference spectrum, and the material layers that SWR recovers.">
@@ -88,12 +88,12 @@
 <section class="section abstract" id="abstract">
   <div class="container">
     <h2>Abstract</h2>
-    <p class="body">Semantic models recognize what a 3D scene contains, but not what it is made of. Hyperspectral imaging provides material evidence, yet costly acquisition, missing composition annotations and expensive multi-view unmixing hinder its use at scene scale. We present the Spectral World Renderer (SWR), whose world generator lets a coding agent turn reference images and text into executable scene programs; measured spectra and shared rendering samples then yield aligned hyperspectral observations, material labels and sub-pixel proportions, so that a 3D decomposition can be verified. The resulting SWR-Bench comprises eight indoor and outdoor worlds with material and illumination variation. SWR decodes mixtures over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so every primitive carries queryable abundances, and a multi-view appearance regularization assigns endmembers to distinct appearances without material labels. It leads or ties identification in all eight worlds, has the best mean PSNR on real captures, trains 3.7–12.9× faster than unmixing baselines and separates RGB metamers.</p>
+    <p class="body">Semantic models recognize what a 3D scene contains, but not what it is made of. In 3D, hyperspectral unmixing is applied to rendered images afterwards or tied to slow implicit fields, and multi-view data lack the composition needed to verify it. We present the Spectral World Renderer (SWR), which unifies world generation, rendering and unmixing. Its world generator lets a coding agent turn reference images and text into executable scene programs; measured spectra and shared rendering samples yield aligned hyperspectral observations, material labels and sub-pixel proportions, so decompositions are verified against known composition in the eight indoor and outdoor worlds of SWR-Bench. SWR unmixes inside rendering: it decodes mixtures over a shared endmember dictionary at every ray intersection of a compact Gaussian representation, so one pass renders spectra and queryable abundances, and a multi-view appearance regularization assigns endmembers to distinct appearances without material labels. It has the best mIoU in all eight worlds and the best mean PSNR on real captures, trains 3.7–12.9× faster than unmixing baselines on City, renders 34.9 labelled views/s and separates RGB metamers.</p>
     <div class="highlights" role="list">
-      <div role="listitem"><b>8 / 8</b><span>worlds with the best or on-par material identification</span></div>
+      <div role="listitem"><b>8 / 8</b><span>worlds with the best material identification (mIoU)</span></div>
       <div role="listitem"><b>6 min 37 s</b><span>complete City pipeline, from RGB anchor to decoder</span></div>
       <div role="listitem"><b>34.9</b><span>labelled views per second at 960 × 540 × 64</span></div>
-      <div role="listitem"><b>3.7–12.9×</b><span>faster training than the unmixing baselines</span></div>
+      <div role="listitem"><b>3.7–12.9×</b><span>faster training than the unmixing baselines on City</span></div>
     </div>
   </div>
 </section>
@@ -130,8 +130,8 @@
       <div><h4>Render aligned evidence</h4><p>Shared sub-pixel samples render RGB and hyperspectral observations together with material labels and area proportions.</p></div>
     </div>
 
-    <h3 class="sub">SWR: unmixing at every ray intersection</h3>
-    <p class="text-block">Spectral radiance fields reconstruct spectra without decomposing them, and unmixing rendered spectra afterwards cannot separate what compositing has already mixed. SWR resolves the mixture before compositing.</p>
+    <h3 class="sub">SWR: unmixing inside rendering</h3>
+    <p class="text-block">Unmixing a rendered image afterwards acts on spectra that compositing has already mixed across surfaces. SWR instead unmixes inside rendering: at every ray intersection, a shared decoder turns the local feature into abundances and an intensity, and compositing accumulates both, so one render yields spectra and abundances. One Gaussian representation, composited with one set of visibility weights, renders spectra, abundances and material queries at any band count.</p>
     <figure class="fig">
       <button class="zoom" type="button" data-full="assets/fig/method_overview.webp" aria-label="Open the SWR overview figure at full resolution">
         <img src="assets/fig/method_overview-1200.webp" srcset="assets/fig/method_overview-800.webp 800w, assets/fig/method_overview-1200.webp 1200w, assets/fig/method_overview.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="460" loading="lazy" decoding="async" alt="Overview of SWR: an RGB anchor fixes the geometry; each Gaussian carries band-independent harmonic features; at every ray intersection a shared decoder outputs abundances and an intensity that mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances.">
@@ -140,7 +140,7 @@
     </figure>
     <div class="steps">
       <div><h4>Band-independent storage</h4><p>An RGB-trained anchor provides compact geometry, and each Gaussian stores a feature instead of a spectrum, so storage does not grow with the number of bands.</p></div>
-      <div><h4>Decode before compositing</h4><p>A shared decoder maps the feature at every ray intersection to abundances over a scene-wide endmember dictionary, so every Gaussian carries queryable abundances.</p></div>
+      <div><h4>Decode before compositing</h4><p>A shared decoder maps the feature at every ray intersection to abundances over a scene-wide endmember dictionary, so one render yields spectra and abundances and every Gaussian carries queryable abundances.</p></div>
       <div><h4>Intensity and appearance regularization</h4><p>A separate intensity absorbs shading, and a multi-view appearance regularization assigns an over-complete set of endmembers to distinct appearances.</p></div>
     </div>
 
@@ -208,7 +208,7 @@
       <div class="text-block">
         <p>Living leaves differ from materials of the same colour beyond the visible range: chlorophyll absorbs red light and leaf tissue reflects near-infrared light, producing a red edge near 700&nbsp;nm that minerals and dry leaves lack. In City, foliage-coloured mineral leaves are only 2° from foliage in RGB but 42° apart in spectrum, so they receive endmembers of their own.</p>
         <p>Because abundances are stored on explicit, rasterizable Gaussians, a material query is a selection over primitives that is consistent across views and requires neither labels nor a per-image classifier. The mineral-leaf query retrieves no ordinary tree, whereas the equivalent RGB query retrieves eleven.</p>
-        <p>A measured spectrum can also serve as the query. With the sun and sky illumination factored out, a pixel clicked in shadow retrieves 77&nbsp;% of the sunlit part of its material, against 10&nbsp;% for an RGB colour query (mean over four worlds), in about 3&nbsp;ms per query.</p>
+        <p>A measured spectrum can also serve as the query. With the sun and sky illumination factored out, a pixel clicked in shadow retrieves 77&nbsp;% of the sunlit part of its material, against 10&nbsp;% for an RGB colour query (mean over four outdoor worlds), in about 3&nbsp;ms per query.</p>
       </div>
       <figure class="fig">
         <button class="zoom" type="button" data-full="assets/fig/app_query.webp" aria-label="Open the material query figure at full resolution">
@@ -218,7 +218,7 @@
     </div>
 
     <h3 class="sub">Material identification and spectral fidelity on SWR-Bench</h3>
-    <p class="text-block">SWR identifies materials best or on par in every world and learns the endmembers closest to the true spectra. A lower spectral angle does not imply better identification: in Market and Study, 3DGS with post-hoc unmixing reaches a lower SAM but a far lower mIoU.</p>
+    <p class="text-block">SWR has the best mIoU in every world and learns the endmembers closest to the true spectra. Known composition exposes what fidelity hides: in Market and Study, 3DGS with post-hoc unmixing reaches a lower SAM but a far lower mIoU. Within SWR itself, decoding after compositing raises Market PSNR from 33.72 to 34.37&nbsp;dB yet lowers mIoU from 0.47 to 0.37, the same gap.</p>
     <div class="tabs" role="tablist" aria-label="Metric" id="metric-tabs">
       <button role="tab" aria-selected="true" data-metric="miou">mIoU ↑</button>
       <button role="tab" aria-selected="false" data-metric="psnr" tabindex="-1">PSNR ↑</button>
@@ -252,7 +252,7 @@
       </div>
       <div>
         <h3 class="sub">Real captures</h3>
-        <p>Without material ground truth, real captures test spectral fidelity. SWR has the highest PSNR on each real source; on HS-NeRF, 3DGS reaches a lower mean and 95th-percentile angle, the cost of a shared, noise-suppressing dictionary.</p>
+        <p>Without material ground truth, real captures test spectral fidelity. SWR has the best mean PSNR on each real source; on HS-NeRF, 3DGS reaches a lower mean and 95th-percentile angle.</p>
         <div class="table-wrap">
           <table class="mini">
             <thead><tr><th scope="col">Source</th><th scope="col">PSNR ↑<br><span class="row-sub">baseline · ours</span></th><th scope="col">SAM ↓<br><span class="row-sub">baseline · ours</span></th></tr></thead>

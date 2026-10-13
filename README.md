@@ -21,7 +21,7 @@
 
 ## Overview
 
-Cameras and RGB-based 3D models record colour, so surfaces of the same colour but different composition, such as a green-painted panel and a leaf, look alike. Hyperspectral images separate them, but scenes with known material composition are rare, so a 3D decomposition is hard to verify.
+Cameras and RGB-based 3D models record colour, so surfaces of the same colour but different composition, such as a green-painted panel and a leaf, look alike. Hyperspectral images separate them, but scenes with known material composition are rare, so a 3D decomposition is hard to verify. Spectral World Renderer unifies world generation, rendering and unmixing: it generates worlds of known composition and unmixes inside rendering, so one render of a Gaussian scene yields spectra and material abundances that can be verified and queried.
 
 - **The SWR world generator** produces indoor and outdoor hyperspectral worlds whose material composition is known by construction. A coding agent turns reference images and text into executable scene programs; measured spectra and shared sub-pixel rendering samples then yield aligned hyperspectral observations, material labels and area proportions.
 - **SWR-Bench** comprises eight indoor and outdoor worlds with material and illumination variation, rendered with 64 bands from 420 to 980 nm.
@@ -45,7 +45,7 @@ A spectral query takes about 3 ms.
 
 | | SWR | Reference |
 |---|---|---|
-| Material identification on SWR-Bench | best or on par in all eight worlds | Table 2 |
+| Material identification on SWR-Bench | best mIoU in all eight worlds | Table 2 |
 | City training, full pipeline | **6 min 37 s** | UnMix-NeRF 24 min 17 s · 3DGS+VCA/NNLS 85 min 2 s |
 | Rendering with spectra and label maps (960×540×64) | **34.9 views/s**, with our optimized fused fp16 decoder | UnMix-NeRF 0.18 · 3DGS+VCA/NNLS 3.6 |
 | Real captures (NeSpoF, HSI-SC, HS-NeRF) | highest PSNR on each source | Table 5 |

@@ -2,7 +2,7 @@
 
 # Spectral World Renderer
 
-### 3D Hyperspectral Unmixing
+### Unified 3D Hyperspectral Unmixing
 
 **[Chia-Ming Lee](https://ming053l.github.io/)<sup>1,2</sup> · Yu-Jou Hsiao<sup>3</sup> · [Ming-Ching Chang](https://www.albany.edu/faculty/mchang2/)<sup>1</sup> · [Xin Li](https://scholar.google.com/citations?user=gMBvzGoAAAAJ&hl=en)<sup>1</sup> · [Yu-Lun Liu](https://yulunalexliu.github.io/)<sup>2</sup> · [Chih-Chung Hsu](https://cchsu.info/)<sup>2,3</sup>**
 
@@ -68,7 +68,7 @@ If you find this work useful, please cite:
 
 ```bibtex
 @article{lee2026swr,
-  title   = {Spectral World Renderer: 3D Hyperspectral Unmixing},
+  title   = {Spectral World Renderer: Unified 3D Hyperspectral Unmixing},
   author  = {Lee, Chia-Ming and Hsiao, Yu-Jou and Chang, Ming-Ching and
              Li, Xin and Liu, Yu-Lun and Hsu, Chih-Chung},
   journal = {Preprint, under review},

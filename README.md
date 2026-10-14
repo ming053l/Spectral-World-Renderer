@@ -12,6 +12,7 @@
 [![Paper](https://img.shields.io/badge/Paper-PDF%20%2B%20supplement-B31B1B?style=for-the-badge)](https://ming053l.github.io/Spectral-World-Renderer/assets/paper.pdf)
 [![Video](https://img.shields.io/badge/Video-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=3FrSH7MaSjU)
 [![Code](https://img.shields.io/badge/Code-SWR-24292F?style=for-the-badge&logo=github)](code/)
+[![Dataset](https://img.shields.io/badge/Dataset-SWR--Bench-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)](https://huggingface.co/datasets/ming0531/SWR-Bench)
 
 **See what a 3D scene is made of, not only how it looks.**
 
@@ -79,7 +80,7 @@ If you find this work useful, please cite:
 
 ## Repository contents
 
-This repository hosts the SWR code, the project page, the paper with its supplementary material, and rendered clips. Datasets are not part of this release.
+This repository hosts the SWR code, the project page, the paper with its supplementary material, and rendered clips. The SWR-Bench dataset is hosted on Hugging Face: <https://huggingface.co/datasets/ming0531/SWR-Bench>.
 
 ```
 code/                              SWR: installation, stages and configs in code/README.md

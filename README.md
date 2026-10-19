@@ -9,7 +9,8 @@
 <sup>1</sup>University at Albany, State University of New York · <sup>2</sup>National Yang Ming Chiao Tung University · <sup>3</sup>National Cheng Kung University
 
 [![Project page](https://img.shields.io/badge/Project-Page-0B7A75?style=for-the-badge)](https://ming053l.github.io/Spectral-World-Renderer/)
-[![Paper](https://img.shields.io/badge/Paper-PDF%20%2B%20supplement-B31B1B?style=for-the-badge)](https://ming053l.github.io/Spectral-World-Renderer/assets/paper.pdf)
+[![Paper](https://img.shields.io/badge/Paper-PDF%20%2B%20supplement-B31B1B?style=for-the-badge)](https://arxiv.org/pdf/2610.19520)
+[![arXiv](https://img.shields.io/badge/arXiv-2610.19520-B31B1B?style=for-the-badge)](https://arxiv.org/abs/2610.19520)
 [![Video](https://img.shields.io/badge/Video-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=3FrSH7MaSjU)
 [![Code](https://img.shields.io/badge/Code-SWR-24292F?style=for-the-badge&logo=github)](code/)
 [![Dataset](https://img.shields.io/badge/Dataset-SWR--Bench-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)](https://huggingface.co/datasets/ming0531/SWR-Bench)
@@ -68,13 +69,15 @@ abgs eval --scene market --output $W/eval
 If you find this work useful, please cite:
 
 ```bibtex
-@article{lee2026swr,
-  title   = {Spectral World Renderer: Unified 3D Hyperspectral Unmixing},
-  author  = {Lee, Chia-Ming and Hsiao, Yu-Jou and Chang, Ming-Ching and
-             Li, Xin and Liu, Yu-Lun and Hsu, Chih-Chung},
-  journal = {Preprint, under review},
-  year    = {2026},
-  url     = {https://ming053l.github.io/Spectral-World-Renderer/}
+@misc{lee2026swr,
+  title         = {Spectral World Renderer: Unified 3D Hyperspectral Unmixing},
+  author        = {Lee, Chia-Ming and Hsiao, Yu-Jou and Chang, Ming-Ching and
+                   Li, Xin and Liu, Yu-Lun and Hsu, Chih-Chung},
+  year          = {2026},
+  eprint        = {2610.19520},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2610.19520}
 }
 ```
 

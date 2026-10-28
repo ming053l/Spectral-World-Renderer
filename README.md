@@ -43,6 +43,22 @@ Abundances and spectra are stored on explicit, rasterizable Gaussians, so a quer
 
 A spectral query takes about 3 ms.
 
+## Interactive viewer
+
+`abgs viewer` opens a trained scene in the browser, built on [viser](https://github.com/nerfstudio-project/viser) as the nerfstudio viewer is. It renders spectral bands, false-colour composites, abundances and material labels from any camera, runs every query mode above with 3D highlighting, lists the Gaussians along a clicked ray with their weights and abundances, and starts training, evaluation and exports.
+
+<div align="center">
+<a href=".github/readme/viewer_highlights.mp4"><img src=".github/readme/viewer_click_query.webp" width="640" alt="SWR viewer: a click on shaded wood in Market retrieves every wooden surface, in sun and in shade."></a>
+<br><sub>A click on shaded wood retrieves every wooden surface, in sun and in shade. <a href=".github/readme/viewer_highlights.mp4">Watch the 35 s highlights</a>.</sub>
+</div>
+
+```bash
+abgs viewer --scene market                 # http://127.0.0.1:7007
+ssh -L 7007:localhost:7007 <server>        # from a laptop, then open http://localhost:7007
+```
+
+See [`code/README.md`](code/README.md#viewer) for all tabs and options.
+
 ## Results at a glance
 
 | | SWR | Reference |
@@ -86,7 +102,7 @@ If you find this work useful, please cite:
 This repository hosts the SWR code, the project page, the paper with its supplementary material, and rendered clips. The SWR-Bench dataset is hosted on Hugging Face: <https://huggingface.co/datasets/ming0531/SWR-Bench>.
 
 ```
-code/                              SWR: installation, stages and configs in code/README.md
+code/                              SWR: installation, stages, configs and the viewer in code/README.md
 docs/
   index.html, style.css, app.js   static page, no build step
   assets/paper.pdf                 paper and supplementary material
@@ -97,7 +113,7 @@ docs/
   assets/worlds/                   SWR-Bench world thumbnails
 .github/
   workflows/pages.yml              GitHub Pages deployment
-  readme/                          README preview
+  readme/                          README previews (query modes, viewer)
 ```
 
 ## Local preview

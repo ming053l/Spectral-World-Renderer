@@ -118,8 +118,8 @@ harsh_set1, harsh_set2, fakeplant1_2.
 | L_p (`--no-regularization`) | on: .05 fading over 3k updates, floor `--reg-floor` .005 | off |
 | dictionary frozen `--freeze-endmembers` | 3,000 updates | 300 updates |
 
-Other options: `--materials/-K` (16; the paper uses 24 for Market, Botanical, Study, Office, 16 for Karst and the
-real captures, 32 for Forbidden City, NVIDIA HQ and City), `--steps` 30000, `--pixels` 2048 per update, `--seed` 42,
+Other options: `--materials/-K` (16; the paper selects K on validation views: 24 for Market, NVIDIA HQ and Study,
+32 for Forbidden City, Botanical, Karst, City and Office, and 16 for the real captures), `--steps` 30000, `--pixels` 2048 per update, `--seed` 42,
 `--w-sam` .05 (loss = L1 + w_sam SAM + L_p), `--clusters` (cache from `prepare`; built at `OUTPUT/appearance_clusters`
 if absent), `--train-max-views` / `--val-every-n-train` (HSI-supervision subset; `prepare` must use the same values),
 `--eval-steps` (TEST curve), `--keep-cubes`, `--hit-cache-gib` (the hit lists of all TRAIN views are traced once at

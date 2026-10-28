@@ -16,7 +16,7 @@
     "eval": "${ABGS_DATA_ROOT}/packs/office/eval"
   },
   "decoder": {
-    "materials": 24
+    "materials": 32
   },
   "eval": {
     "scorer": "song_office"
@@ -35,7 +35,7 @@
   "paper_model": {
     "anchor_ply": "${ABGS_MODELS_ROOT}/office/anchor/point_cloud.ply",
     "source": "${ABGS_MODELS_ROOT}/office/source/ckpt.pt",
-    "clusters": "${ABGS_MODELS_ROOT}/office/clusters_K24",
+    "clusters": "${ABGS_MODELS_ROOT}/office/clusters_K32",
     "model": "${ABGS_MODELS_ROOT}/office/decoder/model_ema.pt",
     "eval_dir": "${ABGS_MODELS_ROOT}/office/eval"
   }

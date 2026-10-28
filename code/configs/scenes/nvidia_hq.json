@@ -16,7 +16,7 @@
     "eval": "${ABGS_DATA_ROOT}/packs/nvidia_hq/eval"
   },
   "decoder": {
-    "materials": 32
+    "materials": 24
   },
   "eval": {
     "scorer": "nvidia",
@@ -40,7 +40,7 @@
   "paper_model": {
     "anchor_ply": "${ABGS_MODELS_ROOT}/nvidia_hq/anchor/point_cloud.ply",
     "source": "${ABGS_MODELS_ROOT}/nvidia_hq/source/ckpt.pt",
-    "clusters": "${ABGS_MODELS_ROOT}/nvidia_hq/clusters_K32",
+    "clusters": "${ABGS_MODELS_ROOT}/nvidia_hq/clusters_K24",
     "model": "${ABGS_MODELS_ROOT}/nvidia_hq/decoder/model_ema.pt",
     "eval_dir": "${ABGS_MODELS_ROOT}/nvidia_hq/eval"
   }

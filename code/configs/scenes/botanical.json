@@ -16,7 +16,7 @@
     "eval": "${ABGS_DATA_ROOT}/packs/botanical/eval"
   },
   "decoder": {
-    "materials": 24
+    "materials": 32
   },
   "eval": {
     "scorer": "benchmark"
@@ -35,7 +35,7 @@
   "paper_model": {
     "anchor_ply": "${ABGS_MODELS_ROOT}/botanical/anchor/point_cloud.ply",
     "source": "${ABGS_MODELS_ROOT}/botanical/source/ckpt.pt",
-    "clusters": "${ABGS_MODELS_ROOT}/botanical/clusters_K24",
+    "clusters": "${ABGS_MODELS_ROOT}/botanical/clusters_K32",
     "model": "${ABGS_MODELS_ROOT}/botanical/decoder/model_ema.pt",
     "eval_dir": "${ABGS_MODELS_ROOT}/botanical/eval"
   }

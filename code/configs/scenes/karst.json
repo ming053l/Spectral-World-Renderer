@@ -16,7 +16,7 @@
     "eval": "${ABGS_DATA_ROOT}/packs/karst/eval"
   },
   "decoder": {
-    "materials": 16
+    "materials": 32
   },
   "eval": {
     "scorer": "protocol"
@@ -35,7 +35,7 @@
   "paper_model": {
     "anchor_ply": "${ABGS_MODELS_ROOT}/karst/anchor/point_cloud.ply",
     "source": "${ABGS_MODELS_ROOT}/karst/source/ckpt.pt",
-    "clusters": "${ABGS_MODELS_ROOT}/karst/clusters_K16",
+    "clusters": "${ABGS_MODELS_ROOT}/karst/clusters_K32",
     "model": "${ABGS_MODELS_ROOT}/karst/decoder/model_ema.pt",
     "eval_dir": "${ABGS_MODELS_ROOT}/karst/eval"
   }

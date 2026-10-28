@@ -320,11 +320,13 @@ def render_view(model, hit_source, i, center, keep=False, pixel_chunk=65536):
 
 
 @torch.no_grad()
-def render_view_fast(model, hit_source, i, center, tau=1e-4, chunk=1 << 20, keep=False):
+def render_view_fast(model, hit_source, i, center, tau=1e-4, chunk=1 << 20, keep=False, mixing=False):
     """Fast render of view i: hits with blend weight < tau skipped, MLP in fp16, endmember mixing after compositing.
 
     Mixing after compositing is exact (the spectrum is linear in intensity * abundance); fp16 and the skip change the
-    paper's TEST scores by < 1e-3 (PSNR / SAM / mIoU). Returns the same three maps as render_view.
+    paper's TEST scores by < 1e-3 (PSNR / SAM / mIoU). Returns the same three maps as render_view; with mixing=True
+    also the composited coefficients sum_i w_i s_i a_i [H*W, K] (spectrum = coefficients @ E, e.g. with endmembers
+    switched off in the viewer).
     """
     n = hit_source.pack.height * hit_source.pack.width
     device = model.features.device
@@ -348,6 +350,8 @@ def render_view_fast(model, hit_source, i, center, tau=1e-4, chunk=1 << 20, keep
         accs.index_add_(0, pix, (w[:, None] * s) * a)
     e = model.endmembers()
     hsi = (accs / e.square().sum(-1).clamp_min(1e-12).sqrt()) @ e
+    if mixing:
+        return hsi, acc / alpha.clamp_min(1e-8)[:, None], alpha[:, None], accs
     return hsi, acc / alpha.clamp_min(1e-8)[:, None], alpha[:, None]
 
 
@@ -355,11 +359,12 @@ _FUSED_INPUT_DIM = 48                    # kIn of csrc/fused_render.cu
 
 
 @torch.no_grad()
-def render_view_fused(model, hit_source, i, center, tau=1e-4):
+def render_view_fused(model, hit_source, i, center, tau=1e-4, mixing=False):
     """render_view_fast with fused CUDA kernels (abundance_gs/csrc/fused_render.cu): one kernel decodes the kept hits
     (encoding + the whole fp16 MLP on tensor cores), one composites per pixel (softmax, softplus, blend-weighted sums
     in hit order). Same skip rule and post-compositing mixing; agrees with render_view_fast to fp16 rounding (the
     first layer and the camera adapter are one product, SiLU inputs are not rounded to fp16, the sums use no atomics).
+    mixing=True: as in render_view_fast.
     """
     from . import ext
     kernels = ext.load('abgs_render')
@@ -386,6 +391,8 @@ def render_view_fused(model, hit_source, i, center, tau=1e-4):
     abundance, accs, alpha = kernels.composite(y, weight[kept].float().contiguous(), offsets)
     e = model.endmembers()
     hsi = (accs / e.square().sum(-1).clamp_min(1e-12).sqrt()) @ e
+    if mixing:
+        return hsi, abundance, alpha[:, None], accs
     return hsi, abundance, alpha[:, None]
 
 

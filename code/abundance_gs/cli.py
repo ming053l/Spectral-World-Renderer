@@ -116,6 +116,9 @@ def _train(ap):
                     help="GiB of the TRAIN hit lists (all traced once) kept on the GPU, the rest in pinned host memory; "
                          "'auto': free GPU memory minus a 2 GiB margin and a 3 GiB working set " + d('hit_cache_gib'))
     ap.add_argument('--gpu-memory-budget-mib', type=int, help=d('gpu_memory_budget_mib'))
+    ap.add_argument('--live-every', type=int, default=0,
+                    help='every N updates: EMA preview OUTPUT/live/model_ema.pt and loss rows OUTPUT/live/trace.jsonl '
+                         '(for `abgs viewer`; the trained model is unchanged)')
 
 
 def _eval(ap):
@@ -166,6 +169,24 @@ def _run(ap):
     g.add_argument('--fast', action='store_true')
 
 
+def _viewer(ap):
+    ap.add_argument('--model', '--ckpt', dest='model', required=True,
+                    help='model_ema.pt, or an entry of a --registry file (e.g. market/std_K24)')
+    ap.add_argument('--pack', type=Path, required=True, help='pack whose cameras are shown and snapped to')
+    ap.add_argument('--train-pack', type=Path, help='pack of the TRAIN rays behind the per-Gaussian query attributes')
+    ap.add_argument('--eval-dir', type=Path, help='evaluation of the model: endmember -> class map, metrics')
+    ap.add_argument('--dataset', type=Path, help='dataset with the spectral library, irradiances and sensor (SWR-Bench)')
+    ap.add_argument('--label-space', help='label space of the class map (default: the first of the evaluation)')
+    ap.add_argument('--registry', type=Path, action='append', default=[], help='JSON {name: model_ema.pt} of checkpoints')
+    ap.add_argument('--library', type=Path, action='append', default=[],
+                    help='extra library spectra: .npz (rho [B, M], name [M]) or a CSV spectrum')
+    ap.add_argument('--host', default='127.0.0.1')
+    ap.add_argument('--port', type=int, default=7007)
+    ap.add_argument('--renderer', choices=['fused', 'fast', 'reference'], default='fused')
+    ap.add_argument('--workdir', type=Path, default=Path('~/.cache/abundance_gs/viewer').expanduser(),
+                    help='attribute caches, jobs started from the viewer, exports')
+
+
 def _build(ap):
     ap.add_argument('extensions', nargs='*', help='gsplat_cuda fastgs_rasterizer simple_knn fused_ssim_cuda gs_rasterizer abgs_render (default: all)')
     ap.add_argument('--adopt-from', help='library (or directory with <name>.so) built elsewhere from identical sources (copied, not rebuilt)')
@@ -194,6 +215,8 @@ STAGES = {
     'render': Stage('render', 'abgs', 8000, 'write spectra and abundance maps of chosen views', _render),
     'fps': Stage('fps', 'abgs', 8000, 'render speed over the TEST views (reference and fast renderer)', _fps),
     'run': Stage('pipeline', 'abgs', 10500, 'all stages for one scene: [pack] anchor source prepare train [eval]', _run),
+    'viewer': Stage('viewer', 'abgs', 4000, 'interactive web viewer: render modes, material queries, hits, training, '
+                    'evaluation, exports', _viewer),
     'build': Stage('ext', 'abgs', 0, 'build (or adopt) the CUDA extensions into the build directory', _build),
 }
 

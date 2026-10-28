@@ -18,3 +18,4 @@ packaging==26.3
 setuptools==79.0.1
 wheel==0.48.0
 scipy==1.15.3
+viser==1.1.1

@@ -1,7 +1,7 @@
 """Command-line entry point (`abgs` console script and abgs.py): option parsing, GPU choice, re-execution in the
 package environment (env/env.sh), stage dispatch.
 
-    abgs <stage> [options]                  stages: scenes build anchor pack source prepare train eval render fps run
+    abgs <stage> [options]                  stages: scenes build anchor pack source prepare train eval render fps run viewer
     abgs <stage> --help
     abgs <stage> --scene NAME [options]     options not given are taken from configs/scenes/NAME.json
 

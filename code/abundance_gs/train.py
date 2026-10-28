@@ -314,6 +314,11 @@ def run(args):
                           'sample_sequence_sha256': sampler.digest.hexdigest()})
             if step % 2000 == 0:
                 print(trace[-1], f'traces={hits.traces} gpu_views={len(hits.cache)} host_views={len(hits.host)}', flush=True)
+            if args.live_every:
+                live_row(args.output, trace[-1], cfg.steps)
+        if args.live_every and (step + 1) % args.live_every == 0 and step + 1 < cfg.steps:
+            with torch.no_grad(), use_ema(model, ema.state):
+                live_model(args.output, deployable_state(model, splats, initial, targets.mean), step + 1)
         if step + 1 in eval_steps:                     # TEST curve with EMA weights; the clock is stopped
             torch.cuda.synchronize()
             pause = time.perf_counter()
@@ -380,6 +385,21 @@ def evaluate(renderer, targets, device, dominant=False, predictions=None):
             np.savez_compressed(predictions / f'{safe_name(name)}_abundance.npz', **abundance_npz(abundance, alpha, pack, clamp=False))
         rows.append(row)
     return {'views': rows, 'mean': macro_mean(rows)}
+
+
+def live_row(output, row, steps):
+    """--live-every: the loss row of a trace step, appended to OUTPUT/live/trace.jsonl (read by `abgs viewer`)."""
+    (output / 'live').mkdir(exist_ok=True)
+    with open(output / 'live' / 'trace.jsonl', 'a') as f:
+        f.write(json.dumps({**row, 'steps': steps}) + '\n')
+
+
+def live_model(output, state, step):
+    """--live-every: the current EMA model as OUTPUT/live/model_ema.pt (replaced atomically), a preview for the viewer."""
+    (output / 'live').mkdir(exist_ok=True)
+    temporary = output / 'live' / 'model_ema.pt.tmp'
+    torch.save({**state, 'live_step': step}, temporary)
+    temporary.replace(output / 'live' / 'model_ema.pt')
 
 
 def deployable_state(model, splats, initial, mean):

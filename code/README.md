@@ -68,6 +68,7 @@ Alternatively, an untracked `configs/local_roots.json` maps the logical paths to
 | `render` | spectra and abundance maps of chosen views | `<view>.npy`, `<view>_abundance.npz` |
 | `fps` | render speed over the TEST views (reference, fast and fused renderer) | json |
 | `run` | `[pack] anchor source prepare train [eval]` for one scene; completed stages are skipped | `WORKDIR/...` |
+| `viewer` | interactive web viewer (render modes, material queries, hit inspection, training, evaluation, exports) | web UI on `--port` |
 | `scenes`, `build` | list scene configurations; compile CUDA extensions | |
 
 ```bash
@@ -148,6 +149,54 @@ matches the current inputs and options; output directories without a record are 
   variants, noise floor, TRAIN metrics; `benchmark_material_evaluation.json`: TRAIN-calibrated many-to-one
   endmember-to-material mapping, TEST accuracy, mIoU and per-class IoU.
 
+## Viewer
+
+`abgs viewer` serves an interactive viewer of a trained model in the browser, built on
+[viser](https://github.com/nerfstudio-project/viser) as the nerfstudio viewer is.
+
+![SWR viewer](docs/viewer.jpg)
+
+```bash
+# viser is in env/requirements.lock (installed by env/setup.sh)
+abgs viewer --scene market                     # the paper's model of the scene; http://127.0.0.1:7007
+abgs viewer --scene market --ckpt $W/decoder/model_ema.pt --port 7008
+abgs viewer --scene market --ckpt market/std_K32 --registry models.json   # a named checkpoint of a registry {name: path}
+ssh -L 7007:localhost:7007 <server>            # from a laptop, then open http://localhost:7007
+```
+
+The server listens on `--host` (default `127.0.0.1`); `--gpu` as for the other stages (about 3 GiB). `--workdir`
+(default `~/.cache/abundance_gs/viewer`) holds the per-Gaussian query attributes, the jobs started from the viewer
+and the exports. The panel has eight tabs:
+
+- **Scene**: scene and checkpoint (paper model, registry entries, running jobs, any path); free camera, or a click on
+  a TRAIN (blue) / TEST (orange) camera to snap to it at its own intrinsics; renderer (fused, fast, reference).
+- **Render**: pseudo-RGB (CIE projection of the spectra through the dataset's sensor), one band (wavelength
+  slider), false-colour composites, abundance of an endmember, dominant endmember, class map (endmember -> class map
+  of the model's evaluation, calibrated on TRAIN views), expected depth of the hit Gaussians, opacity, and the RGB
+  observation of a dataset view.
+- **Query**: per-Gaussian material queries (paper Sec. 4 and supplement): by material name, endmember, library
+  spectrum (the dataset's specimens; `--library` adds .npz / CSV spectra) or uploaded CSV spectrum compared with the
+  sun-and-sky illumination cone, by a clicked pixel (illumination whitening), by band-index formula
+  (`nd(B(780,900), B(640,690))`, `B(750) / B(705)`, ...), Boolean combinations of earlier queries
+  (`q1 AND NOT q2`, `(q3 | q4) & ~q1`), and instances (DBSCAN of a query's Gaussians, optionally kept only if
+  their mean spectrum matches a spectral query). The threshold slider (default: Otsu on the log-angle histogram,
+  or 0.5 abundance mass) updates the highlight in the render and the selected Gaussians as 3D points.
+- **Endmembers**: the learned dictionary, the endmember -> class table with angles to the nearest reference, and
+  switches that remove endmembers from every render.
+- **Inspect**: a click shows the rendered spectrum against the endmember contributions and the Gaussians along the
+  ray with their blend weights w_i, intensities s_i and abundances a_i (saved as JSON).
+- **Train**: `abgs anchor`, `source`, `prepare`, `train` or `run` as a subprocess with the log, progress and loss
+  curve; `train --live-every N` writes an EMA preview every N updates, which the view follows.
+- **Eval**: `abgs eval` on the loaded model, then PSNR / SAM against the clean and noisy cubes, mIoU, per-class IoU
+  and endmember angles; its class map replaces the current one.
+- **Export**: PNG of the view, the spectral cube (.npy, and .mat with wavelengths, abundances, opacity, E and the
+  camera), a camera-path video (keyframes, H.264 through ffmpeg) and the selected Gaussians as a 3DGS .ply with their
+  mean abundances.
+
+Queries use each Gaussian's mean abundance and spectrum over the TRAIN rays (computed once per model, a few
+seconds). The illumination cone and whitening need the world's direct and sky irradiances, known for SWR-Bench; on
+real captures the viewer falls back to plain spectral angles and nominal 420-980 nm band centres.
+
 ## Extending
 
 Module boundaries:
@@ -159,6 +208,8 @@ Module boundaries:
   `evaluate.py`, `render.py`, `fps.py`.
 - Model: `model.py` (decoder, dictionary, hit lists, the three renderers), `inference.py` (whole-view rendering
   helpers), `metrics.py`, `scorers/` (material scorers, listed in `scorers.SCORERS`).
+- Viewer: `viewer/session.py` (state, rendering of free cameras through `Hits`, modes, readout, exports),
+  `viewer/queries.py` (per-Gaussian attributes and queries), `viewer/jobs.py` (stage subprocesses), `viewer/app.py` (GUI).
 
 **A scene** is a file `configs/scenes/<name>.json` with `"extends": "<dataset>"`; it is merged key by key onto
 `configs/datasets/<dataset>.json`, and `${ABGS_DATA_ROOT}` / `${ABGS_MODELS_ROOT}` are resolved in every string.

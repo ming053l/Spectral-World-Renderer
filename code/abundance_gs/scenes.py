@@ -33,6 +33,8 @@ OPTIONS = {
     'eval': {'model': 'paper_model.model', 'pack': 'packs.eval', 'retain_views': 'views.retain', **_EVAL},
     'render': {'model': 'paper_model.model', 'pack': 'packs.eval', 'figure_views': 'views.figures'},
     'fps': {'model': 'paper_model.model', 'pack': 'packs.eval'},
+    'viewer': {'model': 'paper_model.model', 'pack': 'packs.eval', 'train_pack': 'packs.train', 'eval_dir': 'paper_model.eval_dir',
+               'dataset': 'data.noisy_dataset', 'label_space': 'data.label_space'},
     'run': {'scene_dir': 'data.anchor_scene', 'resolution': 'anchor.resolution', 'pack': 'packs.train',
             'state': 'pack_export.state', 'scene_id': 'scene_id', 'preset': 'decoder.preset',
             'materials': 'decoder.materials', 'eval_pack': 'packs.eval', **_SUBSET, **_EVAL},

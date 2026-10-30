@@ -280,20 +280,7 @@
 <section class="section" id="analysis">
   <div class="container">
     <h2>Analysis</h2>
-    <h3 class="sub" style="margin-top:0">What the decoder learns</h3>
-    <figure class="fig">
-      <button class="zoom" type="button" data-full="assets/fig/decoder_analysis.webp" aria-label="Open the decoder analysis figure at full resolution">
-        <img src="assets/fig/decoder_analysis-1200.webp" srcset="assets/fig/decoder_analysis-800.webp 800w, assets/fig/decoder_analysis-1200.webp 1200w, assets/fig/decoder_analysis.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="759" loading="lazy" decoding="async" alt="Decoder analysis on test views of Market, City and Office: RGB, ground-truth direct share of illumination, composited intensity, ground-truth material, dominant endmember, and the change of abundances under viewing-direction changes, with summary plots.">
-      </button>
-      <figcaption><b>Decoded intensity and endmembers.</b> Test views of Market (K = 24), City (K = 32) and Office (K = 32). The composited intensity follows the direct share of the illumination, and each material occupies distinct endmembers in sun and in shadow, so the over-complete dictionary represents illumination modes within a class.</figcaption>
-    </figure>
-    <ul class="points">
-      <li>Within one specimen, the logarithm of the composited intensity correlates with that of the true radiance (r = 0.97 on Market, 0.87 on City).</li>
-      <li>The sun or shadow state explains 84 % and 67 % of the within-class variance of the intensity, but only 3 % and 15 % of the variance of the class mass.</li>
-      <li>Abundances change little with the viewing direction on the Lambertian worlds (total variation at most 0.04 within 45°).</li>
-    </ul>
-
-    <h3 class="sub">Primitives as material carriers</h3>
+    <h3 class="sub" style="margin-top:0">Primitives as material carriers</h3>
     <p class="text-block">Each Gaussian is enclosed by the regular tetrahedron of its canonical frame, scaled, rotated and translated with the Gaussian. The clips dissolve from these bounding tetrahedra into the rendered view along the camera path of the material queries.</p>
     <div class="tabs" role="tablist" aria-label="World for the tetrahedra clip" id="tetra-worlds"></div>
     <div class="player">

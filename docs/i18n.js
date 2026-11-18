@@ -641,6 +641,13 @@ window.SWR_I18N = {
   "ja": "一つのガウシアン表現を一組の可視性重みで合成することで、任意のバンド数においてスペクトル、存在比、材質クエリをレンダリングする。",
   "ko": "하나의 가우시안 표현을 하나의 가시성 가중치 집합으로 합성하여, 임의의 밴드 수에서 스펙트럼, 풍부도, 재질 쿼리를 렌더링한다.",
 },
+"method.training-anim-cap": {
+  "en": "<b>How SWR is trained.</b> One continuous 3D view of NVIDIA HQ (stages 1–4) and Forbidden City (stage 5): FastGS fits the RGB anchor with densification and pruning; NHT features are refined with geometry frozen; every ray–Gaussian intersection is unmixed and alpha-composited; the scene then renders spectra and abundances; appearance guidance keeps look-alike materials apart.",
+  "zh-Hans": "<b>SWR 的训练过程。</b>以连续的三维视角呈现 NVIDIA HQ（阶段 1–4）与 Forbidden City（阶段 5）：FastGS 以致密化与剪枝在 RGB 上拟合锚点；在几何固定的情况下优化 NHT 特征；对每个光线–高斯交点进行解混并以 alpha 合成；随后场景渲染出光谱与丰度；外观引导使外观相似的材质保持区分。",
+  "zh-Hant": "<b>SWR 的訓練過程。</b>以連續的三維視角呈現 NVIDIA HQ（階段 1–4）與 Forbidden City（階段 5）：FastGS 以稠密化與剪枝在 RGB 上擬合錨點；在幾何固定下優化 NHT 特徵；對每個光線–高斯交點進行解混並以 alpha 合成；接著場景渲染出光譜與豐度；外觀引導使外觀相似的材質保持區分。",
+  "ja": "<b>SWR の学習過程。</b>NVIDIA HQ（段階 1–4）と Forbidden City（段階 5）を連続した 3D 視点で示す。FastGS が高密度化と枝刈りを伴って RGB 上でアンカーを当てはめ、幾何を固定したまま NHT 特徴を最適化する。各レイ–ガウシアン交点でアンミキシングを行い、アルファ合成する。続いてシーンはスペクトルと存在比をレンダリングし、外観誘導により見た目の似た材質が区別されたまま保たれる。",
+  "ko": "<b>SWR의 학습 과정.</b> NVIDIA HQ(1–4단계)와 Forbidden City(5단계)를 연속된 3D 시점으로 보인다. FastGS가 밀집화와 가지치기를 거쳐 RGB에서 앵커를 적합하고, 기하를 고정한 채 NHT 특징을 최적화한다. 각 광선–가우시안 교차점에서 언믹싱을 수행한 뒤 알파 합성하며, 이어서 장면은 스펙트럼과 풍부도를 렌더링하고, 외관 유도는 외관이 비슷한 재질을 서로 구분된 상태로 유지한다.",
+},
 "method.multi-view-appearance": {
   "en": "Multi-view appearance guidance",
   "zh-Hans": "多视角外观引导",

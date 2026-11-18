@@ -4,19 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Spectral World Renderer: Unified 3D Hyperspectral Unmixing</title>
-<meta name="description" content="Spectral World Renderer (SWR) unifies world generation, rendering and unmixing: it generates hyperspectral worlds with known material composition and unmixes inside rendering, so one pass of a compact Gaussian representation renders spectra and queryable material abundances.">
+<meta name="description" content="Spectral World Renderer (SWR) is a material-aware explicit representation that unifies 3D spectral reconstruction and unmixing, evaluated on SWR-Bench: eight generated hyperspectral worlds with material labels and sub-pixel proportions.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Spectral World Renderer: Unified 3D Hyperspectral Unmixing">
-<meta property="og:description" content="One framework for hyperspectral worlds with known composition and unmixing inside rendering: one pass renders spectra and queryable material abundances.">
+<meta property="og:description" content="A material-aware Gaussian representation that unifies 3D spectral reconstruction and unmixing, with SWR-Bench: eight generated hyperspectral worlds with material labels and sub-pixel proportions.">
+<meta property="og:site_name" content="Spectral World Renderer">
 <meta property="og:url" content="https://ming053l.github.io/Spectral-World-Renderer/">
 <meta property="og:image" content="https://ming053l.github.io/Spectral-World-Renderer/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Spectral World Renderer: material queries across hyperspectral 3D worlds">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B1426">
+<link rel="canonical" href="https://ming053l.github.io/Spectral-World-Renderer/">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap">
-<link rel="stylesheet" href="style.css?v=perf2">
-<script src="app.js?v=perf2" defer></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap"></noscript>
+<link rel="stylesheet" href="style.css?v=sync3">
+<script src="app.js?v=sync3" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -47,7 +54,7 @@
       <a class="pill" href="https://arxiv.org/pdf/2610.19520" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>Paper</a>
       <a class="pill" href="https://arxiv.org/abs/2610.19520" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h12v18H6zM9 8h6M9 12h6M9 16h4"/></svg>arXiv</a>
-      <a class="pill" href="assets/paper.pdf#page=14" target="_blank" rel="noopener">
+      <a class="pill" href="assets/paper.pdf#page=15" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Supplement</a>
       <a class="pill" href="https://github.com/ming053l/Spectral-World-Renderer/tree/main/code" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>Code</a>
@@ -67,9 +74,9 @@
     <p class="tagline-sub">A camera records how a surface looks; Spectral World Renderer shows what it is made of. One framework generates worlds of known composition and unmixes inside rendering, so a single render gives spectra and material abundances. Query any surface by name, click, spectrum, band or combination, and verify the answer against the known composition. <a href="#query">Try the material queries&nbsp;→</a></p>
     <figure>
       <button class="zoom" type="button" data-full="assets/fig/teaser_grid.webp" aria-label="Open the teaser figure at full resolution">
-        <img src="assets/fig/teaser_grid-1200.webp" srcset="assets/fig/teaser_grid-800.webp 800w, assets/fig/teaser_grid-1200.webp 1200w, assets/fig/teaser_grid.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="537" decoding="async" alt="Rendered inputs of Forbidden City, Market, Botanical, City and Office, each followed by four material-name queries, such as white marble, fired clay, stone and asphalt, and one further query mode: a name combination, a click on shadowed wood, a near-infrared index, a living-leaf reference spectrum, and the material layers that SWR recovers.">
+        <img src="assets/fig/teaser_grid-1200.webp" srcset="assets/fig/teaser_grid-800.webp 800w, assets/fig/teaser_grid-1200.webp 1200w, assets/fig/teaser_grid.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="537" fetchpriority="high" decoding="async" alt="Rendered inputs of Forbidden City, Market, Botanical, City and Office, each followed by four material-name queries, such as white marble, fired clay, stone and asphalt, and one further query mode: a name combination, a click on shadowed wood, a near-infrared index, a living-leaf reference spectrum, and the material layers that SWR recovers.">
       </button>
-      <figcaption><b>Material queries across SWR-Bench worlds.</b> <i>Input:</i> multi-view hyperspectral images from generated worlds with known composition (left). <i>Representation:</i> Gaussians with material abundances and spectra. <i>Queries:</i> a material name mapped from labelled training views, a clicked pixel (crosshair), a reference spectrum, a band index or a combination. Tiles show selections on test views.</figcaption>
+      <figcaption><b>Material identification across SWR-Bench worlds.</b> <i>Input:</i> multi-view hyperspectral images from generated worlds with known composition (left). <i>Representation:</i> Gaussians with material abundances and spectra. <i>Queries:</i> a material name mapped from labelled training views, a clicked pixel (crosshair), a reference spectrum, a near-infrared spectral index or a combination. Tiles show selections on test views.</figcaption>
     </figure>
   </div>
 </section>
@@ -90,12 +97,12 @@
 <section class="section abstract" id="abstract">
   <div class="container">
     <h2>Abstract</h2>
-    <p class="body">Surfaces with similar RGB colours can have distinct material spectra. Multi-view hyperspectral imaging offers the evidence to distinguish them and associate their materials with 3D surfaces. Existing 3D unmixing approaches, however, either decompose rendered images after compositing or rely on slow implicit fields. A faithful reconstruction alone does not establish whether its components correspond to materials; this requires multi-view data of known composition. We present Spectral World Renderer (SWR), a framework for world generation and 3D unmixing. A coding agent builds executable worlds with measured material spectra; shared camera samples yield aligned hyperspectral images, material labels and sub-pixel proportions. The resulting SWR-Bench contains eight indoor and outdoor worlds. SWR decodes compact Gaussian features into material abundances before compositing, jointly rendering spectra and material maps. Multi-view appearance regularization discourages distinct appearances from collapsing onto shared endmembers. Fitting uses no material labels; validation labels select the endmember count. SWR achieves the highest mIoU in all eight worlds and the highest mean PSNR on each real dataset evaluated. On City, it trains 3.7–12.9× faster than the unmixing baselines; its optimized renderer averages 34.9 labelled views/s. The fitted primitives support cross-view spectral queries that distinguish surfaces with similar RGB colours.</p>
+    <p class="body">Hyperspectral images (HSI) preserve material evidence lost in RGB, yet 3D material identification from multi-view HSI faces two obstacles. Spectral Gaussian splatting reconstructs spectra accurately but leaves unmixing to per-pixel post-processing, while multi-view hyperspectral capture is costly and real datasets lack pixel-level material labels and sub-pixel proportions. We propose Spectral World Renderer (SWR), a material-aware explicit representation that unifies 3D spectral reconstruction and unmixing: it fits a Gaussian scaffold from RGB and decodes ray–Gaussian intersections into abundances over a shared endmember dictionary. Additionally, appearance guidance prevents spectrally similar materials from merging when intensity absorbs their brightness differences. Moreover, SWR requires no material-label supervision during training. To address the data gap, we further construct the SWR Benchmark (SWR-Bench): a coding-agent pipeline generates eight indoor and outdoor worlds from measured reflectance, aligning HSI with both annotations. SWR achieves the highest mIoU in all eight worlds and the highest mean PSNR on each real dataset. On an 11-class urban world, it trains at least 3.67× faster than unmixing baselines; rendering averages 34.9 joint spectral and label views/s over four worlds on a single RTX&nbsp;4090.</p>
     <div class="highlights" role="list">
       <div role="listitem"><b>8 / 8</b><span>worlds with the best material identification (mIoU)</span></div>
       <div role="listitem"><b>6 min 37 s</b><span>complete City pipeline, from RGB anchor to decoder</span></div>
-      <div role="listitem"><b>34.9</b><span>labelled views per second at 960 × 540 × 64</span></div>
-      <div role="listitem"><b>3.7–12.9×</b><span>faster training than the unmixing baselines on City</span></div>
+      <div role="listitem"><b>34.9</b><span>joint spectral and label views per second at 960 × 540 × 64</span></div>
+      <div role="listitem"><b>≥ 3.67×</b><span>faster training than the unmixing baselines on City</span></div>
     </div>
   </div>
 </section>
@@ -105,7 +112,7 @@
   <div class="container">
     <h2>Video</h2>
     <div class="video-wrap" id="promo" data-yt="3FrSH7MaSjU">
-      <img src="assets/video/swr_promo_poster.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Overview video frame: a mosaic of SWR-Bench worlds with their material layers in many colours, captioned Any world. Every material.">
+      <img src="assets/video/swr_promo_poster.webp" srcset="assets/video/swr_promo_poster-640.webp 640w, assets/video/swr_promo_poster.webp 1280w" sizes="(max-width:960px) 100vw, 912px" width="1280" height="720" loading="lazy" decoding="async" alt="Overview video frame: a mosaic of SWR-Bench worlds with their material layers in many colours, captioned Any world. Every material.">
       <button class="play" id="promo-play" type="button" aria-label="Play the overview video (loads YouTube)">
         <span class="yt"><svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
       </button>
@@ -124,7 +131,7 @@
       <button class="zoom" type="button" data-full="assets/fig/swr_workflow.webp" aria-label="Open the workflow figure at full resolution">
         <img src="assets/fig/swr_workflow-1200.webp" srcset="assets/fig/swr_workflow-800.webp 800w, assets/fig/swr_workflow-1200.webp 1200w, assets/fig/swr_workflow.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="598" loading="lazy" decoding="async" alt="Workflow diagram: reference photographs and a short brief guide a coding agent that writes an executable world; library-measured spectra are assigned to surfaces; one shared sub-pixel rendering produces hyperspectral and RGB observations with per-pixel materials; layout and rendering checks return flawed worlds for revision.">
       </button>
-      <figcaption><b>Reference-guided world generation.</b> A coding agent converts reference photographs and a text brief into executable geometry, materials and cameras. Measured library spectra define the material appearances. Shared sub-pixel samples yield aligned RGB and hyperspectral observations, material labels and proportions. Layout and rendering checks guide revisions across eight worlds (right).</figcaption>
+      <figcaption><b>Agent-driven reference-guided world generation pipeline.</b> A coding agent converts reference photographs and scene descriptions into executable geometry, materials and cameras; verification ensures physical plausibility. Measured spectra define material appearances. Shared sub-pixel samples yield aligned RGB and hyperspectral observations, material labels and proportions. Right: eight generated worlds.</figcaption>
     </figure>
     <div class="steps">
       <div><h4>Generate the world</h4><p>A coding agent turns reference images and text into an executable scene program that fixes geometry, materials, illumination and cameras.</p></div>
@@ -136,26 +143,27 @@
     <p class="text-block">Unmixing a rendered image afterwards acts on spectra that compositing has already mixed across surfaces. SWR instead unmixes inside rendering: at every ray intersection, a shared decoder turns the local feature into abundances and an intensity, and compositing accumulates both, so one render yields spectra and abundances. One Gaussian representation, composited with one set of visibility weights, renders spectra, abundances and material queries at any band count.</p>
     <figure class="fig">
       <button class="zoom" type="button" data-full="assets/fig/method_overview.webp" aria-label="Open the SWR overview figure at full resolution">
-        <img src="assets/fig/method_overview-1200.webp" srcset="assets/fig/method_overview-800.webp 800w, assets/fig/method_overview-1200.webp 1200w, assets/fig/method_overview.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="460" loading="lazy" decoding="async" alt="Overview of SWR: an RGB anchor fixes the geometry; each Gaussian carries band-independent harmonic features; at every ray intersection a shared decoder outputs abundances and an intensity that mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances.">
+        <img src="assets/fig/method_overview-1200.webp" srcset="assets/fig/method_overview-800.webp 800w, assets/fig/method_overview-1200.webp 1200w, assets/fig/method_overview.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="460" loading="lazy" decoding="async" alt="Overview of SWR: an RGB scaffold fixes the geometry; each Gaussian carries band-independent harmonic features; at every ray intersection a shared decoder outputs abundances and an intensity that mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances.">
       </button>
-      <figcaption><b>SWR reconstruction and unmixing pipeline.</b> Stage 1 fits RGB geometry and harmonic features; Stage 2 freezes geometry and learns spectral mixtures. Per-Gaussian features have fixed size across band counts. At each intersection, a shared decoder predicts abundances and intensity over scene-wide endmembers. Shared visibility weights jointly render spectra and abundances. Appearance clusters initialize the dictionary and regularize abundance assignments.</figcaption>
+      <figcaption><b>SWR reconstruction and unmixing pipeline.</b> An RGB scaffold first fits geometry and harmonic features; with geometry frozen, spectral mixtures are then learned. A shared decoder predicts intersection abundances and intensity over scene-wide endmembers. Shared visibility weights jointly render spectra and abundances. Appearance clusters initialize the dictionary and regularize abundance assignments.</figcaption>
     </figure>
     <div class="steps">
       <div><h4>Band-independent storage</h4><p>An RGB-trained anchor provides compact geometry, and each Gaussian stores a feature instead of a spectrum, so storage does not grow with the number of bands.</p></div>
       <div><h4>Decode before compositing</h4><p>A shared decoder maps the feature at every ray intersection to abundances over a scene-wide endmember dictionary, so one render yields spectra and abundances and every Gaussian carries queryable abundances.</p></div>
-      <div><h4>Intensity and appearance regularization</h4><p>A separate intensity absorbs shading, and a multi-view appearance regularization assigns an over-complete set of endmembers to distinct appearances.</p></div>
+      <div><h4>Intensity and appearance guidance</h4><p>A separate intensity absorbs shading, and multi-view appearance guidance assigns an over-complete set of endmembers to distinct appearances.</p></div>
     </div>
 
     <div class="split">
       <figure class="fig">
-        <button class="zoom" type="button" data-full="assets/fig/appearance_prior.webp" aria-label="Open the appearance regularization figure at full resolution">
-          <img src="assets/fig/appearance_prior-1200.webp" width="1200" height="859" loading="lazy" decoding="async" alt="Forbidden City example: white marble and grey masonry differ four-fold in brightness but only 3.8 degrees in spectral shape; clustering pixels of all training views by shape and brightness separates them; with the regularization, marble obtains its own layer.">
+        <button class="zoom" type="button" data-full="assets/fig/appearance_prior.webp" aria-label="Open the appearance guidance figure at full resolution">
+          <img src="assets/fig/appearance_prior-1200.webp" srcset="assets/fig/appearance_prior-800.webp 800w, assets/fig/appearance_prior-1200.webp 1200w" sizes="(max-width:900px) 100vw, 450px" width="1200" height="858" loading="lazy" decoding="async" alt="Forbidden City example: white marble and grey masonry differ four-fold in brightness but only 3.8 degrees in spectral shape; clustering pixels of all training views by shape and brightness separates them; with the guidance, marble obtains its own layer.">
         </button>
+        <figcaption><b>Appearance guidance separates similar materials.</b> (a) Spectra of white marble and grey masonry. (b) Shape-and-brightness clusters pool training views. (c) Cluster assignments keep the two materials distinct in the test view.</figcaption>
       </figure>
       <div>
-        <h4 style="font-size:1.15rem;font-weight:700;margin-bottom:8px">Multi-view appearance regularization</h4>
+        <h4 style="font-size:1.15rem;font-weight:700;margin-bottom:8px">Multi-view appearance guidance</h4>
         <p>Because the intensity absorbs brightness, a single endmember can explain two spectrally similar materials: in Forbidden City, white marble is four times brighter than grey masonry but only 3.8° apart in spectral shape.</p>
-        <p>Clustering the pixels of all training views by spectral shape and brightness separates such appearances, and every view shares the same clusters. Each cluster initializes its own endmember, and the assignment is retained as a weak regularizer during training, which gives marble its own layer.</p>
+        <p>Clustering the pixels of all training views by spectral shape and brightness separates such appearances, and every view shares the same clusters. Each cluster initializes its own endmember, and the assignment is retained as weak guidance during training, which gives marble its own layer.</p>
       </div>
     </div>
 
@@ -166,9 +174,9 @@
     </div>
     <figure class="fig" id="hsi-fig" role="tabpanel">
       <button class="zoom" type="button" data-full="assets/fig/swr_hsi_1.webp" id="hsi-zoom" aria-label="Open the simulated observations figure at full resolution">
-        <img id="hsi-img" src="assets/fig/swr_hsi_1-1200.webp" width="1200" height="1148" loading="lazy" decoding="async" alt="Simulated hyperspectral observations of Forbidden City, Market, Botanical and NVIDIA HQ: narrow bands, a colour-infrared composite, apparent reflectance and clean and noisy 900 nm crops.">
+        <img id="hsi-img" src="assets/fig/swr_hsi_1-1200.webp" srcset="assets/fig/swr_hsi_1-800.webp 800w, assets/fig/swr_hsi_1-1200.webp 1200w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="1148" loading="lazy" decoding="async" alt="Simulated hyperspectral observations of Forbidden City, Market, Botanical and NVIDIA HQ: narrow bands, a colour-infrared composite, apparent reflectance and clean and noisy 900 nm crops.">
       </button>
-      <figcaption>Narrow bands share one exposure per world, so brightness differences between bands follow the radiance; the colour-infrared composite (R, G, B = 847, 651, 553 nm) renders vegetation red. Outdoor apparent reflectance reproduces the library reflectance, including chlorophyll absorption near 670 nm and the red edge; path-traced interiors deviate through interreflection and residual Monte Carlo variance. Bottom: clean and noisy crops of the 900 nm band.</figcaption>
+      <figcaption><b>Simulated hyperspectral observations.</b> Narrow bands share one exposure per world, so brightness differences between bands follow the radiance; the colour-infrared composite (R, G, B = 847, 651, 553 nm) renders vegetation red. Outdoor apparent reflectance reproduces the library reflectance, including chlorophyll absorption near 670 nm and the red edge; path-traced interiors deviate through interreflection and residual Monte Carlo variance. Bottom: clean and noisy crops of the 900 nm band.</figcaption>
     </figure>
   </div>
 </section>
@@ -210,12 +218,13 @@
       <div class="text-block">
         <p>Living leaves differ from materials of the same colour beyond the visible range: chlorophyll absorbs red light and leaf tissue reflects near-infrared light, producing a red edge near 700&nbsp;nm that minerals and dry leaves lack. In City, foliage-coloured mineral leaves are only 2° from foliage in RGB but 42° apart in spectrum, so they receive endmembers of their own.</p>
         <p>Because abundances are stored on explicit, rasterizable Gaussians, a material query is a selection over primitives that is consistent across views and requires neither labels nor a per-image classifier. The mineral-leaf query retrieves no ordinary tree, whereas the equivalent RGB query retrieves eleven.</p>
-        <p>A measured spectrum can also serve as the query. With the sun and sky illumination factored out, a pixel clicked in shadow retrieves 77&nbsp;% of the sunlit part of its material, against 10&nbsp;% for an RGB colour query (mean over four outdoor worlds), in about 3&nbsp;ms per query.</p>
+        <p>A measured spectrum can also serve as the query. With the sun and sky illumination factored out, a pixel clicked in shadow retrieves 77&nbsp;% of the sunlit part of its material, against 10&nbsp;% for an RGB query (mean over four worlds).</p>
       </div>
       <figure class="fig">
         <button class="zoom" type="button" data-full="assets/fig/app_query.webp" aria-label="Open the material query figure at full resolution">
-          <img src="assets/fig/app_query-1200.webp" width="1200" height="1469" loading="lazy" decoding="async" alt="Paper figure on material queries in City: an RGB colour query also retrieves ordinary trees, whereas the query on per-Gaussian abundances retrieves only the mineral-leaf crowns; SWR also separates dry crowns from healthy foliage; a spectrum clicked on shadowed limestone in Karst also retrieves the sunlit rock, which the RGB colour query misses.">
+          <img src="assets/fig/app_query-1200.webp" srcset="assets/fig/app_query-800.webp 800w, assets/fig/app_query-1200.webp 1200w" sizes="(max-width:900px) 100vw, 450px" width="1200" height="1468" loading="lazy" decoding="async" alt="Paper figure on material queries in City: an RGB colour query also retrieves ordinary trees, whereas the query on per-Gaussian abundances retrieves only the mineral-leaf crowns; SWR also separates dry crowns from healthy foliage; a spectrum clicked on shadowed limestone in Karst also retrieves the sunlit rock, which the RGB colour query misses.">
         </button>
+        <figcaption><b>Material queries beyond RGB.</b> City: boxed crowns use mineral leaves. (a,b) Spectral queries isolate them; RGB retrieves ordinary trees. (c) Mineral and dry versus healthy crowns. (d) With known irradiance, shadowed limestone retrieves sunlit Karst rock.</figcaption>
       </figure>
     </div>
 
@@ -237,9 +246,9 @@
 
     <figure class="fig" style="margin-top:22px">
       <button class="zoom" type="button" data-full="assets/fig/bench_layers.webp" aria-label="Open the material layer comparison at full resolution">
-        <img src="assets/fig/bench_layers-1200.webp" srcset="assets/fig/bench_layers-800.webp 800w, assets/fig/bench_layers-1200.webp 1200w, assets/fig/bench_layers.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="873" loading="lazy" decoding="async" alt="Material layers across the eight worlds: for each world, the rendered input, the ground-truth layer of one material, and the layers of UnMix-NeRF, 3DGS plus VCA, and SWR with their IoU; SWR has the highest IoU in every row.">
+        <img src="assets/fig/bench_layers-1200.webp" srcset="assets/fig/bench_layers-800.webp 800w, assets/fig/bench_layers-1200.webp 1200w, assets/fig/bench_layers.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="873" loading="lazy" decoding="async" alt="Material layers across the eight worlds: for each world, the rendered input, the ground-truth layer of one material, and the layers of UnMix-NeRF, 3DGS plus VCA and NNLS, and SWR with their IoU; SWR has the highest IoU in every row.">
       </button>
-      <figcaption><b>Material abundance maps across eight worlds.</b> Each row shows one material in a test view, tinted by its abundance. All methods map at least one endmember to that material. IoU thresholds the class-summed abundance at 0.5 against the true mask. Baselines spread abundance onto unrelated surfaces.</figcaption>
+      <figcaption><b>Material abundance maps across eight worlds.</b> Rows tint one material by its abundance. UnMix-NeRF integrates abundances predicted at volume samples; 3DGS + VCA / NNLS unmixes rendered spectra per pixel with VCA endmembers and NNLS; SWR composites abundances decoded at each ray–Gaussian intersection with the visibility weights of the spectra. IoU thresholds class-summed abundance at 0.5.</figcaption>
     </figure>
 
     <div class="two">
@@ -254,22 +263,22 @@
       </div>
       <div>
         <h3 class="sub">Real captures</h3>
-        <p>Without material ground truth, real captures test spectral fidelity. SWR has the best mean PSNR on each real source; on HS-NeRF, 3DGS reaches a lower mean and 95th-percentile angle.</p>
+        <p>Without material ground truth, real captures test spectral fidelity. SWR has the best mean PSNR on each real source, by 1.55&nbsp;dB on NeSpoF and 5.27&nbsp;dB on the HSI-SC apple; HS-NeRF is nearly tied, and 3DGS reaches a lower mean and 95th-percentile angle there.</p>
         <div class="table-wrap">
           <table class="mini">
             <thead><tr><th scope="col">Source</th><th scope="col">PSNR ↑<br><span class="row-sub">baseline · ours</span></th><th scope="col">SAM ↓<br><span class="row-sub">baseline · ours</span></th></tr></thead>
             <tbody>
-              <tr><th scope="row">NeSpoF<span class="row-sub">21 bands · HyperGS</span></th><td>28.36 · <b class="win">29.39</b></td><td>4.58 · <b class="win">3.86</b></td></tr>
-              <tr><th scope="row">HSI-SC apple<span class="row-sub">204 bands · HyperGS</span></th><td>27.95 · <b class="win">30.67</b></td><td>1.64 · <b class="win">1.35</b></td></tr>
-              <tr><th scope="row">HS-NeRF<span class="row-sub">128 / 141 bands · 3DGS</span></th><td>26.32 · <b class="win">26.51</b></td><td><b>5.71</b> · 5.97</td></tr>
+              <tr><th scope="row">NeSpoF<span class="row-sub">21 bands · HyperGS</span></th><td>27.83 · <b class="win">29.38</b></td><td>4.88 · <b class="win">3.89</b></td></tr>
+              <tr><th scope="row">HSI-SC apple<span class="row-sub">204 bands · DD-HGS</span></th><td>25.25 · <b class="win">30.52</b></td><td>1.92 · <b class="win">1.34</b></td></tr>
+              <tr><th scope="row">HS-NeRF<span class="row-sub">128 / 141 bands · 3DGS</span></th><td>27.48 · <b class="win">27.50</b></td><td><b>6.24</b> · 6.80</td></tr>
             </tbody>
           </table>
         </div>
         <figure class="fig" style="margin-top:12px">
           <button class="zoom" type="button" data-full="assets/fig/real_apple.webp" aria-label="Open the real capture figure at full resolution">
-            <img src="assets/fig/real_apple-1200.webp" width="1200" height="730" loading="lazy" decoding="async" alt="204-band HSI-SC apple capture: spectra rendered by the baselines and by SWR, with an inset of the SWR abundance layers.">
+            <img src="assets/fig/real_apple-1200.webp" srcset="assets/fig/real_apple-800.webp 800w, assets/fig/real_apple-1200.webp 1200w" sizes="(max-width:900px) 100vw, 450px" width="1200" height="1014" loading="lazy" decoding="async" alt="204-band HSI-SC apple: ground truth, 3DGS, DD-HGS and SWR renderings, their 900 nm bands and per-pixel RMSE maps, with an inset of the SWR material layers.">
           </button>
-          <figcaption><b>Reconstruction of the 204-band HSI-SC apple.</b> Top: test-view renderings and PSNR. Bottom: per-pixel spectral angle and its mean. Inset: SWR material abundance maps. Table: means over 4 NeSpoF and 5 HS-NeRF scenes; the baseline is the PSNR-best of 3DGS, HyperGS and DD-HGS; bold marks the better value of each pair.</figcaption>
+          <figcaption><b>Reconstruction of the 204-band HSI-SC apple.</b> Beyond RGB, the 900&nbsp;nm band records near-infrared reflectance that colour images cannot capture; SWR reconstructs it without the streaks of the baselines and with the lowest RMSE. Table: two-run means over 4 NeSpoF and 5 HS-NeRF scenes; the baseline is the PSNR-best of 3DGS, HyperGS and DD-HGS; bold marks the better value of each pair.</figcaption>
         </figure>
       </div>
     </div>
@@ -291,7 +300,7 @@
       <button class="zoom" type="button" data-full="assets/fig/tetra_supp.webp" aria-label="Open the bounding tetrahedra figure at full resolution">
         <img src="assets/fig/tetra_supp-1200.webp" srcset="assets/fig/tetra_supp-800.webp 800w, assets/fig/tetra_supp-1200.webp 1200w, assets/fig/tetra_supp.webp 2400w" sizes="(max-width:960px) 100vw, 912px" width="1200" height="912" loading="lazy" decoding="async" alt="Bounding tetrahedra on test views: the rendering, the tetrahedra weighted by opacity and visibility, the tetrahedra coloured by the dominant class decoded at each Gaussian centre, and the rendered material map.">
       </button>
-      <figcaption><b>Gaussian tetrahedra and decoded materials.</b> Columns show the rendering, opacity- and visibility-weighted tetrahedra, centre-decoded classes and material maps. The median visible Gaussian assigns more than 98 % of its centre abundance to one class.</figcaption>
+      <figcaption><b>Gaussian tetrahedra and decoded materials.</b> Tetrahedra follow the scale, rotation and centre of each Gaussian; their barycentric coordinates interpolate four corner features. Columns show the rendering, opacity- and visibility-weighted tetrahedra, centre-decoded classes and material maps. Bottom: one Market Gaussian, marked by the amber window.</figcaption>
     </figure>
   </div>
 </section>
@@ -337,7 +346,7 @@
 <section class="section" id="acknowledgements">
   <div class="container">
     <h2>Acknowledgements</h2>
-    <p>To be added.</p>
+    <p>This study was supported in part by the National Science and Technology Council (NSTC), Taiwan, under grants 115-2627-M-006-001, 115-2218-E-A49-023, and 115-2634-F-A49-014. We thank the National Center for High-performance Computing (NCHC) of National Applied Research Laboratories (NARLabs) in Taiwan for providing computational and storage resources.</p>
   </div>
 </section>
 </main>

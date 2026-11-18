@@ -224,6 +224,7 @@ function setSource(video, src, keepTime, shouldPlay) {
   for (const t of tabs) t.addEventListener('click', () => {
     selectTab(tabs, t);
     const n = t.dataset.hsi;
+    $('#hsi-img').srcset = `assets/fig/swr_hsi_${n}-800.webp 800w, assets/fig/swr_hsi_${n}-1200.webp 1200w`;
     $('#hsi-img').src = `assets/fig/swr_hsi_${n}-1200.webp`;
     $('#hsi-zoom').dataset.full = `assets/fig/swr_hsi_${n}.webp`;
     $('#hsi-img').alt = `Simulated hyperspectral observations of ${t.textContent.replace(/ · /g, ', ')}: narrow bands, a colour-infrared composite, apparent reflectance and clean and noisy 900 nm crops.`;

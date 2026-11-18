@@ -36,9 +36,9 @@ window.swrLangOf=function(c){return N[String(c||'').toLowerCase()]||null};
 var q=new URLSearchParams(location.search).get('lang'),s=null;try{s=localStorage.getItem('swr-lang')}catch(e){}
 var l=swrLangOf(q)||swrLangOf(s)||'en',h=document.documentElement;h.lang=l;h.dataset.lang=l;
 if(l!=='en'){h.classList.add('i18n-wait');setTimeout(function(){h.classList.remove('i18n-wait')},1500)}})();</script>
-<link rel="stylesheet" href="style.css?v=r3">
-<script src="i18n.js?v=r3" defer></script>
-<script src="app.js?v=r3" defer></script>
+<link rel="stylesheet" href="style.css?v=r4">
+<script src="i18n.js?v=r4" defer></script>
+<script src="app.js?v=r4" defer></script>
 </head>
 <body>
 <a class="skip" href="#main"><span data-i18n="ui.skip-content">Skip to content</span></a>
@@ -47,6 +47,7 @@ if(l!=='en'){h.classList.add('i18n-wait');setTimeout(function(){h.classList.remo
   <nav aria-label="Sections">
     <a href="#overview"><span data-i18n="ui.overview">Overview</span></a>
     <a href="#query"><span data-i18n="ui.queries">Queries</span></a>
+    <a href="#applications"><span data-i18n="ui.applications">Applications</span></a>
     <a href="#bench">SWR-Bench</a>
     <a href="#method"><span data-i18n="ui.method">Method</span></a>
     <a href="#results"><span data-i18n="ui.results">Results</span></a>
@@ -204,9 +205,62 @@ if(l!=='en'){h.classList.add('i18n-wait');setTimeout(function(){h.classList.remo
   </div>
 </section>
 
-<!-- 03 SWR-Bench -->
+<!-- 03 Applications -->
+<section class="s" id="applications">
+  <div class="head"><div><p class="eyebrow">03 / <span data-i18n="ui.applications">Applications</span></p>
+    <h2><span data-i18n="apps.title">Beyond reconstruction: <em>what the spectra enable</em></span></h2></div>
+    <p><span data-i18n="apps.intro">Because SWR renders full spectra and stores abundances on explicit Gaussians, a trained model of SWR-Bench City supports analyses beyond material queries; each example below is compared with ground truth.</span></p>
+  </div>
+  <div class="apps">
+    <article class="panel app">
+      <small>01</small>
+      <h3><span data-i18n="apps.ndvi-title">Simulated sensors and NDVI</span></h3>
+      <video controls muted loop playsinline preload="none" poster="assets/apps/ndvi_orbit_poster.webp" width="960" height="540" aria-label="NDVI computed from the spectra rendered by SWR along a novel orbit of SWR-Bench City"><source src="assets/apps/ndvi_orbit.mp4" type="video/mp4"></video>
+      <p class="ameas"><b><span data-i18n="apps.measured">Measured</span></b><span data-i18n="apps.ndvi-meas">32 held-out views: NDVI MAE 0.042, <i>r</i> = 0.95; NDRE MAE 0.028, <i>r</i> = 0.93</span></p>
+      <p class="cap"><span data-i18n="apps.ndvi-cap">From the rendered 64-band spectra, the bands of a MicaSense RedEdge-MX and of Sentinel-2 are synthesized with Gaussian approximations of their band responses, and NDVI is computed along a novel orbit. On vegetation, the mean NDVI is 0.70, against 0.72 in the ground truth.</span></p>
+      <div class="athumbs">
+        <figure><button class="fig" type="button" data-full="assets/apps/ndvi_vs_gt-1200.webp" aria-label="Enlarge: NDVI from rendered spectra against ground truth on held-out views"><img src="assets/apps/ndvi_vs_gt-800.webp" srcset="assets/apps/ndvi_vs_gt-800.webp 800w, assets/apps/ndvi_vs_gt-1200.webp 1200w" sizes="(max-width:980px) 50vw, 270px" width="800" height="475" loading="lazy" decoding="async" alt="NDVI maps from the ground-truth cube and from the rendered spectra on three held-out views, their absolute difference, a density plot over all 32 held-out views and mean NDVI per material class."></button><figcaption><span data-i18n="apps.ndvi-fig1">NDVI against ground truth</span></figcaption></figure>
+        <figure><button class="fig" type="button" data-full="assets/apps/sensor_bands-960.webp" aria-label="Enlarge: sensor bands synthesized from the 64 SWR bands"><img src="assets/apps/sensor_bands-800.webp" srcset="assets/apps/sensor_bands-800.webp 800w, assets/apps/sensor_bands-960.webp 960w" sizes="(max-width:980px) 50vw, 270px" width="800" height="450" loading="lazy" decoding="async" alt="Band responses of the MicaSense RedEdge-MX and Sentinel-2A MSI synthesized from the 64 SWR bands, compared with Gaussian target bands."></button><figcaption><span data-i18n="apps.ndvi-fig2">Synthesized sensor bands</span></figcaption></figure>
+      </div>
+    </article>
+    <article class="panel app">
+      <small>02</small>
+      <h3><span data-i18n="apps.stats-title">3D material statistics</span></h3>
+      <video controls muted loop playsinline preload="none" poster="assets/apps/material_isolation_poster.webp" width="960" height="540" aria-label="Orbit of SWR-Bench City isolating the Gaussians of one material at a time"><source src="assets/apps/material_isolation.mp4" type="video/mp4"></video>
+      <p class="ameas"><b><span data-i18n="apps.measured">Measured</span></b><span data-i18n="apps.stats-meas">Class shares on held-out views: vegetation 41.8&nbsp;% (ground truth 41.3&nbsp;%), concrete masonry 25.4&nbsp;% (24.8&nbsp;%); mIoU 0.521 with one abundance vector per Gaussian, 0.524 for the full render</span></p>
+      <p class="cap"><span data-i18n="apps.stats-cap">Per-Gaussian abundances are aggregated over the training-view hits of each Gaussian with visibility weights. On held-out views, the resulting image-space class shares match the ground truth, and a single abundance vector per Gaussian leaves mIoU nearly unchanged. The Gaussians of each material can be exported as point sets; the clip isolates one material at a time.</span></p>
+      <div class="athumbs">
+        <figure><button class="fig" type="button" data-full="assets/apps/material_shares-1200.webp" aria-label="Enlarge: material composition of SWR-Bench City from per-Gaussian abundances"><img src="assets/apps/material_shares-800.webp" srcset="assets/apps/material_shares-800.webp 800w, assets/apps/material_shares-1200.webp 1200w" sizes="(max-width:980px) 50vw, 270px" width="800" height="350" loading="lazy" decoding="async" alt="Bar charts of the share of each of eleven material classes in City: image-space shares on 32 held-out views for ground truth, the rendered abundances and the per-Gaussian abundances, and the 3D shares of the Gaussian scene."></button><figcaption><span data-i18n="apps.stats-fig1">Class shares on held-out views</span></figcaption></figure>
+      </div>
+    </article>
+    <article class="panel app">
+      <small>03</small>
+      <h3><span data-i18n="apps.anom-title">Spectra the dictionary cannot explain</span></h3>
+      <video controls muted loop playsinline preload="none" poster="assets/apps/unexplained_spectra_poster.webp" width="960" height="540" aria-label="Residual angle after fitting the learned endmembers, shown on the Gaussians of the City metamer variant"><source src="assets/apps/unexplained_spectra.mp4" type="video/mp4"></video>
+      <p class="ameas"><b><span data-i18n="apps.measured">Measured</span></b><span data-i18n="apps.anom-meas">32 held-out views: AUC 0.97 per pixel, 0.95 in 3D, against 0.50 for the same fit in RGB; stressed-leaf variant 0.85</span></p>
+      <p class="cap"><span data-i18n="apps.anom-cap">In the City metamer variant, some tree crowns and car paints are replaced by materials that match in RGB but not in spectrum. The residual angle after a non-negative fit to the learned endmembers, lifted to the Gaussians, flags them; materials that the dictionary fits poorly also score high.</span></p>
+      <div class="athumbs">
+        <figure><button class="fig wide" type="button" data-full="assets/apps/heldout_residual.webp" aria-label="Enlarge: residual angle on a held-out view"><img src="assets/apps/heldout_residual-800.webp" srcset="assets/apps/heldout_residual-800.webp 800w, assets/apps/heldout_residual-1200.webp 1200w" sizes="(max-width:980px) 50vw, 270px" width="800" height="148" loading="lazy" decoding="async" alt="Held-out view of the City metamer variant: the observation in RGB, the per-pixel residual angle, the residual per Gaussian rendered in 3D and the ground-truth mask of the substituted materials."></button><figcaption><span data-i18n="apps.anom-fig1">Residual on a held-out view</span></figcaption></figure>
+        <figure><button class="fig" type="button" data-full="assets/apps/roc_heldout-702.webp" aria-label="Enlarge: ROC curves on held-out views"><img src="assets/apps/roc_heldout-702.webp" width="702" height="598" loading="lazy" decoding="async" alt="ROC curves on 32 held-out views: the hyperspectral fit to 11 learned endmembers reaches AUC 0.97, a fit to 112 true library spectra 0.83 and the same fit in RGB 0.50."></button><figcaption><span data-i18n="apps.anom-fig2">ROC curves</span></figcaption></figure>
+      </div>
+    </article>
+    <article class="panel app">
+      <small>04</small>
+      <h3><span data-i18n="apps.edit-title">Material editing by swapping an endmember</span></h3>
+      <video controls muted loop playsinline preload="none" poster="assets/apps/endmember_swap_poster.webp" width="960" height="540" aria-label="Orbit of SWR-Bench City in which the fired-clay endmember is replaced by copper and copper-patina spectra"><source src="assets/apps/endmember_swap.mp4" type="video/mp4"></video>
+      <p class="ameas"><b><span data-i18n="apps.measured">Measured</span></b><span data-i18n="apps.edit-meas">Median spectral angle on fired-clay pixels: 0.22° (copper), 0.79° (patina); 9.9° and 38.6° without the edit</span></p>
+      <p class="cap"><span data-i18n="apps.edit-cap">The endmember carrying the fired-clay roofs is replaced by copper and copper-patina spectra from ECOSTRESS, with abundances and intensity unchanged. The result is compared with a ground-truth edited world rendered with the forward model of the benchmark.</span></p>
+      <div class="athumbs">
+        <figure><button class="fig wide" type="button" data-full="assets/apps/before_after.webp" aria-label="Enlarge: novel view before and after the endmember swap"><img src="assets/apps/before_after-800.webp" srcset="assets/apps/before_after-800.webp 800w, assets/apps/before_after-1200.webp 1200w" sizes="(max-width:980px) 50vw, 270px" width="800" height="170" loading="lazy" decoding="async" alt="One novel view of City rendered with the learned dictionary, with the fired-clay endmember replaced by copper metal and by copper patina."></button><figcaption><span data-i18n="apps.edit-fig1">Before and after</span></figcaption></figure>
+        <figure><button class="fig" type="button" data-full="assets/apps/endmember_spectra.webp" aria-label="Enlarge: learned and edited endmember spectra"><img src="assets/apps/endmember_spectra-800.webp" srcset="assets/apps/endmember_spectra-800.webp 800w, assets/apps/endmember_spectra-1200.webp 1200w" sizes="(max-width:980px) 50vw, 270px" width="800" height="276" loading="lazy" decoding="async" alt="Learned fired-clay endmember and the copper metal and copper patina replacements as radiance, and the corresponding library reflectances from ECOSTRESS."></button><figcaption><span data-i18n="apps.edit-fig2">Endmember spectra</span></figcaption></figure>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- 04 SWR-Bench -->
 <section class="s" id="bench">
-  <div class="head"><div><p class="eyebrow">03 / SWR-Bench</p>
+  <div class="head"><div><p class="eyebrow">04 / SWR-Bench</p>
     <h2><span data-i18n="bench.worlds-known-composition">Worlds with <em>known composition</em></span></h2></div>
     <p><span data-i18n="bench.real-multi-view">Real multi-view hyperspectral datasets are tabletop or turntable captures without material labels or sub-pixel proportions, which cannot be annotated reliably by hand. The SWR world generator therefore creates worlds rather than annotating captures.</span></p>
   </div>
@@ -246,9 +300,9 @@ if(l!=='en'){h.classList.add('i18n-wait');setTimeout(function(){h.classList.remo
   </div>
 </section>
 
-<!-- 04 Method -->
+<!-- 05 Method -->
 <section class="s" id="method">
-  <div class="head"><div><p class="eyebrow">04 / <span data-i18n="ui.method">Method</span></p>
+  <div class="head"><div><p class="eyebrow">05 / <span data-i18n="ui.method">Method</span></p>
     <h2><span data-i18n="method.unmixing-inside-rendering">Unmixing <em>inside rendering</em></span></h2></div>
     <p><span data-i18n="method.unmixing-rendered-image">Unmixing a rendered image afterwards acts on spectra that compositing has already mixed across surfaces. SWR instead unmixes inside rendering: at every ray intersection, a shared decoder turns the local feature into abundances and an intensity, and compositing accumulates both, so one render yields spectra and abundances.</span></p>
   </div>
@@ -284,9 +338,9 @@ if(l!=='en'){h.classList.add('i18n-wait');setTimeout(function(){h.classList.remo
   </div>
 </section>
 
-<!-- 05 Results -->
+<!-- 06 Results -->
 <section class="s" id="results">
-  <div class="head"><div><p class="eyebrow">05 / <span data-i18n="ui.results">Results</span></p>
+  <div class="head"><div><p class="eyebrow">06 / <span data-i18n="ui.results">Results</span></p>
     <h2><span data-i18n="results.identification-fidelity">Identification <em>and fidelity</em></span></h2></div>
     <p><span data-i18n="results.mean-scores-paper">Mean scores from the paper on the eight SWR-Bench worlds. ↑ higher is better, ↓ lower is better.</span></p>
   </div>
@@ -338,9 +392,9 @@ if(l!=='en'){h.classList.add('i18n-wait');setTimeout(function(){h.classList.remo
   </div>
 </section>
 
-<!-- 06 Analysis -->
+<!-- 07 Analysis -->
 <section class="s" id="analysis">
-  <div class="head"><div><p class="eyebrow">06 / <span data-i18n="ui.analysis">Analysis</span></p>
+  <div class="head"><div><p class="eyebrow">07 / <span data-i18n="ui.analysis">Analysis</span></p>
     <h2><span data-i18n="analysis.primitives-material-carriers">Primitives as <em>material carriers</em></span></h2></div>
     <p><span data-i18n="analysis.each-gaussian-enclosed">Each Gaussian is enclosed by the regular tetrahedron of its canonical frame, scaled, rotated and translated with the Gaussian. The clips dissolve from these bounding tetrahedra into the rendered view along the camera path of the material queries.</span></p>
   </div>
@@ -359,9 +413,9 @@ if(l!=='en'){h.classList.add('i18n-wait');setTimeout(function(){h.classList.remo
   </div>
 </section>
 
-<!-- 07 Video -->
+<!-- 08 Video -->
 <section class="s" id="video">
-  <div class="head"><div><p class="eyebrow">07 / <span data-i18n="ui.video">Video</span></p>
+  <div class="head"><div><p class="eyebrow">08 / <span data-i18n="ui.video">Video</span></p>
     <h2><span data-i18n="video.overview-video">Overview <em>video</em></span></h2></div>
     <p><span data-i18n="video.playing-video-loads">Playing the video loads it from YouTube (privacy-enhanced mode).</span></p>
   </div>
@@ -371,9 +425,9 @@ if(l!=='en'){h.classList.add('i18n-wait');setTimeout(function(){h.classList.remo
   </div>
 </section>
 
-<!-- 08 Related -->
+<!-- 09 Related -->
 <section class="s" id="related">
-  <div class="head"><div><p class="eyebrow">08 / <span data-i18n="related.related">Related</span></p>
+  <div class="head"><div><p class="eyebrow">09 / <span data-i18n="related.related">Related</span></p>
     <h2><span data-i18n="related.related-work">Related <em>work</em></span></h2></div>
     <p><span data-i18n="related.spectral-world-renderer">Spectral World Renderer builds on and compares with these works on spectral unmixing, hyperspectral reconstruction, 3D scene queries and material recognition.</span></p>
   </div>
@@ -388,9 +442,9 @@ if(l!=='en'){h.classList.add('i18n-wait');setTimeout(function(){h.classList.remo
   </ul>
 </section>
 
-<!-- 09 Citation -->
+<!-- 10 Citation -->
 <section class="s" id="citation">
-  <div class="head"><div><p class="eyebrow">09 / <span data-i18n="ui.citation">Citation</span></p>
+  <div class="head"><div><p class="eyebrow">10 / <span data-i18n="ui.citation">Citation</span></p>
     <h2><span data-i18n="citation.cite-swr">Cite <em>SWR</em></span></h2></div>
     <p><button class="btn" id="copy-bib" type="button"><span data-i18n="citation.copy-bibtex">Copy BibTeX</span></button> <span class="note" id="copy-status" aria-live="polite"></span></p>
   </div>

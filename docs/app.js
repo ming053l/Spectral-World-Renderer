@@ -1,6 +1,7 @@
 'use strict';
 /* Spectral World Renderer project page.
-   - Two languages (EN / Traditional Chinese): static text carries .en/.zh spans; generated text uses L().
+   - Five languages (en, zh-Hans, zh-Hant, ja, ko), strings in i18n.js keyed by id. Static text is English in the HTML
+     with data-i18n="id"; generated text uses L(id, vars) (a re-translatable span) or T(id, vars) (current language only).
    - Media are lazy: videos receive a source only when they come into view or are requested.
    - Only one clip player runs at a time; players pause off-screen and when the tab is hidden.
    - The overview video is a click-to-load youtube-nocookie embed. */
@@ -13,39 +14,86 @@ const autoplayOK = () => !reduceMotion.matches && !saveData;
 const esc = s => String(s).replace(/[&<>"]/g, ch => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[ch]));
 
 /* ---------- Language ---------- */
-const lang = () => document.documentElement.dataset.lang === 'zh' ? 'zh' : 'en';
-const L = (en, zh) => `<span class="en">${en}</span><span class="zh">${zh}</span>`;   // both, CSS shows one
-const T = (en, zh) => lang() === 'zh' ? zh : en;                                      // current only (attributes)
+const DICT = window.SWR_I18N || {};
+const URL_CODE = {'en': 'en', 'zh-Hans': 'zh-CN', 'zh-Hant': 'zh-TW', 'ja': 'ja', 'ko': 'ko'};   // ?lang= values written back
+const langOf = window.swrLangOf || (c => URL_CODE[c] ? c : null);
+const lang = () => langOf(document.documentElement.dataset.lang) || 'en';
+/* "{name}" placeholders; a value "@id" is itself translated. */
+const fill = (s, v) => v ? s.replace(/\{(\w+)\}/g, (m, k) => k in v ? (typeof v[k] === 'string' && v[k][0] === '@' ? T(v[k].slice(1)) : v[k]) : m) : s;
+function T(id, v) {
+  const e = DICT[id];
+  if (!e) { console.warn('i18n: missing', id); return id; }
+  return fill(e[lang()] ?? e.en, v);
+}
+const L = (id, v) => `<span data-i18n="${id}"${v ? ` data-i18n-v="${esc(JSON.stringify(v))}"` : ''}>${T(id, v)}</span>`;
+/* English of static strings is the HTML itself; keep it to switch back. */
+const ORIG = new Map($$('[data-i18n]').map(el => [el, el.innerHTML]));
+function translateAll() {
+  const en = lang() === 'en';
+  for (const el of $$('[data-i18n]')) {
+    const html = en && ORIG.has(el) ? ORIG.get(el) : T(el.dataset.i18n, el.dataset.i18nV ? JSON.parse(el.dataset.i18nV) : null);
+    if (el.innerHTML !== html) el.innerHTML = html;
+  }
+}
 const relabel = [];
+const sw = $('#langsw'), swBtn = $('#langsw-btn'), swMenu = $('#langsw-menu'), swItems = $$('[role="menuitemradio"]', swMenu);
 function setLang(l, save = true) {
+  l = langOf(l) || 'en';
   const h = document.documentElement;
-  h.dataset.lang = l; h.lang = l === 'zh' ? 'zh-Hant' : 'en';
-  for (const b of $$('.lang button')) b.setAttribute('aria-pressed', String(b.dataset.l === l));
+  h.dataset.lang = l; h.lang = l;
   if (save) try { localStorage.setItem('swr-lang', l); } catch (e) {}
   const u = new URL(location.href);
-  if (u.searchParams.has('lang')) { u.searchParams.set('lang', l); history.replaceState(null, '', u); }
-  /* Traditional Chinese uses system fonts (PingFang TC, Microsoft JhengHei, Noto Sans CJK TC): a CJK webfont adds about 2 MB. */
+  if (u.searchParams.has('lang')) { u.searchParams.set('lang', URL_CODE[l]); history.replaceState(null, '', u); }
+  const cur = swItems.find(a => a.dataset.l === l);
+  for (const a of swItems) a.setAttribute('aria-checked', String(a === cur));
+  $('#langsw-cur').textContent = cur.dataset.short; $('#langsw-cur').lang = l;
+  swBtn.setAttribute('aria-label', `${T('ui.language')}: ${cur.textContent}`);
+  translateAll();
   for (const f of relabel) f();
+  h.classList.remove('i18n-wait');
 }
-for (const b of $$('.lang button')) b.addEventListener('click', () => setLang(b.dataset.l));
+/* Menu button (WAI-ARIA APG): Enter, Space or arrows open; arrows, Home, End move; Escape closes; Tab leaves. */
+function swOpen(last = false) {
+  swMenu.hidden = false; swBtn.setAttribute('aria-expanded', 'true');
+  (last ? swItems[swItems.length - 1] : swItems.find(a => a.getAttribute('aria-checked') === 'true') || swItems[0]).focus();
+}
+function swClose(refocus) {
+  if (swMenu.hidden) return;
+  swMenu.hidden = true; swBtn.setAttribute('aria-expanded', 'false');
+  if (refocus) swBtn.focus();
+}
+swBtn.addEventListener('click', () => swMenu.hidden ? swOpen() : swClose(true));
+swBtn.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); swOpen(e.key === 'ArrowUp'); }
+});
+swMenu.addEventListener('keydown', e => {
+  const i = swItems.indexOf(document.activeElement), n = swItems.length;
+  const to = {ArrowDown: (i + 1) % n, ArrowUp: (i - 1 + n) % n, Home: 0, End: n - 1}[e.key];
+  if (to !== undefined) { e.preventDefault(); swItems[to].focus(); }
+  else if (e.key === 'Escape') { e.preventDefault(); swClose(true); }
+  else if (e.key === 'Tab') swClose(false);
+  else if (e.key === ' ') { e.preventDefault(); document.activeElement.click(); }
+});
+for (const a of swItems) a.addEventListener('click', e => { e.preventDefault(); setLang(a.dataset.l); swClose(true); });
+document.addEventListener('click', e => { if (!sw.contains(e.target)) swClose(false); });
+sw.addEventListener('focusout', e => { if (e.relatedTarget && !sw.contains(e.relatedTarget)) swClose(false); });
 
 /* ---------- Data ---------- */
 /* Okabe-Ito colours (colour-blind safe), one per query; shared with the promo video. */
 const QCOL = {orange: '#E69F00', sky: '#56B4E9', green: '#009E73', yellow: '#F0E442', blue: '#0072B2',
   vermillion: '#D55E00', purple: '#CC79A7', teal: '#3FD1C0', slate: '#9AA5B8'};
-const QCOL_NAME = {orange: ['Orange', '橙色'], sky: ['Sky-blue', '天藍色'], green: ['Green', '綠色'], yellow: ['Yellow', '黃色'],
-  blue: ['Blue', '藍色'], vermillion: ['Vermilion', '朱紅色'], purple: ['Reddish-purple', '紫紅色'], teal: ['Teal', '青綠色'], slate: ['Grey', '灰色']};
+/* Colour names are i18n ids col.<key>. Modes: tag, aria and right-hand label are i18n ids. */
 const QMODES = {
-  rgb: {tag: ['', ''], aria: ['RGB rendering', 'RGB 渲染'], right: ['', '']},
-  name: {tag: ['Name', '名稱'], aria: ['Name query', '名稱查詢'], right: ['Abundance', '豐度']},
-  combo: {tag: ['Combination', '組合'], aria: ['Name combination', '名稱組合'], right: ['Abundance', '豐度']},
-  click: {tag: ['Click', '點選'], aria: ['Click query', '點選查詢'], right: ['Click query', '點選查詢']},
-  spectrum: {tag: ['Spectrum', '光譜'], aria: ['Reference-spectrum query', '參考光譜查詢'], right: ['Spectrum query', '光譜查詢']},
-  band: {tag: ['Band', '波段'], aria: ['Band or spectral index', '波段或光譜指數'], right: ['', '']},
+  rgb: {tag: 'mode.rendering', aria: 'aria.rgb', right: ''},
+  name: {tag: 'mode.name', aria: 'aria.name', right: 'right.abund'},
+  combo: {tag: 'mode.combo', aria: 'aria.combo', right: 'right.abund'},
+  click: {tag: 'mode.click', aria: 'aria.click', right: 'aria.click'},
+  spectrum: {tag: 'mode.spectrum', aria: 'aria.spectrum', right: 'right.spectrum'},
+  band: {tag: 'mode.band', aria: 'aria.band', right: ''},
 };
 /* Chips: {id, label, mode, col, ...}. Clip: assets/query/<world>_<id>.mp4 (same camera path as <world>_rgb.mp4).
    click: track = assets/query/<world>_<id>.json (per-frame click position); spectrum: spec = reference curve (0-1).
-   desc: [en, zh] sentence on the rule. ready:false hides a chip until its clip is in assets/query/. */
+   desc: i18n id of the sentence on the rule. ready:false hides a chip until its clip is in assets/query/. */
 const QUERY_WORLDS = [
   {key: 'nvidia', name: 'NVIDIA HQ', chips: [
     {id: 'rgb', label: 'RGB', mode: 'rgb'},
@@ -61,11 +109,9 @@ const QUERY_WORLDS = [
     {id: 'terracotta', label: 'fired clay', mode: 'name', col: 'vermillion'},
     {id: 'wood', label: 'wood', mode: 'name', col: 'purple'},
     {id: 'or_stone_travertine', label: 'stone ∨ travertine', spoken: 'stone or travertine', mode: 'combo', col: 'yellow',
-      desc: ['Yellow intensity shows the summed abundance of stone and travertine, the combination of two name queries.',
-        '以黃色的濃淡表示 stone 與 travertine 的豐度總和，即兩個名稱查詢的組合。']},
+      desc: 'desc.combo_stone'},
     {id: 'click_wood', label: 'shadowed wood', mode: 'click', col: 'sky',
-      desc: ['Click a shaded pixel (crosshair); the sunlit parts of the same material are retrieved too. The clicked spectrum, after illumination whitening, is compared with the spectrum of every Gaussian; Gaussians within 0.90° are shown in sky blue.',
-        '點選陰影中的像素（十字準星），同一材質受日照的部分也會一併取回。點選的光譜經照明白化後，與每個高斯的光譜相比較；光譜角在 0.90° 以內的高斯以天藍色顯示。']},
+      desc: 'desc.click_wood'},
     {id: 'band_550nm', label: '553 nm', mode: 'band', col: 'slate', nm: 553},
     {id: 'band_850nm', label: '847 nm', mode: 'band', col: 'slate', nm: 847}]},
   {key: 'botanical', name: 'Botanical', chips: [
@@ -73,15 +119,13 @@ const QUERY_WORLDS = [
     {id: 'living_leaves', label: 'vegetation', mode: 'name', col: 'green'},
     {id: 'wood', label: 'wood', mode: 'name', col: 'purple'},
     {id: 'nir_index', label: 'NIR index', mode: 'band', col: 'yellow', overlay: true,
-      desc: ['The index (NIR 780–900 nm − red 640–690 nm) / (NIR + red) is computed on the spectrum of every Gaussian; Gaussians at or above 0.175 are shown in yellow.',
-        '對每個高斯的光譜計算指數（NIR 780–900 nm − 紅光 640–690 nm）/（NIR + 紅光）；指數不低於 0.175 的高斯以黃色顯示。']}]},
+      desc: 'desc.nir_index'}]},
   {key: 'karst', name: 'Karst', chips: [
     {id: 'rgb', label: 'RGB', mode: 'rgb'},
     {id: 'water', label: 'water', mode: 'name', col: 'blue'},
     {id: 'limestone', label: 'limestone', mode: 'name', col: 'yellow'},
     {id: 'click_limestone', label: 'shadowed limestone', mode: 'click', col: 'orange',
-      desc: ['Click a shaded pixel (crosshair); the sunlit parts of the same material are retrieved too. The clicked spectrum, after illumination whitening, is compared with the spectrum of every Gaussian; Gaussians within 8.5° are shown in orange.',
-        '點選陰影中的像素（十字準星），同一材質受日照的部分也會一併取回。點選的光譜經照明白化後，與每個高斯的光譜相比較；光譜角在 8.5° 以內的高斯以橙色顯示。']}]},
+      desc: 'desc.click_limestone'}]},
   {key: 'study', name: 'Study', chips: [
     {id: 'rgb', label: 'RGB', mode: 'rgb'},
     {id: 'paper', label: 'paper', mode: 'name', col: 'sky'},
@@ -92,8 +136,7 @@ const QUERY_WORLDS = [
     {id: 'terracotta', label: 'fired clay', mode: 'name', col: 'vermillion'},
     {id: 'spec_leaf', label: 'living-leaf spectrum', mode: 'spectrum', col: 'green', ref: 'ECOSTRESS living leaf',
       spec: [10, 11, 11, 11, 16, 23, 21, 17, 15, 13, 12, 15, 48, 85, 98, 100, 100, 99, 99, 99, 99, 99, 98, 97], specNm: [420, 980],
-      desc: ['An ECOSTRESS living-leaf reflectance serves as the query. Gaussians whose spectra lie within 15.5° of its sun and sky illumination cone are shown in green.',
-        '以 ECOSTRESS 活體葉片反射率作為查詢。光譜落在其日光與天空光照明錐 15.5° 以內的高斯以綠色顯示。']},
+      desc: 'desc.spec_leaf'},
     {id: 'band_550nm', label: '553 nm', mode: 'band', col: 'slate', nm: 553},
     {id: 'band_850nm', label: '847 nm', mode: 'band', col: 'slate', nm: 847}]},
 ];
@@ -111,7 +154,6 @@ const WORLDS = [
   {key: 'office', name: 'Office', setting: 'indoor', classes: 8, rare: 3, spectra: 35},
 ];
 const NAMES = Object.fromEntries(WORLDS.map(w => [w.key, w.name]));
-const SETTING = {outdoor: ['outdoor', '室外'], indoor: ['indoor', '室內']};
 
 /* Table 2: [PSNR, SAM, mIoU, EM] for UnMix-NeRF, 3DGS + VCA / NNLS, SWR. */
 const TABLE2 = {
@@ -125,18 +167,10 @@ const TABLE2 = {
   office:         [[25.33, 6.65, 0.11, 18.8], [25.01, 5.03, 0.17, 41.3], [27.54, 4.31, 0.53, 3.3]],
 };
 const METRICS = {
-  psnr: {i: 0, label: ['PSNR (dB)', 'PSNR（dB）'], higher: true, digits: 2,
-    note: ['PSNR on foreground pixels against clean truth; methods train on noisy views.',
-      '以無雜訊真值計算前景像素的 PSNR；各方法皆以含雜訊的視角訓練。']},
-  sam: {i: 1, label: ['SAM (degrees)', 'SAM（度）'], higher: false, digits: 2,
-    note: ['Mean spectral angle on foreground pixels; a lower SAM does not by itself imply better identification.',
-      '前景像素的平均光譜角；較低的 SAM 本身並不代表較佳的辨識。']},
-  miou: {i: 2, label: ['mIoU', 'mIoU'], higher: true, digits: 2,
-    note: ['Dominant-endmember mIoU on test views. Each endmember is assigned to the class holding most of the training pixels it dominates, and this map is then frozen. No material label enters training; validation labels only select K.',
-      '測試視角上以主導端元計算的 mIoU。每個端元指派給其主導之訓練像素中占多數的類別，之後凍結此對應關係。訓練不使用任何材質標籤；驗證標籤僅用於選擇 K。']},
-  em: {i: 3, label: ['EM (degrees)', 'EM（度）'], higher: false, digits: 1,
-    note: ['Mean angle between each class’s mean spectrum over pure training pixels and its learned endmember under one-to-one assignment.',
-      '在一對一指派下，各類別於純訓練像素上的平均光譜與其學得端元之間的平均角度。']},
+  psnr: {i: 0, higher: true, digits: 2},   // foreground pixels against clean truth; methods train on noisy views
+  sam: {i: 1, higher: false, digits: 2},   // mean spectral angle on foreground pixels
+  miou: {i: 2, higher: true, digits: 2},   // dominant-endmember mIoU on test views; endmember-to-class map frozen from training pixels
+  em: {i: 3, higher: false, digits: 1},    // angle between each class mean spectrum over pure training pixels and its endmember
 };
 
 /* ---------- Shared helpers ---------- */
@@ -160,23 +194,20 @@ const press = (list, on) => list.forEach(b => b.setAttribute('aria-pressed', Str
   if (!v) return;
   const lite = innerWidth < 861 || saveData;
   v.poster = lite ? v.dataset.litePoster : v.dataset.poster;
-  const SEG = [
-    ['Forbidden City', 'yellow roof tile abundance', 'yellow roof tile 的豐度'],
-    ['Market', 'fired clay abundance', 'fired clay 的豐度'],
-    ['City', 'living-leaf spectrum query', '活體葉片光譜查詢'],
-    ['Karst', 'water abundance', 'water 的豐度'],
-    ['Study', 'paper abundance', 'paper 的豐度']];
+  const SEG = [   // world, material (abundance) or null for the spectrum query
+    ['Forbidden City', 'yellow roof tile'], ['Market', 'fired clay'], ['City', null], ['Karst', 'water'], ['Study', 'paper']];
   const STEP = 3.4 - 0.5;
   let seg = -1;
-  const show = i => { if (i === seg) return; seg = i; const s = SEG[i];
-    cap.innerHTML = `<b>${s[0]}</b> · ${L('left: RGB rendering · right: ' + s[1], '左：RGB 渲染 · 右：' + s[2])}`; };
+  const show = (i, force) => { if (i === seg && !force) return; seg = i; const s = SEG[i];
+    cap.innerHTML = `<b>${s[0]}</b> · ${esc(T('hero.cap', {what: s[1] ? T('hero.abund', {m: s[1]}) : T('hero.leafq')}))}`; };
   show(0);
+  relabel.push(() => show(seg, true));
   v.addEventListener('timeupdate', () => show(Math.min(SEG.length - 1, Math.floor((v.currentTime + 0.25) / STEP))));
   const sync = () => {
     const p = v.paused;
-    btn.querySelector('.lbl').innerHTML = p ? L('Play', '播放') : L('Pause', '暫停');
+    btn.querySelector('.lbl').innerHTML = L(p ? 'hero.play' : 'hero.pause');
     btn.querySelector('svg').innerHTML = p ? '<path d="M3 1.5v9l7.5-4.5z"/>' : '<path d="M2 1h3v10H2zM7 1h3v10H7z"/>';
-    btn.setAttribute('aria-label', p ? T('Play the background video', '播放背景影片') : T('Pause the background video', '暫停背景影片'));
+    btn.setAttribute('aria-label', T(p ? 'hero.aria_play' : 'hero.aria_pause'));
   };
   v.addEventListener('play', sync); v.addEventListener('pause', sync);
   relabel.push(sync);
@@ -234,10 +265,9 @@ function setSource(video, src, keepTime, shouldPlay) {
     const hasQuery = QUERY_WORLDS.some(q => q.key === w.key);
     const s = document.createElement('article');
     s.className = 'world';
-    const set = SETTING[w.setting];
     s.innerHTML = `<img src="assets/worlds/${w.key}-400.webp" srcset="assets/worlds/${w.key}-400.webp 400w, assets/worlds/${w.key}.webp 800w" sizes="(max-width:980px) 50vw, 290px" width="800" height="450" loading="lazy" decoding="async" alt="Rendered view of the ${w.name} world">
-      <div><h3>${w.name}</h3><span class="meta">${L(`${set[0]} · ${w.classes} classes (${w.rare} rare) · ${w.spectra} specimens`, `${set[1]} · ${w.classes} 類（${w.rare} 類稀有）· ${w.spectra} 種樣本`)}</span>
-      <button type="button"${hasQuery ? '' : ' disabled'}>${hasQuery ? L('Query this world →', '查詢此世界 →') : L('Shown in the figures below', '見下方圖表')}</button></div>`;
+      <div><h3>${w.name}</h3><span class="meta">${L('world.meta', {set: '@setting.' + w.setting, c: w.classes, r: w.rare, s: w.spectra})}</span>
+      <button type="button"${hasQuery ? '' : ' disabled'}>${L(hasQuery ? 'world.query' : 'world.figs')}</button></div>`;
     if (hasQuery) s.querySelector('button').addEventListener('click', () => {
       setQueryWorld(w.key);
       $('#query').scrollIntoView({behavior: reduceMotion.matches ? 'auto' : 'smooth'});
@@ -250,7 +280,7 @@ function setSource(video, src, keepTime, shouldPlay) {
 /* ---------- Overview video (YouTube, click to load) ---------- */
 $('#promo-play').addEventListener('click', () => {
   const promo = $('#promo'), f = document.createElement('iframe');
-  f.src = 'https://www.youtube-nocookie.com/embed/' + promo.dataset.yt + '?autoplay=1&rel=0&modestbranding=1&playsinline=1' + (lang() === 'zh' ? '&hl=zh-TW' : '');
+  f.src = 'https://www.youtube-nocookie.com/embed/' + promo.dataset.yt + '?autoplay=1&rel=0&modestbranding=1&playsinline=1' + (lang() === 'en' ? '' : '&hl=' + URL_CODE[lang()]);
   f.title = 'Spectral World Renderer overview video';
   f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
   f.allowFullscreen = true;
@@ -317,7 +347,7 @@ setInterval(() => {
 qVideo.addEventListener('waiting', () => { qStatus.hidden = false; });
 qVideo.addEventListener('playing', () => { qStatus.hidden = true; });
 qVideo.addEventListener('canplay', () => { qStatus.hidden = true; });
-qVideo.addEventListener('error', () => { qStatus.hidden = false; qStatus.innerHTML = L('Clip unavailable', '片段無法載入'); });
+qVideo.addEventListener('error', () => { qStatus.hidden = false; qStatus.innerHTML = L('clip.unavailable'); });
 
 const qColour = c => QCOL[c.col] || QCOL.teal;
 const OR_SVG = '<svg class="or" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2.5 6 10 10 2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -410,14 +440,14 @@ function renderChips() {
     if (!group.length) continue;
     const g = document.createElement('div'), m = QMODES[mode];
     g.className = 'qgroup'; g.setAttribute('role', 'group');
-    g.setAttribute('aria-label', m.tag[0] ? T(m.tag[0] + ' queries', m.tag[1] + '查詢') : T('Rendering', '渲染'));
-    g.innerHTML = `<span class="mode-tag" aria-hidden="true">${m.tag[0] ? L(m.tag[0], m.tag[1]) : L('Rendering', '渲染')}</span>`;
+    g.setAttribute('aria-label', mode === 'rgb' ? T(m.tag) : T('mode.group', {tag: '@' + m.tag}));
+    g.innerHTML = `<span class="mode-tag" aria-hidden="true">${L(m.tag)}</span>`;
     for (const c of group) {
       const b = document.createElement('button');
       b.type = 'button'; b.dataset.chip = c.id; b.className = 'qchip';
       b.style.setProperty('--qc', c.mode === 'rgb' ? '#FFFFFF' : qColour(c));
       b.innerHTML = `<span class="qi">${modeIcon(c)}</span><span class="qt">${labelHTML(c.label)}</span>`;
-      if (c.mode !== 'rgb') b.setAttribute('aria-label', `${T(m.aria[0], m.aria[1])}: ${spoken(c)}`);
+      if (c.mode !== 'rgb') b.setAttribute('aria-label', T('aria.chip', {mode: '@' + m.aria, label: spoken(c)}));
       b.setAttribute('aria-pressed', String(c === qChip));
       b.addEventListener('click', () => { qp.userPaused = false; setChip(c.id); });
       g.append(b);
@@ -426,13 +456,10 @@ function renderChips() {
   }
 }
 function chipDesc(c) {
-  if (c.desc) return L(c.desc[0], c.desc[1]);
-  if (c.mode === 'rgb') return L('Visible composite near 630 / 550 / 460 nm, rendered from the learned spectra.', '由學得光譜渲染、約 630 / 550 / 460 nm 的可見光合成影像。');
-  if (c.mode === 'name') { const n = QCOL_NAME[c.col] || QCOL_NAME.teal;
-    return L(`${n[0]} intensity shows the abundance of ${c.label} on a fixed 0–1 scale; all other surfaces are shown in grey.`,
-      `以${n[1]}的濃淡表示 ${c.label} 的豐度（固定的 0–1 刻度）；其他表面以灰色顯示。`); }
-  return L(`Single band near ${c.nm} nm; both band views share one fixed exposure, so brightness is comparable between wavelengths.` + (c.nm > 800 ? ' In the near-infrared, vegetation reflects strongly, whereas most building materials do not.' : ''),
-    `約 ${c.nm} nm 的單一波段；兩個波段視圖共用同一固定曝光，因此不同波長間的亮度可直接比較。` + (c.nm > 800 ? '在近紅外波段，植被反射強烈，而多數建築材料則否。' : ''));
+  if (c.desc) return L(c.desc);
+  if (c.mode === 'rgb') return L('desc.rgb');
+  if (c.mode === 'name') return L('desc.name', {col: '@col.' + (c.col in QCOL ? c.col : 'teal'), label: c.label});
+  return L('desc.band', {nm: c.nm}) + (c.nm > 800 ? L('desc.band_nir') : '');
 }
 function setChip(id, keepTime = true) {
   const chips = liveChips(qWorld);
@@ -441,7 +468,7 @@ function setChip(id, keepTime = true) {
   const compare = qChip.mode !== 'rgb', col = qColour(qChip), m = QMODES[qChip.mode];
   qRgb.hidden = !compare; $('#query-divider').hidden = !compare; $('#query-split').hidden = !compare;
   $('#label-l').hidden = !compare; $('#label-r').hidden = !compare;
-  $('#label-r').innerHTML = m.right[0] ? L(m.right[0], m.right[1]) : esc(qChip.label);
+  $('#label-r').innerHTML = m.right ? L(m.right) : esc(qChip.label);
   if (!compare) qRgb.pause();
   qPlayer.style.setProperty('--qc', compare ? col : '#FFFFFF');
   $('#query-icon').innerHTML = modeIcon(qChip);
@@ -459,16 +486,16 @@ function setChip(id, keepTime = true) {
 }
 function ariaVideo() {
   const c = qChip;
-  qVideo.setAttribute('aria-label', `${qWorld.name}: ${c.mode === 'rgb' ? T('RGB rendering', 'RGB 渲染')
-    : c.mode === 'band' ? c.label + (c.overlay ? '' : T(' band', ' 波段'))
-    : c.mode === 'name' ? T('abundance of ', '豐度：') + c.label : T(QMODES[c.mode].aria[0], QMODES[c.mode].aria[1]) + ', ' + spoken(c)}`);
+  qVideo.setAttribute('aria-label', `${qWorld.name}: ${c.mode === 'rgb' ? T('video.rgb')
+    : c.mode === 'band' ? (c.overlay ? c.label : T('video.band', {label: c.label}))
+    : c.mode === 'name' ? T('video.abund', {label: c.label}) : T('video.other', {mode: '@' + QMODES[c.mode].aria, label: spoken(c)})}`);
 }
 relabel.push(() => { renderChips(); ariaVideo(); });
 $('#query-split').addEventListener('input', e => qPlayer.style.setProperty('--split', e.target.value + '%'));
 qPlayer.addEventListener('dblclick', () => togglePlayer(qp));
 qPlayer.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'k') { e.preventDefault(); togglePlayer(qp); } });
 $('#query-chips').addEventListener('click', () => { qp.load(); if (qVideo.paused) qVideo.play().catch(() => {}); });
-function syncPP(btn, v) { const playing = !v.paused; btn.setAttribute('aria-label', playing ? T('Pause clip', '暫停片段') : T('Play clip', '播放片段')); btn.textContent = playing ? '❚❚' : '▶'; }
+function syncPP(btn, v) { const playing = !v.paused; btn.setAttribute('aria-label', T(playing ? 'clip.pause' : 'clip.play')); btn.textContent = playing ? '❚❚' : '▶'; }
 function togglePlayer(p) {
   p.load();
   if (p.video.paused) { p.userPaused = false; p.video.play().catch(() => {}); } else { p.userPaused = true; p.video.pause(); }
@@ -481,7 +508,7 @@ const MNAME = {miou: 'mIoU', psnr: 'PSNR', sam: 'SAM', em: 'EM'};
 const METHODS = [['UnMix-NeRF', 'UnMix'], ['3DGS + VCA / NNLS', '3DGS+VCA'], ['SWR', 'SWR']];
 function renderTable() {
   const head = $('#bench-table thead'), body = $('#bench-table tbody');
-  const top = `<tr><th scope="col" rowspan="2"><span class="en">World</span><span class="zh">世界</span></th>` +
+  const top = `<tr><th scope="col" rowspan="2">${L('table.world')}</th>` +
     MORDER.map(k => `<th scope="colgroup" colspan="3" class="mg">${MNAME[k]} ${METRICS[k].higher ? '↑' : '↓'}</th>`).join('') + '</tr>';
   const sub = '<tr>' + MORDER.map(() => METHODS.map((n, j) =>
     `<th scope="col" class="${j === 2 ? 'ours ' : ''}${j === 0 ? 'gs' : ''}"><span class="long">${n[0]}</span><span class="short" aria-hidden="true">${n[1]}</span></th>`).join('')).join('') + '</tr>';
@@ -494,16 +521,14 @@ function renderTable() {
   };
   for (const w of WORLDS) {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<th scope="row">${w.name}<span class="set">${L(...SETTING[w.setting])}</span></th>` +
+    tr.innerHTML = `<th scope="row">${w.name}<span class="set">${L('setting.' + w.setting)}</span></th>` +
       MORDER.map((k, a) => { const vals = TABLE2[w.key].map(r => r[METRICS[k].i]); vals.forEach((v, j) => means[a][j] += v / WORLDS.length); return cells(vals, k, true); }).join('');
     body.append(tr);
   }
   const tr = document.createElement('tr'); tr.className = 'mean';
-  tr.innerHTML = `<th scope="row">${L('Mean', '平均')}</th>` + MORDER.map((k, a) => cells(means[a], k, false)).join('');
+  tr.innerHTML = `<th scope="row">${L('table.mean')}</th>` + MORDER.map((k, a) => cells(means[a], k, false)).join('');
   body.append(tr);
-  $('#bench-caption').innerHTML = L(
-    'All four metrics on the eight worlds; the amber dot marks the best value per world and metric. mIoU: dominant-endmember mIoU on test views. PSNR (dB) and SAM (degrees) on foreground pixels against clean truth; a lower SAM does not by itself imply better identification. EM (degrees): angle between each class mean spectrum and its learned endmember. Source: Table 2 of the paper.',
-    '八個世界上的四項指標；琥珀色圓點標示各世界、各指標的最佳數值。mIoU：測試視角上以主導端元計算的 mIoU。PSNR（dB）與 SAM（度）以無雜訊真值計算前景像素；較低的 SAM 本身並不代表較佳的辨識。EM（度）：各類別平均光譜與其學得端元之間的角度。來源：論文表 2。');
+  $('#bench-caption').innerHTML = L('table.caption');
 }
 renderTable();
 
@@ -518,13 +543,13 @@ function bars(el, items, max) {
   }
 }
 bars($('#train-bars'), [
-  {name: 'SWR', v: 397, label: ['6 min 37 s', '6 分 37 秒'], ours: true},
-  {name: 'UnMix-NeRF', v: 1457, label: ['24 min 17 s', '24 分 17 秒']},
-  {name: '3DGS + VCA / NNLS', v: 5102, label: ['85 min 2 s', '85 分 2 秒']}], 5102);
+  {name: 'SWR', v: 397, label: ['bars.time', {m: 6, s: 37}], ours: true},
+  {name: 'UnMix-NeRF', v: 1457, label: ['bars.time', {m: 24, s: 17}]},
+  {name: '3DGS + VCA / NNLS', v: 5102, label: ['bars.time', {m: 85, s: 2}]}], 5102);
 bars($('#fps-bars'), [
-  {name: 'SWR', v: 34.9, label: ['34.9 views/s', '每秒 34.9 個視角'], ours: true},
-  {name: '3DGS + VCA / NNLS', v: 3.6, label: ['3.6 views/s', '每秒 3.6 個視角']},
-  {name: 'UnMix-NeRF', v: 0.18, label: ['0.18 views/s', '每秒 0.18 個視角']}], 34.9);
+  {name: 'SWR', v: 34.9, label: ['bars.views', {v: '34.9'}], ours: true},
+  {name: '3DGS + VCA / NNLS', v: 3.6, label: ['bars.views', {v: '3.6'}]},
+  {name: 'UnMix-NeRF', v: 0.18, label: ['bars.views', {v: '0.18'}]}], 34.9);
 
 /* ---------- Tetrahedra clips ---------- */
 const TETRA = ['market', 'forbidden_city', 'botanical', 'karst', 'study', 'city', 'nvidia'];
@@ -573,10 +598,10 @@ $('#copy-bib').addEventListener('click', async () => {
   try {
     if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(text);
     else { const a = document.createElement('textarea'); a.value = text; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.append(a); a.select(); const ok = document.execCommand('copy'); a.remove(); if (!ok) throw Error(); }
-    status.innerHTML = L('Copied', '已複製');
+    status.innerHTML = L('bib.copied');
   } catch {
     const r = document.createRange(); r.selectNodeContents($('#bibtex')); const s = getSelection(); s.removeAllRanges(); s.addRange(r);
-    status.innerHTML = L('Selected; copy it with the keyboard.', '已選取，請以鍵盤複製。');
+    status.innerHTML = L('bib.selected');
   }
   setTimeout(() => { status.textContent = ''; }, 2500);
 });

@@ -4,12 +4,25 @@
 --acc:#0a7d84;--vio:#5a3fc4;--amb:#b8770d;--navy:#0B1426;--teal:#3FD1C0;
 --spec:linear-gradient(90deg,#5b3fd1 0%,#1f6fd6 24%,#0e9a8c 48%,#c99212 72%,#d1452b 100%);
 --r:22px;--r2:14px;--max:1240px;--ease:cubic-bezier(.22,1,.36,1);
---sans:"Manrope","PingFang TC","Microsoft JhengHei","Noto Sans CJK TC","Noto Sans TC",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,Consolas,monospace}
+--sys:system-ui,-apple-system,"Segoe UI",sans-serif;
+/* CJK uses system fonts only (a CJK webfont adds megabytes). The stack follows html[lang], so Han characters take the regional glyphs. */
+--f-hant:"PingFang TC","Microsoft JhengHei","Noto Sans CJK TC","Noto Sans TC";
+--f-hans:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC","Noto Sans SC";
+--f-ja:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","YuGothic","Meiryo","Noto Sans CJK JP","Noto Sans JP";
+--f-ko:"Apple SD Gothic Neo","Malgun Gothic","Noto Sans CJK KR","Noto Sans KR";
+--cjk:var(--f-hant);
+--sans:"Manrope",var(--cjk),var(--sys);--mono:"JetBrains Mono",ui-monospace,Consolas,var(--cjk),monospace}
+html[lang=zh-Hans]{--cjk:var(--f-hans)}
+html[lang=zh-Hant]{--cjk:var(--f-hant)}
+html[lang=ja]{--cjk:var(--f-ja)}
+html[lang=ko]{--cjk:var(--f-ko)}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:76px;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 var(--sans);overflow-x:hidden}
-html[data-lang=en] .zh,html[data-lang=zh] .en{display:none!important}
-html[data-lang=zh] body{line-height:1.75}
+html:not([lang=en]) body{line-height:1.75}
+html[lang=ko] body{word-break:keep-all;overflow-wrap:anywhere}
+html[lang=ja] body{line-break:strict}
+html.i18n-wait body{opacity:0}
 img,video{display:block;max-width:100%}
 img{height:auto}
 a{color:inherit}
@@ -25,11 +38,26 @@ header.nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.86);bac
 .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.02em;font-size:19px;text-decoration:none}
 .brand svg{width:26px;height:26px}
 .nav nav{display:flex;gap:20px;margin:auto;font-size:12px;letter-spacing:.09em;text-transform:uppercase}
-html[data-lang=zh] .nav nav{letter-spacing:.04em;font-size:13px}
+html:not([lang=en]) .nav nav{letter-spacing:.04em;font-size:13px}
 .nav nav a{color:var(--ink2);text-decoration:none;white-space:nowrap}.nav nav a:hover{color:var(--ink)}
-.lang{display:flex;border:1px solid var(--line2);border-radius:99px;padding:2px;font-size:12px;flex:none}
-.lang button{padding:3px 10px;border-radius:99px;color:var(--ink2)}
-.lang button[aria-pressed=true]{background:var(--ink);color:#fff}
+/* Language switcher: a pill with the current language; a menu of the five */
+.langsw{position:relative;flex:none}
+.langsw-btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px 0 9px;border:1px solid var(--line2);border-radius:99px;font-size:12.5px;font-weight:600;color:var(--ink2);white-space:nowrap;transition:background .2s}
+.langsw-btn:hover,.langsw-btn[aria-expanded=true]{background:var(--card2);color:var(--ink)}
+.langsw-btn svg{width:15px;height:15px;flex:none}
+.langsw-btn .chev{width:11px;height:11px;transition:transform .2s var(--ease)}
+.langsw-btn[aria-expanded=true] .chev{transform:rotate(180deg)}
+.langsw-menu{position:absolute;right:0;top:calc(100% + 8px);margin:0;padding:6px;list-style:none;min-width:150px;background:#fff;border:1px solid var(--line2);border-radius:var(--r2);box-shadow:0 14px 36px rgba(20,26,34,.14);z-index:50}
+.langsw-menu[hidden]{display:none}
+.langsw-menu a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 10px;border-radius:9px;font-size:14px;color:var(--ink2);text-decoration:none;white-space:nowrap}
+.langsw-menu a:hover,.langsw-menu a:focus-visible{background:var(--card2);color:var(--ink);outline:none}
+.langsw-menu a[aria-checked=true]{color:var(--ink);font-weight:700}
+.langsw-menu a[aria-checked=true]:after{content:"";width:7px;height:7px;border-radius:50%;background:var(--acc);flex:none}
+/* each language name in its own regional glyphs, whatever the page language */
+.langsw [lang=zh-Hans]{font-family:"Manrope",var(--f-hans),var(--sys)}
+.langsw [lang=zh-Hant]{font-family:"Manrope",var(--f-hant),var(--sys)}
+.langsw [lang=ja]{font-family:"Manrope",var(--f-ja),var(--sys)}
+.langsw [lang=ko]{font-family:"Manrope",var(--f-ko),var(--sys)}
 
 /* Hero */
 .hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line);background:#fff}
@@ -48,7 +76,7 @@ html[data-lang=zh] .nav nav{letter-spacing:.04em;font-size:13px}
 .aff{margin:0 0 4px;font-size:13px;color:var(--mute);padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:0 16px}
 .venue{margin:8px 0 0;font:500 12px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--acc)}
 .lead{font-size:17.5px;color:var(--ink2);margin:14px 0 22px;max-width:58ch}
-html[data-lang=zh] .lead{font-size:17px}
+html:not([lang=en]) .lead{font-size:17px}
 .btns{display:flex;flex-wrap:wrap;gap:10px}
 .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 15px;border-radius:99px;border:1px solid var(--line2);background:rgba(255,255,255,.7);text-decoration:none;font-weight:600;font-size:14px;transition:background .25s}
 .btn svg{width:16px;height:16px;flex:none}
@@ -92,6 +120,7 @@ p.intro{margin:0 0 22px;color:var(--ink2);max-width:80ch;font-size:15px}
 .cardx p{margin:0;color:var(--ink2);font-size:14.5px}
 .c5 .cardx{padding:14px 16px}.c5 .cardx p{font-size:13.5px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.grid2>*{min-width:0}
 .grid2 .txt p{margin:0 0 12px;color:var(--ink2);font-size:15px}
 .grid2 .panel h3{margin-top:14px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
@@ -103,7 +132,7 @@ p.intro{margin:0 0 22px;color:var(--ink2);max-width:80ch;font-size:15px}
 .abstract{display:grid;grid-template-columns:200px 1fr;gap:28px;margin-top:22px}
 .abstract .label{margin-top:6px}
 .abstract p{margin:0;color:var(--ink2);font-size:15.5px;text-align:justify;hyphens:auto}
-html[data-lang=zh] .abstract p{text-align:left}
+html:not([lang=en]) .abstract p{text-align:left}
 
 /* Figures */
 .fig{display:block;width:100%;padding:0;border-radius:var(--r2);overflow:hidden;background:#fff;position:relative;cursor:zoom-in}
@@ -112,7 +141,7 @@ html[data-lang=zh] .abstract p{text-align:left}
 .cap{font-size:13.5px;color:var(--mute);margin:12px 2px 0}
 .cap b{color:var(--ink2)}
 .label{font:500 11px var(--mono);letter-spacing:.11em;color:var(--mute);text-transform:uppercase;margin:0 0 8px}
-html[data-lang=zh] .label{letter-spacing:.06em;font-size:12px}
+html:not([lang=en]) .label{letter-spacing:.06em;font-size:12px}
 
 /* Segmented controls and chips */
 .seg{display:inline-flex;border:1px solid var(--line2);border-radius:99px;padding:3px;font-size:13px;flex-wrap:wrap;background:#fff}
@@ -240,7 +269,7 @@ dialog button{display:block;margin:0 0 8px auto;color:#fff;font-size:14px;paddin
 
 @media (max-width:1100px){.nav nav{gap:14px;font-size:11px}}
 @media (max-width:980px){
-  .nav nav{display:none}.nav .lang{margin-left:auto}
+  .nav nav{display:none}.nav .langsw{margin-left:auto}
   .head,.grid2,.studio{grid-template-columns:1fr}.head{gap:14px}
   .cards.c3{grid-template-columns:1fr}.cards.c5{grid-template-columns:1fr 1fr}
   .stats{grid-template-columns:1fr 1fr}.worlds{grid-template-columns:repeat(2,1fr)}

@@ -24,27 +24,46 @@
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Manrope:wght@400;500;600;700;800&display=swap"></noscript>
 <link rel="preload" as="image" href="assets/hero/hero_poster.webp" media="(min-width:861px)">
 <link rel="preload" as="image" href="assets/hero/hero_poster-lite.webp" media="(max-width:860px)">
-<script>/* language before first paint: ?lang= > saved > browser */
-(function(){var q=new URLSearchParams(location.search).get('lang'),s=null;try{s=localStorage.getItem('swr-lang')}catch(e){}
-var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElement;h.dataset.lang=l;h.lang=l==='zh'?'zh-Hant':'en';})();</script>
-<link rel="stylesheet" href="style.css?v=r2">
-<script src="app.js?v=r2" defer></script>
+<link rel="alternate" hreflang="en" href="https://ming053l.github.io/Spectral-World-Renderer/?lang=en">
+<link rel="alternate" hreflang="zh-Hans" href="https://ming053l.github.io/Spectral-World-Renderer/?lang=zh-CN">
+<link rel="alternate" hreflang="zh-Hant" href="https://ming053l.github.io/Spectral-World-Renderer/?lang=zh-TW">
+<link rel="alternate" hreflang="ja" href="https://ming053l.github.io/Spectral-World-Renderer/?lang=ja">
+<link rel="alternate" hreflang="ko" href="https://ming053l.github.io/Spectral-World-Renderer/?lang=ko">
+<link rel="alternate" hreflang="x-default" href="https://ming053l.github.io/Spectral-World-Renderer/">
+<script>/* language before first paint: ?lang= > saved choice > English. Codes: en, zh-CN/zh-Hans, zh-TW/zh-Hant, ja, ko; the old ?lang=zh means zh-Hant. */
+(function(){var N={'en':'en','zh':'zh-Hant','zh-tw':'zh-Hant','zh-hant':'zh-Hant','zh-hk':'zh-Hant','zh-cn':'zh-Hans','zh-hans':'zh-Hans','zh-sg':'zh-Hans','ja':'ja','ko':'ko'};
+window.swrLangOf=function(c){return N[String(c||'').toLowerCase()]||null};
+var q=new URLSearchParams(location.search).get('lang'),s=null;try{s=localStorage.getItem('swr-lang')}catch(e){}
+var l=swrLangOf(q)||swrLangOf(s)||'en',h=document.documentElement;h.lang=l;h.dataset.lang=l;
+if(l!=='en'){h.classList.add('i18n-wait');setTimeout(function(){h.classList.remove('i18n-wait')},1500)}})();</script>
+<link rel="stylesheet" href="style.css?v=r3">
+<script src="i18n.js?v=r3" defer></script>
+<script src="app.js?v=r3" defer></script>
 </head>
 <body>
-<a class="skip" href="#main"><span class="en">Skip to content</span><span class="zh">跳至內容</span></a>
+<a class="skip" href="#main"><span data-i18n="ui.skip-content">Skip to content</span></a>
 <header class="nav"><div class="wrap">
   <a class="brand" href="#top"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0B1426"/><circle cx="16" cy="16" r="9.5" fill="none" stroke="#3FD1C0" stroke-width="2.6"/><circle cx="16" cy="16" r="4" fill="#F2B24C"/></svg>SWR</a>
   <nav aria-label="Sections">
-    <a href="#overview"><span class="en">Overview</span><span class="zh">概覽</span></a>
-    <a href="#query"><span class="en">Queries</span><span class="zh">材質查詢</span></a>
+    <a href="#overview"><span data-i18n="ui.overview">Overview</span></a>
+    <a href="#query"><span data-i18n="ui.queries">Queries</span></a>
     <a href="#bench">SWR-Bench</a>
-    <a href="#method"><span class="en">Method</span><span class="zh">方法</span></a>
-    <a href="#results"><span class="en">Results</span><span class="zh">結果</span></a>
-    <a href="#analysis"><span class="en">Analysis</span><span class="zh">分析</span></a>
-    <a href="#video"><span class="en">Video</span><span class="zh">影片</span></a>
-    <a href="#citation"><span class="en">Citation</span><span class="zh">引用</span></a>
+    <a href="#method"><span data-i18n="ui.method">Method</span></a>
+    <a href="#results"><span data-i18n="ui.results">Results</span></a>
+    <a href="#analysis"><span data-i18n="ui.analysis">Analysis</span></a>
+    <a href="#video"><span data-i18n="ui.video">Video</span></a>
+    <a href="#citation"><span data-i18n="ui.citation">Citation</span></a>
   </nav>
-  <div class="lang" role="group" aria-label="Language / 語言"><button type="button" data-l="en" aria-pressed="true">EN</button><button type="button" data-l="zh" aria-pressed="false" lang="zh-Hant">中文</button></div>
+  <div class="langsw" id="langsw">
+    <button type="button" class="langsw-btn" id="langsw-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="langsw-menu" aria-label="Language: English"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.9 5.6 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.6-3.9-9S9.4 5.6 12 3z"/></svg><span class="cur" id="langsw-cur">EN</span><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></button>
+    <ul class="langsw-menu" id="langsw-menu" role="menu" aria-labelledby="langsw-btn" hidden>
+    <li role="none"><a role="menuitemradio" href="?lang=en" hreflang="en" lang="en" data-l="en" data-short="EN" aria-checked="true" tabindex="-1">English</a></li>
+    <li role="none"><a role="menuitemradio" href="?lang=zh-CN" hreflang="zh-Hans" lang="zh-Hans" data-l="zh-Hans" data-short="简中" aria-checked="false" tabindex="-1">简体中文</a></li>
+    <li role="none"><a role="menuitemradio" href="?lang=zh-TW" hreflang="zh-Hant" lang="zh-Hant" data-l="zh-Hant" data-short="繁中" aria-checked="false" tabindex="-1">繁體中文</a></li>
+    <li role="none"><a role="menuitemradio" href="?lang=ja" hreflang="ja" lang="ja" data-l="ja" data-short="日本語" aria-checked="false" tabindex="-1">日本語</a></li>
+    <li role="none"><a role="menuitemradio" href="?lang=ko" hreflang="ko" lang="ko" data-l="ko" data-short="한국어" aria-checked="false" tabindex="-1">한국어</a></li>
+    </ul>
+  </div>
 </div></header>
 
 <main id="main">
@@ -67,70 +86,69 @@ var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElem
       <li><sup>2</sup> National Yang Ming Chiao Tung University</li>
       <li><sup>3</sup> National Cheng Kung University</li>
     </ul>
-    <p class="venue"><span class="en">Preprint · under review</span><span class="zh">預印本 · 審稿中</span></p>
-    <p class="lead"><span class="en">SWR is a material-aware explicit representation that unifies 3D spectral reconstruction and unmixing. A Gaussian scaffold fitted from RGB decodes each ray–Gaussian intersection into abundances over a shared endmember dictionary, so the same visibility weights render spectra and material maps from any view.</span><span class="zh">SWR 是一種具材質感知的顯式表示，將三維光譜重建與解混統一於同一框架。以 RGB 擬合的高斯骨架將每個光線與高斯的交點解碼為共享端元字典上的豐度，因此同一組可見度權重可在任意視角渲染光譜與材質圖。</span></p>
+    <p class="venue"><span data-i18n="hero.preprint-under-review">Preprint · under review</span></p>
+    <p class="lead"><span data-i18n="hero.swr-material-aware">SWR is a material-aware explicit representation that unifies 3D spectral reconstruction and unmixing. A Gaussian scaffold fitted from RGB decodes each ray–Gaussian intersection into abundances over a shared endmember dictionary, so the same visibility weights render spectra and material maps from any view.</span></p>
     <div class="btns">
-      <a class="btn p" href="https://arxiv.org/pdf/2610.19520" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span class="en">Paper</span><span class="zh">論文</span></a>
+      <a class="btn p" href="https://arxiv.org/pdf/2610.19520" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span data-i18n="hero.paper">Paper</span></a>
       <a class="btn" href="https://arxiv.org/abs/2610.19520" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h12v18H6zM9 8h6M9 12h6M9 16h4"/></svg>arXiv</a>
-      <a class="btn" href="assets/paper.pdf#page=15" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span class="en">Supplement</span><span class="zh">補充材料</span></a>
-      <a class="btn" href="https://github.com/ming053l/Spectral-World-Renderer/tree/main/code" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg><span class="en">Code</span><span class="zh">程式碼</span></a>
-      <a class="btn" href="https://huggingface.co/datasets/ming0531/SWR-Bench" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><span class="en">Dataset</span><span class="zh">資料集</span></a>
-      <a class="btn" href="#video"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span class="en">Video</span><span class="zh">影片</span></a>
+      <a class="btn" href="assets/paper.pdf#page=15" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span data-i18n="hero.supplement">Supplement</span></a>
+      <a class="btn" href="https://github.com/ming053l/Spectral-World-Renderer/tree/main/code" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg><span data-i18n="hero.code">Code</span></a>
+      <a class="btn" href="https://huggingface.co/datasets/ming0531/SWR-Bench" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><span data-i18n="hero.dataset">Dataset</span></a>
+      <a class="btn" href="#video"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span data-i18n="ui.video">Video</span></a>
     </div>
     <ul class="hero-stats">
-      <li><b>8 / 8</b><span><span class="en">worlds with the best material identification (mIoU)</span><span class="zh">個世界的材質辨識（mIoU）皆為最佳</span></span></li>
-      <li><b>6 min 37 s</b><span><span class="en">complete City pipeline, from RGB anchor to decoder</span><span class="zh">City 完整流程，從 RGB 錨點到解碼器</span></span></li>
-      <li><b>34.9</b><span><span class="en">joint spectral and label views per second at 960 × 540 × 64</span><span class="zh">每秒聯合渲染的光譜與標籤視角數（960 × 540 × 64）</span></span></li>
-      <li><b>≥ 3.67×</b><span><span class="en">faster training than the unmixing baselines on City</span><span class="zh">City 上相較解混基線的訓練加速</span></span></li>
+      <li><b>8 / 8</b><span><span data-i18n="hero.worlds-best-material">worlds with the best material identification (mIoU)</span></span></li>
+      <li><b>6 min 37 s</b><span><span data-i18n="hero.complete-city-pipeline">complete City pipeline, from RGB anchor to decoder</span></span></li>
+      <li><b>34.9</b><span><span data-i18n="hero.joint-spectral-label">joint spectral and label views per second at 960 × 540 × 64</span></span></li>
+      <li><b>≥ 3.67×</b><span><span data-i18n="hero.faster-training-than">faster training than the unmixing baselines on City</span></span></li>
     </ul>
   </div></div>
   <div class="hero-cap">
-    <button class="play" id="hero-play" type="button" aria-label="Pause the background video"><svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M2 1h3v10H2zM7 1h3v10H7z"/></svg><span class="lbl"><span class="en">Pause</span><span class="zh">暫停</span></span></button>
+    <button class="play" id="hero-play" type="button" aria-label="Pause the background video"><svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M2 1h3v10H2zM7 1h3v10H7z"/></svg><span class="lbl"><span data-i18n="hero.pause">Pause</span></span></button>
     <span id="hero-cap-text" aria-live="off"></span>
   </div>
 </div>
 <div class="ticker" aria-hidden="true"><div>
-  <span><span class="en">Unmixing inside rendering</span><span class="zh">在渲染中解混</span></span><span><span class="en">Abundances on explicit Gaussians</span><span class="zh">顯式高斯上的豐度</span></span><span><span class="en">Queries by name, click, spectrum or band</span><span class="zh">以名稱、點選、光譜或波段查詢</span></span><span><span class="en">64 bands, 420–980 nm</span><span class="zh">64 個波段，420–980 nm</span></span><span><span class="en">Eight worlds with known composition</span><span class="zh">八個組成已知的世界</span></span><span><span class="en">No material-label supervision in training</span><span class="zh">訓練時不需材質標籤監督</span></span>
-  <span><span class="en">Unmixing inside rendering</span><span class="zh">在渲染中解混</span></span><span><span class="en">Abundances on explicit Gaussians</span><span class="zh">顯式高斯上的豐度</span></span><span><span class="en">Queries by name, click, spectrum or band</span><span class="zh">以名稱、點選、光譜或波段查詢</span></span><span><span class="en">64 bands, 420–980 nm</span><span class="zh">64 個波段，420–980 nm</span></span><span><span class="en">Eight worlds with known composition</span><span class="zh">八個組成已知的世界</span></span><span><span class="en">No material-label supervision in training</span><span class="zh">訓練時不需材質標籤監督</span></span>
+  <span><span data-i18n="hero.unmixing-inside-rendering">Unmixing inside rendering</span></span><span><span data-i18n="hero.abundances-explicit-gaussians">Abundances on explicit Gaussians</span></span><span><span data-i18n="hero.queries-name-click">Queries by name, click, spectrum or band</span></span><span><span data-i18n="hero.64-bands-420">64 bands, 420–980 nm</span></span><span><span data-i18n="hero.eight-worlds-known">Eight worlds with known composition</span></span><span><span data-i18n="hero.no-material-label">No material-label supervision in training</span></span>
+  <span><span data-i18n="hero.unmixing-inside-rendering">Unmixing inside rendering</span></span><span><span data-i18n="hero.abundances-explicit-gaussians">Abundances on explicit Gaussians</span></span><span><span data-i18n="hero.queries-name-click">Queries by name, click, spectrum or band</span></span><span><span data-i18n="hero.64-bands-420">64 bands, 420–980 nm</span></span><span><span data-i18n="hero.eight-worlds-known">Eight worlds with known composition</span></span><span><span data-i18n="hero.no-material-label">No material-label supervision in training</span></span>
 </div></div>
 
 <div class="wrap">
 <!-- 01 Overview -->
 <section class="s" id="overview">
-  <div class="head"><div><p class="eyebrow">01 / <span class="en">Overview</span><span class="zh">概覽</span></p>
-    <h2><span class="en">What a surface is made of, <em>not only how it looks</em></span><span class="zh">表面由什麼構成，<em>而不只是看起來如何</em></span></h2></div>
-    <p><span class="en">Query any surface by name, click, spectrum, band or combination, and verify the answer against the known composition. <a href="#query">Try the material queries&nbsp;→</a></span><span class="zh">可依名稱、點選、光譜、波段或其組合查詢任一表面，並以已知組成驗證答案。<a href="#query">試用材質查詢&nbsp;→</a></span></p>
+  <div class="head"><div><p class="eyebrow">01 / <span data-i18n="ui.overview">Overview</span></p>
+    <h2><span data-i18n="overview.what-surface-made">What a surface is made of, <em>not only how it looks</em></span></h2></div>
+    <p><span data-i18n="overview.query-any-surface">Query any surface by name, click, spectrum, band or combination, and verify the answer against the known composition. <a href="#query">Try the material queries&nbsp;→</a></span></p>
   </div>
   <div class="panel">
     <button class="fig" type="button" data-full="assets/fig/teaser_grid.webp" aria-label="Enlarge: material identification across SWR-Bench worlds">
       <img src="assets/fig/teaser_grid-1200.webp" srcset="assets/fig/teaser_grid-800.webp 800w, assets/fig/teaser_grid-1200.webp 1200w, assets/fig/teaser_grid.webp 2400w" sizes="(max-width:1240px) calc(100vw - 96px), 1144px" width="1200" height="537" loading="lazy" decoding="async" alt="Rendered inputs of Forbidden City, Market, Botanical, City and Office, each followed by four material-name queries, such as white marble, fired clay, stone and asphalt, and one further query mode: a name combination, a click on shadowed wood, a near-infrared index, a living-leaf reference spectrum and a second name combination.">
     </button>
-    <p class="cap"><span class="en"><b>Material identification across SWR-Bench worlds.</b> <i>Input:</i> multi-view hyperspectral images from generated worlds with known composition (left). <i>Representation:</i> Gaussians with material abundances and spectra. <i>Queries:</i> a material name mapped from labelled training views, a clicked pixel (crosshair), a reference spectrum, a near-infrared spectral index or a combination. Tiles show selections on test views.</span><span class="zh"><b>SWR-Bench 各世界的材質辨識。</b><i>輸入：</i>來自組成已知之生成世界的多視角高光譜影像（左）。<i>表示：</i>帶有材質豐度與光譜的高斯。<i>查詢：</i>由已標註訓練視角對應的材質名稱、點選的像素（十字準星）、參考光譜、近紅外光譜指數或其組合。各圖塊為測試視角上的選取結果。</span></p>
+    <p class="cap"><span data-i18n="overview.material-identification-across"><b>Material identification across SWR-Bench worlds.</b> <i>Input:</i> multi-view hyperspectral images from generated worlds with known composition (left). <i>Representation:</i> Gaussians with material abundances and spectra. <i>Queries:</i> a material name mapped from labelled training views, a clicked pixel (crosshair), a reference spectrum, a near-infrared spectral index or a combination. Tiles show selections on test views.</span></p>
   </div>
   <div class="cards c3">
-    <div class="cardx"><small>01</small><h3><span class="en">Agentic benchmark with known composition</span><span class="zh">組成已知的代理式基準</span></h3><p><span class="en">An agentic pipeline builds SWR-Bench, indoor and outdoor worlds rendering multi-view HSI from measured spectra with aligned material labels and proportions.</span><span class="zh">代理式流程建構 SWR-Bench：由實測光譜渲染多視角高光譜影像的室內與室外世界，並附有對齊的材質標籤與比例。</span></p></div>
-    <div class="cardx"><small>02</small><h3><span class="en">Material-aware explicit representation</span><span class="zh">具材質感知的顯式表示</span></h3><p><span class="en">Compact Gaussian features predict local abundances at each ray–Gaussian intersection before alpha compositing. Shared visibility weights render spectra and material maps, keeping mixtures queryable on primitives across viewpoints.</span><span class="zh">精簡的高斯特徵在 alpha 合成之前，於每個光線–高斯交點預測局部豐度。共用的可見度權重同時渲染光譜與材質圖，使混合成分在各視角下皆可於基元上查詢。</span></p></div>
-    <div class="cardx"><small>03</small><h3><span class="en">Appearance-guided material allocation</span><span class="zh">外觀引導的材質分配</span></h3><p><span class="en">Multi-view spectral-shape and brightness clusters guide abundance assignments without a material-label fitting loss, improving the separation of materials with similar spectral shapes.</span><span class="zh">多視角的光譜形狀與亮度聚類引導豐度分配，無需材質標籤擬合損失，改善光譜形狀相近之材質的分離。</span></p></div>
+    <div class="cardx"><small>01</small><h3><span data-i18n="overview.agentic-benchmark-known">Agentic benchmark with known composition</span></h3><p><span data-i18n="overview.agentic-pipeline-builds">An agentic pipeline builds SWR-Bench, indoor and outdoor worlds rendering multi-view HSI from measured spectra with aligned material labels and proportions.</span></p></div>
+    <div class="cardx"><small>02</small><h3><span data-i18n="overview.material-aware-explicit">Material-aware explicit representation</span></h3><p><span data-i18n="overview.compact-gaussian-features">Compact Gaussian features predict local abundances at each ray–Gaussian intersection before alpha compositing. Shared visibility weights render spectra and material maps, keeping mixtures queryable on primitives across viewpoints.</span></p></div>
+    <div class="cardx"><small>03</small><h3><span data-i18n="overview.appearance-guided-material">Appearance-guided material allocation</span></h3><p><span data-i18n="overview.multi-view-spectral">Multi-view spectral-shape and brightness clusters guide abundance assignments without a material-label fitting loss, improving the separation of materials with similar spectral shapes.</span></p></div>
   </div>
   <div class="abstract" id="abstract">
-    <p class="label"><span class="en">Abstract</span><span class="zh">摘要</span></p>
+    <p class="label"><span data-i18n="overview.abstract-label">Abstract</span></p>
     <div>
-      <p class="en">Hyperspectral images (HSI) preserve material evidence lost in RGB, yet 3D material identification from multi-view HSI faces two obstacles. Spectral Gaussian splatting reconstructs spectra accurately but leaves unmixing to per-pixel post-processing, while multi-view hyperspectral capture is costly and real datasets lack pixel-level material labels and sub-pixel proportions. We propose Spectral World Renderer (SWR), a material-aware explicit representation that unifies 3D spectral reconstruction and unmixing: it fits a Gaussian scaffold from RGB and decodes ray–Gaussian intersections into abundances over a shared endmember dictionary. Additionally, appearance guidance prevents spectrally similar materials from merging when intensity absorbs their brightness differences. Moreover, SWR requires no material-label supervision during training. To address the data gap, we further construct the SWR Benchmark (SWR-Bench): a coding-agent pipeline generates eight indoor and outdoor worlds from measured reflectance, aligning HSI with both annotations. SWR achieves the highest mIoU in all eight worlds and the highest mean PSNR on each real dataset. On an 11-class urban world, it trains at least 3.67× faster than unmixing baselines; rendering averages 34.9 joint spectral and label views/s over four worlds on a single RTX&nbsp;4090.</p>
-      <p class="zh">高光譜影像（HSI）保留了 RGB 中遺失的材質證據，然而從多視角 HSI 進行三維材質辨識面臨兩項障礙。光譜高斯潑濺能準確重建光譜，卻將解混留給逐像素的後處理；同時，多視角高光譜擷取成本高昂，且真實資料集缺乏像素級材質標籤與次像素比例。我們提出 Spectral World Renderer（SWR），一種具材質感知、統一三維光譜重建與解混的顯式表示：它從 RGB 擬合高斯骨架，並將光線–高斯交點解碼為共享端元字典上的豐度。此外，當強度吸收了亮度差異時，外觀引導可防止光譜相近的材質被合併。SWR 在訓練期間亦不需要材質標籤監督。為彌補資料缺口，我們進一步建構 SWR Benchmark（SWR-Bench）：以編碼代理流程從實測反射率生成八個室內與室外世界，使 HSI 與上述兩種標註對齊。SWR 在全部八個世界中取得最高的 mIoU，並在每個真實資料集上取得最高的平均 PSNR。在一個 11 類的城市世界中，其訓練速度至少為解混基線的 3.67 倍；在單張 RTX&nbsp;4090 上，四個世界的平均渲染速度為每秒 34.9 個聯合光譜與標籤視角。</p>
+      <p data-i18n="overview.abstract">Hyperspectral images (HSI) preserve material evidence lost in RGB, yet 3D material identification from multi-view HSI faces two obstacles. Spectral Gaussian splatting reconstructs spectra accurately but leaves unmixing to per-pixel post-processing, while multi-view hyperspectral capture is costly and real datasets lack pixel-level material labels and sub-pixel proportions. We propose Spectral World Renderer (SWR), a material-aware explicit representation that unifies 3D spectral reconstruction and unmixing: it fits a Gaussian scaffold from RGB and decodes ray–Gaussian intersections into abundances over a shared endmember dictionary. Additionally, appearance guidance prevents spectrally similar materials from merging when intensity absorbs their brightness differences. Moreover, SWR requires no material-label supervision during training. To address the data gap, we further construct the SWR Benchmark (SWR-Bench): a coding-agent pipeline generates eight indoor and outdoor worlds from measured reflectance, aligning HSI with both annotations. SWR achieves the highest mIoU in all eight worlds and the highest mean PSNR on each real dataset. On an 11-class urban world, it trains at least 3.67× faster than unmixing baselines; rendering averages 34.9 joint spectral and label views/s over four worlds on a single RTX&nbsp;4090.</p>
     </div>
   </div>
 </section>
 
 <!-- 02 Material queries -->
 <section class="s" id="query">
-  <div class="head"><div><p class="eyebrow">02 / <span class="en">Material queries</span><span class="zh">材質查詢</span></p>
-    <h2><span class="en">Query <em>any material</em></span><span class="zh">查詢<em>任何材質</em></span></h2></div>
-    <p><span class="en">Every Gaussian carries abundances and a spectrum, so a query is a selection over primitives, consistent across views. Pick a world, choose a query and drag the divider to compare the RGB rendering (left) with the result (right).</span><span class="zh">每個高斯都帶有豐度與光譜，因此查詢即是對基元的選取，且在各視角間保持一致。請選擇世界與查詢，並拖動分隔線比較 RGB 渲染（左）與查詢結果（右）。</span></p>
+  <div class="head"><div><p class="eyebrow">02 / <span data-i18n="query.material-queries">Material queries</span></p>
+    <h2><span data-i18n="query.query-any-material">Query <em>any material</em></span></h2></div>
+    <p><span data-i18n="query.every-gaussian-carries">Every Gaussian carries abundances and a spectrum, so a query is a selection over primitives, consistent across views. Pick a world, choose a query and drag the divider to compare the RGB rendering (left) with the result (right).</span></p>
   </div>
   <div class="panel studio">
     <div class="side">
-      <div class="wsel"><p class="label"><span class="en">World</span><span class="zh">世界</span></p><div class="wthumbs" id="query-worlds" role="group" aria-label="World"></div></div>
-      <div class="qsel"><p class="label"><span class="en">Query</span><span class="zh">查詢</span></p><div class="qchips" id="query-chips" role="group" aria-label="Query"></div></div>
+      <div class="wsel"><p class="label"><span data-i18n="query.world">World</span></p><div class="wthumbs" id="query-worlds" role="group" aria-label="World"></div></div>
+      <div class="qsel"><p class="label"><span data-i18n="query.query">Query</span></p><div class="qchips" id="query-chips" role="group" aria-label="Query"></div></div>
       <p class="qdesc" id="query-desc" aria-live="polite"></p>
     </div>
     <div class="player" id="query-player">
@@ -142,20 +160,20 @@ var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElem
       <svg class="xhair" id="query-xhair" viewBox="-40 -40 80 80" aria-hidden="true" hidden><circle class="pulse" r="22"/><g class="under"><circle r="22"/><path d="M15 0h19M-15 0h-19M0 15v19M0-15v-19"/></g><g class="over"><circle r="22"/><path d="M15 0h19M-15 0h-19M0 15v19M0-15v-19"/></g><circle class="dot" r="2.6"/></svg>
       <div class="spec-card" id="query-spec" aria-hidden="true" hidden><svg viewBox="0 0 104 44"><path d="M4 40h96" class="base"/><path class="curve" d=""/></svg><span class="ref"></span><span class="ax"></span></div>
       <div class="query-chip" aria-hidden="true"><span class="qi" id="query-icon"></span><span id="query-term"></span></div>
-      <span class="status" id="query-status" hidden><span class="en">Loading…</span><span class="zh">載入中…</span></span>
+      <span class="status" id="query-status" hidden><span data-i18n="query.loading">Loading…</span></span>
       <button class="pp" id="query-pp" type="button" aria-label="Play clip">▶</button>
     </div>
   </div>
   <div class="cards c5" aria-label="Query modes">
-    <div class="cardx"><small><span class="en">Name</span><span class="zh">名稱</span></small><p><span class="en">a material, e.g. fired clay or water</span><span class="zh">指定一種材質，例如 fired clay 或 water</span></p></div>
-    <div class="cardx"><small><span class="en">Combination</span><span class="zh">組合</span></small><p><span class="en">of names, e.g. stone ∨ travertine</span><span class="zh">多個名稱的組合，例如 stone ∨ travertine</span></p></div>
-    <div class="cardx"><small><span class="en">Click</span><span class="zh">點選</span></small><p><span class="en">a shaded pixel: the sunlit parts of the same material are retrieved too</span><span class="zh">點選陰影中的像素：同一材質受日照的部分也會一併取回</span></p></div>
-    <div class="cardx"><small><span class="en">Spectrum</span><span class="zh">光譜</span></small><p><span class="en">from a library, e.g. a living leaf</span><span class="zh">取自光譜庫，例如活體葉片</span></p></div>
-    <div class="cardx"><small><span class="en">Band</span><span class="zh">波段</span></small><p><span class="en">or spectral index, e.g. near-infrared</span><span class="zh">或光譜指數，例如近紅外</span></p></div>
+    <div class="cardx"><small><span data-i18n="query.name">Name</span></small><p><span data-i18n="query.material-fired-clay">a material, e.g. fired clay or water</span></p></div>
+    <div class="cardx"><small><span data-i18n="query.combination">Combination</span></small><p><span data-i18n="query.names-stone-travertine">of names, e.g. stone ∨ travertine</span></p></div>
+    <div class="cardx"><small><span data-i18n="query.click">Click</span></small><p><span data-i18n="query.shaded-pixel-sunlit">a shaded pixel: the sunlit parts of the same material are retrieved too</span></p></div>
+    <div class="cardx"><small><span data-i18n="query.spectrum">Spectrum</span></small><p><span data-i18n="query.library-living-leaf">from a library, e.g. a living leaf</span></p></div>
+    <div class="cardx"><small><span data-i18n="query.band">Band</span></small><p><span data-i18n="query.spectral-index-near">or spectral index, e.g. near-infrared</span></p></div>
   </div>
-  <p class="note"><span class="en">Abundances come from SWR models trained without material labels. A name query sums the abundances of the endmembers assigned to the class through a frozen training-view map, on a fixed 0–1 scale, and a combination sums two classes. Click, spectrum and index queries compare the spectrum of every Gaussian with the clicked spectrum, a library reflectance or a band index under a fixed threshold. These clips are illustrative; quantitative results are reported below and in the paper.</span><span class="zh">豐度來自未使用材質標籤訓練的 SWR 模型。名稱查詢透過凍結的訓練視角對應關係，加總指派給該類別之端元的豐度，並以固定的 0–1 刻度呈現；組合查詢則加總兩個類別。點選、光譜與指數查詢在固定閾值下，將每個高斯的光譜與點選的光譜、光譜庫反射率或波段指數相比較。這些片段僅供示意，定量結果見下文與論文。</span></p>
+  <p class="note"><span data-i18n="query.abundances-come-swr">Abundances come from SWR models trained without material labels. A name query sums the abundances of the endmembers assigned to the class through a frozen training-view map, on a fixed 0–1 scale, and a combination sums two classes. Click, spectrum and index queries compare the spectrum of every Gaussian with the clicked spectrum, a library reflectance or a band index under a fixed threshold. These clips are illustrative; quantitative results are reported below and in the paper.</span></p>
 
-  <h3 class="subh" id="beyond"><span class="en">Seeing beyond RGB</span><span class="zh">超越 RGB</span></h3>
+  <h3 class="subh" id="beyond"><span data-i18n="query.seeing-beyond-rgb">Seeing beyond RGB</span></h3>
   <div class="grid2">
     <div class="panel">
       <div class="ctl">
@@ -168,12 +186,12 @@ var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElem
         <input type="range" min="0" max="100" value="50" aria-label="Compare the RGB rendering with the single band">
         <div class="h"></div><span class="tag l">RGB</span><span class="tag r" id="band-tag">847 nm</span>
       </div>
-      <p class="cap"><span class="en">Stills from one camera path, rendered by SWR. Left: visible composite near 630 / 550 / 460 nm from the learned spectra. Right: a single band; both band views share one fixed exposure, so brightness is comparable between wavelengths. In the near-infrared, vegetation reflects strongly, whereas most building materials do not.</span><span class="zh">取自同一相機路徑、由 SWR 渲染的畫面。左：由學得光譜合成、約 630 / 550 / 460 nm 的可見光影像。右：單一波段；兩個波段視圖共用同一固定曝光，因此不同波長間的亮度可直接比較。在近紅外波段，植被反射強烈，而多數建築材料則否。</span></p>
+      <p class="cap"><span data-i18n="query.stills-one-camera">Stills from one camera path, rendered by SWR. Left: visible composite near 630 / 550 / 460 nm from the learned spectra. Right: a single band; both band views share one fixed exposure, so brightness is comparable between wavelengths. In the near-infrared, vegetation reflects strongly, whereas most building materials do not.</span></p>
     </div>
     <div class="txt">
-      <p><span class="en">Living leaves differ from materials of the same colour beyond the visible range: chlorophyll absorbs red light and leaf tissue reflects near-infrared light, producing a red edge near 700&nbsp;nm that minerals and dry leaves lack. In City, foliage-coloured mineral leaves are only 2° from foliage in RGB but 42° apart in spectrum, so they receive endmembers of their own.</span><span class="zh">活體葉片與同色材質的差異出現在可見光範圍之外：葉綠素吸收紅光，葉片組織反射近紅外光，在 700&nbsp;nm 附近形成礦物與枯葉所沒有的紅邊。在 City 中，與植被同色的礦物葉片在 RGB 中與植被僅相差 2°，在光譜上卻相差 42°，因此各自獲得獨立的端元。</span></p>
-      <p><span class="en">Because abundances are stored on explicit, rasterizable Gaussians, a material query is a selection over primitives that is consistent across views and requires neither labels nor a per-image classifier. The mineral-leaf query retrieves no ordinary tree, whereas the equivalent RGB query retrieves eleven.</span><span class="zh">由於豐度儲存在顯式、可光柵化的高斯上，材質查詢即是對基元的選取，在各視角間保持一致，既不需要標籤，也不需要逐影像的分類器。礦物葉片查詢未取回任何一般樹木，而對應的 RGB 查詢則取回十一棵。</span></p>
-      <p><span class="en">A measured spectrum can also serve as the query. With the sun and sky illumination factored out, a pixel clicked in shadow retrieves 77&nbsp;% of the sunlit part of its material, against 10&nbsp;% for an RGB query (mean over four worlds).</span><span class="zh">實測光譜亦可作為查詢。在排除日光與天空光的照明影響後，於陰影中點選的像素可取回同一材質受日照部分的 77&nbsp;%，RGB 查詢則僅為 10&nbsp;%（四個世界的平均）。</span></p>
+      <p><span data-i18n="query.living-leaves-differ">Living leaves differ from materials of the same colour beyond the visible range: chlorophyll absorbs red light and leaf tissue reflects near-infrared light, producing a red edge near 700&nbsp;nm that minerals and dry leaves lack. In City, foliage-coloured mineral leaves are only 2° from foliage in RGB but 42° apart in spectrum, so they receive endmembers of their own.</span></p>
+      <p><span data-i18n="query.because-abundances-are">Because abundances are stored on explicit, rasterizable Gaussians, a material query is a selection over primitives that is consistent across views and requires neither labels nor a per-image classifier. The mineral-leaf query retrieves no ordinary tree, whereas the equivalent RGB query retrieves eleven.</span></p>
+      <p><span data-i18n="query.measured-spectrum-can">A measured spectrum can also serve as the query. With the sun and sky illumination factored out, a pixel clicked in shadow retrieves 77&nbsp;% of the sunlit part of its material, against 10&nbsp;% for an RGB query (mean over four worlds).</span></p>
     </div>
   </div>
   <div class="panel" style="margin-top:22px">
@@ -181,7 +199,7 @@ var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElem
       <button class="fig" type="button" data-full="assets/fig/app_query.webp" aria-label="Enlarge: material queries beyond RGB">
         <img src="assets/fig/app_query-1200.webp" srcset="assets/fig/app_query-800.webp 800w, assets/fig/app_query-1200.webp 1200w" sizes="(max-width:980px) 100vw, 560px" width="1200" height="1468" loading="lazy" decoding="async" alt="Paper figure on material queries in City: an RGB colour query also retrieves ordinary trees, whereas the query on per-Gaussian abundances retrieves only the mineral-leaf crowns; SWR also separates dry crowns from healthy foliage; a spectrum clicked on shadowed limestone in Karst also retrieves the sunlit rock, which the RGB colour query misses.">
       </button>
-      <p class="cap"><span class="en"><b>Material queries beyond RGB.</b> City: boxed crowns use mineral leaves. (a,b) Spectral queries isolate them; RGB retrieves ordinary trees. (c) Mineral and dry versus healthy crowns. (d) With known irradiance, shadowed limestone retrieves sunlit Karst rock.</span><span class="zh"><b>超越 RGB 的材質查詢。</b>City：方框內的樹冠使用礦物葉片。(a,b) 光譜查詢可將其分離，RGB 則取回一般樹木。(c) 礦物與枯萎樹冠相對於健康樹冠。(d) 在已知輻照度下，陰影中的石灰岩可取回 Karst 中受日照的岩石。</span></p>
+      <p class="cap"><span data-i18n="query.material-queries-beyond"><b>Material queries beyond RGB.</b> City: boxed crowns use mineral leaves. (a,b) Spectral queries isolate them; RGB retrieves ordinary trees. (c) Mineral and dry versus healthy crowns. (d) With known irradiance, shadowed limestone retrieves sunlit Karst rock.</span></p>
     </div>
   </div>
 </section>
@@ -189,31 +207,31 @@ var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElem
 <!-- 03 SWR-Bench -->
 <section class="s" id="bench">
   <div class="head"><div><p class="eyebrow">03 / SWR-Bench</p>
-    <h2><span class="en">Worlds with <em>known composition</em></span><span class="zh"><em>組成已知</em>的世界</span></h2></div>
-    <p><span class="en">Real multi-view hyperspectral datasets are tabletop or turntable captures without material labels or sub-pixel proportions, which cannot be annotated reliably by hand. The SWR world generator therefore creates worlds rather than annotating captures.</span><span class="zh">真實的多視角高光譜資料集多為桌面或轉台擷取，缺乏材質標籤與次像素比例，且無法以人工可靠地標註。因此，SWR 世界生成器直接建立世界，而非標註擷取資料。</span></p>
+    <h2><span data-i18n="bench.worlds-known-composition">Worlds with <em>known composition</em></span></h2></div>
+    <p><span data-i18n="bench.real-multi-view">Real multi-view hyperspectral datasets are tabletop or turntable captures without material labels or sub-pixel proportions, which cannot be annotated reliably by hand. The SWR world generator therefore creates worlds rather than annotating captures.</span></p>
   </div>
   <div class="stats">
-    <div class="stat"><b>8</b><span><span class="en">indoor and outdoor worlds with measured spectra</span><span class="zh">個使用實測光譜的室內與室外世界</span></span></div>
-    <div class="stat"><b>64</b><span><span class="en">bands from 420 to 980 nm</span><span class="zh">個波段，涵蓋 420 至 980 nm</span></span></div>
-    <div class="stat"><b>5–11</b><span><span class="en">material classes per world</span><span class="zh">每個世界的材質類別數</span></span></div>
-    <div class="stat"><b>96–240</b><span><span class="en">views per world</span><span class="zh">每個世界的視角數</span></span></div>
+    <div class="stat"><b>8</b><span><span data-i18n="bench.indoor-outdoor-worlds">indoor and outdoor worlds with measured spectra</span></span></div>
+    <div class="stat"><b>64</b><span><span data-i18n="bench.bands-420-980">bands from 420 to 980 nm</span></span></div>
+    <div class="stat"><b>5–11</b><span><span data-i18n="bench.material-classes-per">material classes per world</span></span></div>
+    <div class="stat"><b>96–240</b><span><span data-i18n="bench.views-per-world">views per world</span></span></div>
   </div>
   <div class="worlds" id="worlds"></div>
-  <p class="cap"><span class="en">SWR-Bench: eight indoor and outdoor worlds with measured spectra, rendered with 64 bands from 420 to 980 nm together with material labels and area proportions. Class, rare-class and specimen counts from Table 2 of the paper.</span><span class="zh">SWR-Bench：八個使用實測光譜的室內與室外世界，以 420 至 980 nm 的 64 個波段渲染，並附有材質標籤與面積比例。類別數、稀有類別數與樣本數取自論文表 2。</span></p>
+  <p class="cap"><span data-i18n="bench.swr-bench-eight">SWR-Bench: eight indoor and outdoor worlds with measured spectra, rendered with 64 bands from 420 to 980 nm together with material labels and area proportions. Class, rare-class and specimen counts from Table 2 of the paper.</span></p>
 
   <div class="panel" style="margin-top:30px">
     <button class="fig" type="button" data-full="assets/fig/swr_workflow.webp" aria-label="Enlarge: world generation pipeline">
       <img src="assets/fig/swr_workflow-1200.webp" srcset="assets/fig/swr_workflow-800.webp 800w, assets/fig/swr_workflow-1200.webp 1200w, assets/fig/swr_workflow.webp 2400w" sizes="(max-width:1240px) calc(100vw - 96px), 1144px" width="1200" height="598" loading="lazy" decoding="async" alt="Workflow diagram: reference photographs and a short brief guide a coding agent that writes an executable world; library-measured spectra are assigned to surfaces; one shared sub-pixel rendering produces hyperspectral and RGB observations with per-pixel materials; layout and rendering checks return flawed worlds for revision.">
     </button>
-    <p class="cap"><span class="en"><b>Agent-driven reference-guided world generation pipeline.</b> A coding agent converts reference photographs and scene descriptions into executable geometry, materials and cameras; verification ensures physical plausibility. Measured spectra define material appearances. Shared sub-pixel samples yield aligned RGB and hyperspectral observations, material labels and proportions. Right: eight generated worlds.</span><span class="zh"><b>代理驅動、以參考影像為引導的世界生成流程。</b>編碼代理將參考照片與場景描述轉換為可執行的幾何、材質與相機設定；驗證步驟確保物理合理性。實測光譜定義材質外觀。共用的次像素取樣產生對齊的 RGB 與高光譜觀測、材質標籤與比例。右：八個生成的世界。</span></p>
+    <p class="cap"><span data-i18n="bench.agent-driven-reference"><b>Agent-driven reference-guided world generation pipeline.</b> A coding agent converts reference photographs and scene descriptions into executable geometry, materials and cameras; verification ensures physical plausibility. Measured spectra define material appearances. Shared sub-pixel samples yield aligned RGB and hyperspectral observations, material labels and proportions. Right: eight generated worlds.</span></p>
   </div>
   <div class="cards c3">
-    <div class="cardx"><small><span class="en">Step 1</span><span class="zh">步驟 1</span></small><h3><span class="en">Generate the world</span><span class="zh">生成世界</span></h3><p><span class="en">A coding agent turns reference images and text into an executable scene program that fixes geometry, materials, illumination and cameras.</span><span class="zh">編碼代理將參考影像與文字轉換為可執行的場景程式，確定幾何、材質、照明與相機。</span></p></div>
-    <div class="cardx"><small><span class="en">Step 2</span><span class="zh">步驟 2</span></small><h3><span class="en">Ground it in measurements</span><span class="zh">以實測為依據</span></h3><p><span class="en">Every material is assigned measured spectra, with specimen variation and changes in spectral shape between sunlight and shade.</span><span class="zh">每種材質皆指定實測光譜，並包含樣本間的差異，以及日照與陰影之間光譜形狀的變化。</span></p></div>
-    <div class="cardx"><small><span class="en">Step 3</span><span class="zh">步驟 3</span></small><h3><span class="en">Render aligned evidence</span><span class="zh">渲染對齊的證據</span></h3><p><span class="en">Shared sub-pixel samples render RGB and hyperspectral observations together with material labels and area proportions.</span><span class="zh">共用的次像素取樣同時渲染 RGB 與高光譜觀測，以及材質標籤與面積比例。</span></p></div>
+    <div class="cardx"><small><span data-i18n="bench.step-1">Step 1</span></small><h3><span data-i18n="bench.generate-world">Generate the world</span></h3><p><span data-i18n="bench.coding-agent-turns">A coding agent turns reference images and text into an executable scene program that fixes geometry, materials, illumination and cameras.</span></p></div>
+    <div class="cardx"><small><span data-i18n="bench.step-2">Step 2</span></small><h3><span data-i18n="bench.ground-it-measurements">Ground it in measurements</span></h3><p><span data-i18n="bench.every-material-assigned">Every material is assigned measured spectra, with specimen variation and changes in spectral shape between sunlight and shade.</span></p></div>
+    <div class="cardx"><small><span data-i18n="bench.step-3">Step 3</span></small><h3><span data-i18n="bench.render-aligned-evidence">Render aligned evidence</span></h3><p><span data-i18n="bench.shared-sub-pixel">Shared sub-pixel samples render RGB and hyperspectral observations together with material labels and area proportions.</span></p></div>
   </div>
 
-  <h3 class="subh"><span class="en">Simulated hyperspectral observations</span><span class="zh">模擬高光譜觀測</span></h3>
+  <h3 class="subh"><span data-i18n="bench.simulated-hyperspectral-observations">Simulated hyperspectral observations</span></h3>
   <div class="panel">
     <div class="ctl"><div class="seg" role="tablist" aria-label="Worlds shown in the observation figure" id="hsi-tabs">
       <button role="tab" type="button" aria-selected="true" aria-controls="hsi-fig" data-hsi="1">Forbidden City · Market · Botanical · NVIDIA HQ</button>
@@ -224,49 +242,49 @@ var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElem
         <img id="hsi-img" src="assets/fig/swr_hsi_1-1200.webp" srcset="assets/fig/swr_hsi_1-800.webp 800w, assets/fig/swr_hsi_1-1200.webp 1200w" sizes="(max-width:1240px) calc(100vw - 96px), 1144px" width="1200" height="1148" loading="lazy" decoding="async" alt="Simulated hyperspectral observations of Forbidden City, Market, Botanical and NVIDIA HQ: narrow bands, a colour-infrared composite, apparent reflectance and clean and noisy 900 nm crops.">
       </button>
     </div>
-    <p class="cap"><span class="en"><b>Simulated hyperspectral observations.</b> Narrow bands share one exposure per world, so brightness differences between bands follow the radiance; the colour-infrared composite (R, G, B = 847, 651, 553 nm) renders vegetation red. Outdoor apparent reflectance reproduces the library reflectance, including chlorophyll absorption near 670 nm and the red edge; path-traced interiors deviate through interreflection and residual Monte Carlo variance. Bottom: clean and noisy crops of the 900 nm band.</span><span class="zh"><b>模擬高光譜觀測。</b>每個世界的窄波段共用同一曝光，因此波段間的亮度差異反映輻射亮度；彩色紅外合成（R、G、B = 847、651、553 nm）使植被呈現紅色。室外的表觀反射率重現光譜庫反射率，包括 670 nm 附近的葉綠素吸收與紅邊；路徑追蹤的室內場景則因相互反射與殘餘的蒙地卡羅變異而有所偏差。下方：900 nm 波段的無雜訊與含雜訊裁切。</span></p>
+    <p class="cap"><span data-i18n="bench.hsi-cap"><b>Simulated hyperspectral observations.</b> Narrow bands share one exposure per world, so brightness differences between bands follow the radiance; the colour-infrared composite (R, G, B = 847, 651, 553 nm) renders vegetation red. Outdoor apparent reflectance reproduces the library reflectance, including chlorophyll absorption near 670 nm and the red edge; path-traced interiors deviate through interreflection and residual Monte Carlo variance. Bottom: clean and noisy crops of the 900 nm band.</span></p>
   </div>
 </section>
 
 <!-- 04 Method -->
 <section class="s" id="method">
-  <div class="head"><div><p class="eyebrow">04 / <span class="en">Method</span><span class="zh">方法</span></p>
-    <h2><span class="en">Unmixing <em>inside rendering</em></span><span class="zh">在<em>渲染過程中</em>解混</span></h2></div>
-    <p><span class="en">Unmixing a rendered image afterwards acts on spectra that compositing has already mixed across surfaces. SWR instead unmixes inside rendering: at every ray intersection, a shared decoder turns the local feature into abundances and an intensity, and compositing accumulates both, so one render yields spectra and abundances.</span><span class="zh">對渲染後的影像再進行解混，所處理的光譜已在合成時跨表面混合。SWR 則在渲染過程中解混：在每個光線交點，共享解碼器將局部特徵轉換為豐度與強度，合成時同時累積兩者，因此一次渲染即可得到光譜與豐度。</span></p>
+  <div class="head"><div><p class="eyebrow">04 / <span data-i18n="ui.method">Method</span></p>
+    <h2><span data-i18n="method.unmixing-inside-rendering">Unmixing <em>inside rendering</em></span></h2></div>
+    <p><span data-i18n="method.unmixing-rendered-image">Unmixing a rendered image afterwards acts on spectra that compositing has already mixed across surfaces. SWR instead unmixes inside rendering: at every ray intersection, a shared decoder turns the local feature into abundances and an intensity, and compositing accumulates both, so one render yields spectra and abundances.</span></p>
   </div>
   <div class="panel">
     <button class="fig" type="button" data-full="assets/fig/method_overview.webp" aria-label="Enlarge: SWR reconstruction and unmixing pipeline">
       <img src="assets/fig/method_overview-1200.webp" srcset="assets/fig/method_overview-800.webp 800w, assets/fig/method_overview-1200.webp 1200w, assets/fig/method_overview.webp 2400w" sizes="(max-width:1240px) calc(100vw - 96px), 1144px" width="1200" height="460" loading="lazy" decoding="async" alt="Overview of SWR: an RGB scaffold fixes the geometry; each Gaussian carries band-independent harmonic features; at every ray intersection a shared decoder outputs abundances and an intensity that mix scene-wide endmembers before compositing; the same visibility weights render the spectrum and the abundances.">
     </button>
-    <p class="cap"><span class="en"><b>SWR reconstruction and unmixing pipeline.</b> An RGB scaffold first fits geometry and harmonic features; with geometry frozen, spectral mixtures are then learned. A shared decoder predicts intersection abundances and intensity over scene-wide endmembers. Shared visibility weights jointly render spectra and abundances. Appearance clusters initialize the dictionary and regularize abundance assignments.</span><span class="zh"><b>SWR 重建與解混流程。</b>RGB 骨架先擬合幾何與諧波特徵；固定幾何後再學習光譜混合。共享解碼器在交點處預測相對於全場景端元的豐度與強度。共用的可見度權重聯合渲染光譜與豐度。外觀聚類用以初始化字典並正則化豐度分配。</span></p>
+    <p class="cap"><span data-i18n="method.swr-reconstruction-unmixing"><b>SWR reconstruction and unmixing pipeline.</b> An RGB scaffold first fits geometry and harmonic features; with geometry frozen, spectral mixtures are then learned. A shared decoder predicts intersection abundances and intensity over scene-wide endmembers. Shared visibility weights jointly render spectra and abundances. Appearance clusters initialize the dictionary and regularize abundance assignments.</span></p>
   </div>
   <div class="cards c3">
-    <div class="cardx"><small><span class="en">Storage</span><span class="zh">儲存</span></small><h3><span class="en">Band-independent storage</span><span class="zh">與波段數無關的儲存</span></h3><p><span class="en">An RGB-trained anchor provides compact geometry, and each Gaussian stores a feature instead of a spectrum, so storage does not grow with the number of bands.</span><span class="zh">以 RGB 訓練的錨點提供精簡的幾何，每個高斯儲存特徵而非光譜，因此儲存量不隨波段數增加。</span></p></div>
-    <div class="cardx"><small><span class="en">Decoding</span><span class="zh">解碼</span></small><h3><span class="en">Decode before compositing</span><span class="zh">先解碼，再合成</span></h3><p><span class="en">A shared decoder maps the feature at every ray intersection to abundances over a scene-wide endmember dictionary, so one render yields spectra and abundances and every Gaussian carries queryable abundances.</span><span class="zh">共享解碼器將每個光線交點的特徵映射為全場景端元字典上的豐度，因此一次渲染即得到光譜與豐度，且每個高斯都帶有可查詢的豐度。</span></p></div>
-    <div class="cardx"><small><span class="en">Guidance</span><span class="zh">引導</span></small><h3><span class="en">Intensity and appearance guidance</span><span class="zh">強度與外觀引導</span></h3><p><span class="en">A separate intensity absorbs shading, and multi-view appearance guidance assigns an over-complete set of endmembers to distinct appearances.</span><span class="zh">獨立的強度項吸收明暗變化，多視角外觀引導則將過完備的端元集合分配給不同的外觀。</span></p></div>
+    <div class="cardx"><small><span data-i18n="method.storage">Storage</span></small><h3><span data-i18n="method.band-independent-storage">Band-independent storage</span></h3><p><span data-i18n="method.rgb-trained-anchor">An RGB-trained anchor provides compact geometry, and each Gaussian stores a feature instead of a spectrum, so storage does not grow with the number of bands.</span></p></div>
+    <div class="cardx"><small><span data-i18n="method.decoding">Decoding</span></small><h3><span data-i18n="method.decode-before-compositing">Decode before compositing</span></h3><p><span data-i18n="method.shared-decoder-maps">A shared decoder maps the feature at every ray intersection to abundances over a scene-wide endmember dictionary, so one render yields spectra and abundances and every Gaussian carries queryable abundances.</span></p></div>
+    <div class="cardx"><small><span data-i18n="method.guidance">Guidance</span></small><h3><span data-i18n="method.intensity-appearance-guidance">Intensity and appearance guidance</span></h3><p><span data-i18n="method.separate-intensity-absorbs">A separate intensity absorbs shading, and multi-view appearance guidance assigns an over-complete set of endmembers to distinct appearances.</span></p></div>
   </div>
-  <p class="intro" style="margin-top:22px"><span class="en">One Gaussian representation, composited with one set of visibility weights, renders spectra, abundances and material queries at any band count.</span><span class="zh">單一高斯表示以同一組可見度權重合成，即可在任意波段數下渲染光譜、豐度與材質查詢。</span></p>
+  <p class="intro" style="margin-top:22px"><span data-i18n="method.one-gaussian-representation">One Gaussian representation, composited with one set of visibility weights, renders spectra, abundances and material queries at any band count.</span></p>
 
-  <h3 class="subh"><span class="en">Multi-view appearance guidance</span><span class="zh">多視角外觀引導</span></h3>
+  <h3 class="subh"><span data-i18n="method.multi-view-appearance">Multi-view appearance guidance</span></h3>
   <div class="grid2">
     <div class="panel">
       <button class="fig" type="button" data-full="assets/fig/appearance_prior.webp" aria-label="Enlarge: appearance guidance">
         <img src="assets/fig/appearance_prior-1200.webp" srcset="assets/fig/appearance_prior-800.webp 800w, assets/fig/appearance_prior-1200.webp 1200w" sizes="(max-width:980px) 100vw, 560px" width="1200" height="858" loading="lazy" decoding="async" alt="Forbidden City example: white marble and grey masonry differ four-fold in brightness but only 3.8 degrees in spectral shape; clustering pixels of all training views by shape and brightness separates them; with the guidance, marble obtains its own layer.">
       </button>
-      <p class="cap"><span class="en"><b>Appearance guidance separates similar materials.</b> (a) Spectra of white marble and grey masonry. (b) Shape-and-brightness clusters pool training views. (c) Cluster assignments keep the two materials distinct in the test view.</span><span class="zh"><b>外觀引導分離相似材質。</b>(a) white marble 與 grey masonry 的光譜。(b) 光譜形狀與亮度聚類彙整所有訓練視角。(c) 聚類分配使兩種材質在測試視角中保持區分。</span></p>
+      <p class="cap"><span data-i18n="method.appearance-guidance-separates"><b>Appearance guidance separates similar materials.</b> (a) Spectra of white marble and grey masonry. (b) Shape-and-brightness clusters pool training views. (c) Cluster assignments keep the two materials distinct in the test view.</span></p>
     </div>
     <div class="txt">
-      <p><span class="en">Because the intensity absorbs brightness, a single endmember can explain two spectrally similar materials: in Forbidden City, white marble is four times brighter than grey masonry but only 3.8° apart in spectral shape.</span><span class="zh">由於強度吸收了亮度，單一端元可能同時解釋兩種光譜相近的材質：在 Forbidden City 中，white marble 的亮度是 grey masonry 的四倍，光譜形狀卻僅相差 3.8°。</span></p>
-      <p><span class="en">Clustering the pixels of all training views by spectral shape and brightness separates such appearances, and every view shares the same clusters. Each cluster initializes its own endmember, and the assignment is retained as weak guidance during training, which gives marble its own layer.</span><span class="zh">依光譜形狀與亮度對所有訓練視角的像素進行聚類，即可分離這類外觀，且所有視角共用相同的聚類。每個聚類初始化各自的端元，其分配在訓練期間保留為弱引導，使 marble 得到獨立的圖層。</span></p>
+      <p><span data-i18n="method.because-intensity-absorbs">Because the intensity absorbs brightness, a single endmember can explain two spectrally similar materials: in Forbidden City, white marble is four times brighter than grey masonry but only 3.8° apart in spectral shape.</span></p>
+      <p><span data-i18n="method.clustering-pixels-all">Clustering the pixels of all training views by spectral shape and brightness separates such appearances, and every view shares the same clusters. Each cluster initializes its own endmember, and the assignment is retained as weak guidance during training, which gives marble its own layer.</span></p>
     </div>
   </div>
 </section>
 
 <!-- 05 Results -->
 <section class="s" id="results">
-  <div class="head"><div><p class="eyebrow">05 / <span class="en">Results</span><span class="zh">結果</span></p>
-    <h2><span class="en">Identification <em>and fidelity</em></span><span class="zh">材質辨識<em>與光譜保真度</em></span></h2></div>
-    <p><span class="en">Mean scores from the paper on the eight SWR-Bench worlds. ↑ higher is better, ↓ lower is better.</span><span class="zh">論文中 SWR-Bench 八個世界的結果。↑ 越高越好，↓ 越低越好。</span></p>
+  <div class="head"><div><p class="eyebrow">05 / <span data-i18n="ui.results">Results</span></p>
+    <h2><span data-i18n="results.identification-fidelity">Identification <em>and fidelity</em></span></h2></div>
+    <p><span data-i18n="results.mean-scores-paper">Mean scores from the paper on the eight SWR-Bench worlds. ↑ higher is better, ↓ lower is better.</span></p>
   </div>
   <div class="spec-rule" aria-hidden="true"></div>
   <div class="scroll" role="region" aria-label="Table 2 results" tabindex="0">
@@ -276,51 +294,51 @@ var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElem
       <tbody></tbody>
     </table>
   </div>
-  <div class="reading"><span class="en">SWR has the best mIoU in every world and learns the endmembers closest to the true spectra. Known composition exposes what fidelity hides: in Market and Study, 3DGS with post-hoc unmixing reaches a lower SAM but a far lower mIoU. Within SWR itself, decoding after compositing raises Market PSNR from 33.72 to 34.37&nbsp;dB yet lowers mIoU from 0.47 to 0.37, the same gap.</span><span class="zh">SWR 在每個世界都取得最佳 mIoU，且學得的端元最接近真實光譜。已知組成揭示了保真度所掩蓋的問題：在 Market 與 Study 中，3DGS 搭配事後解混的 SAM 較低，mIoU 卻低得多。在 SWR 內部，於合成之後才解碼可將 Market 的 PSNR 從 33.72 提升至 34.37&nbsp;dB，mIoU 卻從 0.47 降至 0.37，呈現相同的落差。</span></div>
+  <div class="reading"><span data-i18n="results.swr-has-best">SWR has the best mIoU in every world and learns the endmembers closest to the true spectra. Known composition exposes what fidelity hides: in Market and Study, 3DGS with post-hoc unmixing reaches a lower SAM but a far lower mIoU. Within SWR itself, decoding after compositing raises Market PSNR from 33.72 to 34.37&nbsp;dB yet lowers mIoU from 0.47 to 0.37, the same gap.</span></div>
 
   <div class="panel" style="margin-top:22px">
     <button class="fig" type="button" data-full="assets/fig/bench_layers.webp" aria-label="Enlarge: material abundance maps across eight worlds">
       <img src="assets/fig/bench_layers-1200.webp" srcset="assets/fig/bench_layers-800.webp 800w, assets/fig/bench_layers-1200.webp 1200w, assets/fig/bench_layers.webp 2400w" sizes="(max-width:1240px) calc(100vw - 96px), 1144px" width="1200" height="873" loading="lazy" decoding="async" alt="Material layers across the eight worlds: for each world, the rendered input, the ground-truth layer of one material, and the layers of UnMix-NeRF, 3DGS plus VCA and NNLS, and SWR with their IoU; SWR has the highest IoU in every row.">
     </button>
-    <p class="cap"><span class="en"><b>Material abundance maps across eight worlds.</b> Rows tint one material by its abundance. UnMix-NeRF integrates abundances predicted at volume samples; 3DGS + VCA / NNLS unmixes rendered spectra per pixel with VCA endmembers and NNLS; SWR composites abundances decoded at each ray–Gaussian intersection with the visibility weights of the spectra. IoU thresholds class-summed abundance at 0.5.</span><span class="zh"><b>八個世界的材質豐度圖。</b>每列依豐度為一種材質著色。UnMix-NeRF 積分在體積取樣點預測的豐度；3DGS + VCA / NNLS 以 VCA 端元與 NNLS 對渲染光譜逐像素解混；SWR 則以光譜的可見度權重，合成在每個光線–高斯交點解碼的豐度。IoU 以 0.5 為閾值，作用於類別加總後的豐度。</span></p>
+    <p class="cap"><span data-i18n="results.material-abundance-maps"><b>Material abundance maps across eight worlds.</b> Rows tint one material by its abundance. UnMix-NeRF integrates abundances predicted at volume samples; 3DGS + VCA / NNLS unmixes rendered spectra per pixel with VCA endmembers and NNLS; SWR composites abundances decoded at each ray–Gaussian intersection with the visibility weights of the spectra. IoU thresholds class-summed abundance at 0.5.</span></p>
   </div>
 
   <div class="grid2" style="margin-top:22px">
     <div class="panel">
-      <h3><span class="en">Efficiency</span><span class="zh">效率</span></h3>
-      <p class="intro" style="margin:0"><span class="en">The City pipeline covers all four stages, from RGB anchor to decoder. Throughput counts views per second with spectra and label maps at 960 × 540 × 64.</span><span class="zh">City 流程涵蓋從 RGB 錨點到解碼器的全部四個階段。吞吐量以每秒渲染的視角數計，每個視角包含 960 × 540 × 64 的光譜與標籤圖。</span></p>
-      <div class="small-label"><span class="en">City training time (lower is better)</span><span class="zh">City 訓練時間（越低越好）</span></div>
+      <h3><span data-i18n="results.efficiency">Efficiency</span></h3>
+      <p class="intro" style="margin:0"><span data-i18n="results.city-pipeline-covers">The City pipeline covers all four stages, from RGB anchor to decoder. Throughput counts views per second with spectra and label maps at 960 × 540 × 64.</span></p>
+      <div class="small-label"><span data-i18n="results.city-training-time">City training time (lower is better)</span></div>
       <div class="hbars" id="train-bars"></div>
-      <div class="small-label"><span class="en">Mean rendering throughput (higher is better)</span><span class="zh">平均渲染吞吐量（越高越好）</span></div>
+      <div class="small-label"><span data-i18n="results.mean-rendering-throughput">Mean rendering throughput (higher is better)</span></div>
       <div class="hbars" id="fps-bars"></div>
-      <p class="note"><span class="en">SWR uses an optimized fused fp16 decoder that skips hits with weight below 10<sup>−4</sup> (99.97&nbsp;% identical labels); baselines use their reference code. Throughput is the mean over Market, Botanical, Study and Karst.</span><span class="zh">SWR 使用最佳化的融合 fp16 解碼器，略過權重低於 10<sup>−4</sup> 的交點（標籤 99.97&nbsp;% 相同）；基線方法使用其參考程式碼。吞吐量為 Market、Botanical、Study 與 Karst 的平均。</span></p>
+      <p class="note"><span data-i18n="results.swr-uses-optimized">SWR uses an optimized fused fp16 decoder that skips hits with weight below 10<sup>−4</sup> (99.97&nbsp;% identical labels); baselines use their reference code. Throughput is the mean over Market, Botanical, Study and Karst.</span></p>
     </div>
     <div class="panel">
-      <h3><span class="en">Real captures</span><span class="zh">真實擷取資料</span></h3>
-      <p class="intro" style="margin:0 0 14px"><span class="en">Without material ground truth, real captures test spectral fidelity. SWR has the best mean PSNR on each real source, by 1.55&nbsp;dB on NeSpoF and 5.27&nbsp;dB on the HSI-SC apple; HS-NeRF is nearly tied, and 3DGS reaches a lower mean and 95th-percentile angle there.</span><span class="zh">在沒有材質真值的情況下，真實擷取資料用以檢驗光譜保真度。SWR 在每個真實資料來源上都取得最佳平均 PSNR，在 NeSpoF 上高出 1.55&nbsp;dB，在 HSI-SC apple 上高出 5.27&nbsp;dB；在 HS-NeRF 上兩者幾乎持平，且 3DGS 在該資料上的平均與第 95 百分位光譜角較低。</span></p>
+      <h3><span data-i18n="results.real-captures">Real captures</span></h3>
+      <p class="intro" style="margin:0 0 14px"><span data-i18n="results.without-material-ground">Without material ground truth, real captures test spectral fidelity. SWR has the best mean PSNR on each real source, by 1.55&nbsp;dB on NeSpoF and 5.27&nbsp;dB on the HSI-SC apple; HS-NeRF is nearly tied, and 3DGS reaches a lower mean and 95th-percentile angle there.</span></p>
       <div class="scroll">
         <table>
-          <thead><tr><th scope="col"><span class="en">Source</span><span class="zh">資料來源</span></th><th scope="col">PSNR ↑<span class="rs"><span class="en">baseline · ours</span><span class="zh">基線 · SWR</span></span></th><th scope="col">SAM ↓<span class="rs"><span class="en">baseline · ours</span><span class="zh">基線 · SWR</span></span></th></tr></thead>
+          <thead><tr><th scope="col"><span data-i18n="results.source">Source</span></th><th scope="col">PSNR ↑<span class="rs"><span data-i18n="results.baseline-ours">baseline · ours</span></span></th><th scope="col">SAM ↓<span class="rs"><span data-i18n="results.baseline-ours">baseline · ours</span></span></th></tr></thead>
           <tbody>
-            <tr><th scope="row">NeSpoF<span class="set"><span class="en">21 bands</span><span class="zh">21 波段</span> · HyperGS</span></th><td>27.83 · <b class="win">29.38</b></td><td>4.88 · <b class="win">3.89</b></td></tr>
-            <tr><th scope="row">HSI-SC apple<span class="set"><span class="en">204 bands</span><span class="zh">204 波段</span> · DD-HGS</span></th><td>25.25 · <b class="win">30.52</b></td><td>1.92 · <b class="win">1.34</b></td></tr>
-            <tr><th scope="row">HS-NeRF<span class="set"><span class="en">128 / 141 bands</span><span class="zh">128 / 141 波段</span> · 3DGS</span></th><td>27.48 · <b class="win">27.50</b></td><td><b>6.24</b> · 6.80</td></tr>
+            <tr><th scope="row">NeSpoF<span class="set"><span data-i18n="results.21-bands">21 bands</span> · HyperGS</span></th><td>27.83 · <b class="win">29.38</b></td><td>4.88 · <b class="win">3.89</b></td></tr>
+            <tr><th scope="row">HSI-SC apple<span class="set"><span data-i18n="results.204-bands">204 bands</span> · DD-HGS</span></th><td>25.25 · <b class="win">30.52</b></td><td>1.92 · <b class="win">1.34</b></td></tr>
+            <tr><th scope="row">HS-NeRF<span class="set"><span data-i18n="results.128-141-bands">128 / 141 bands</span> · 3DGS</span></th><td>27.48 · <b class="win">27.50</b></td><td><b>6.24</b> · 6.80</td></tr>
           </tbody>
         </table>
       </div>
       <button class="fig" type="button" data-full="assets/fig/real_apple.webp" aria-label="Enlarge: reconstruction of the HSI-SC apple" style="margin-top:14px">
         <img src="assets/fig/real_apple-1200.webp" srcset="assets/fig/real_apple-800.webp 800w, assets/fig/real_apple-1200.webp 1200w" sizes="(max-width:980px) 100vw, 560px" width="1200" height="1014" loading="lazy" decoding="async" alt="204-band HSI-SC apple: ground truth, 3DGS, DD-HGS and SWR renderings, their 900 nm bands and per-pixel RMSE maps, with an inset of the SWR material layers.">
       </button>
-      <p class="cap"><span class="en"><b>Reconstruction of the 204-band HSI-SC apple.</b> Beyond RGB, the 900&nbsp;nm band records near-infrared reflectance that colour images cannot capture; SWR reconstructs it without the streaks of the baselines and with the lowest RMSE. Table: two-run means over 4 NeSpoF and 5 HS-NeRF scenes; the baseline is the PSNR-best of 3DGS, HyperGS and DD-HGS; bold marks the better value of each pair.</span><span class="zh"><b>204 波段 HSI-SC apple 的重建。</b>在 RGB 之外，900&nbsp;nm 波段記錄了彩色影像無法擷取的近紅外反射率；SWR 重建此波段時沒有基線方法的條紋，且 RMSE 最低。表格：NeSpoF 4 個場景與 HS-NeRF 5 個場景的兩次執行平均；基線為 3DGS、HyperGS 與 DD-HGS 中 PSNR 最佳者；粗體標示每組中較佳的數值。</span></p>
+      <p class="cap"><span data-i18n="results.reconstruction-204-band"><b>Reconstruction of the 204-band HSI-SC apple.</b> Beyond RGB, the 900&nbsp;nm band records near-infrared reflectance that colour images cannot capture; SWR reconstructs it without the streaks of the baselines and with the lowest RMSE. Table: two-run means over 4 NeSpoF and 5 HS-NeRF scenes; the baseline is the PSNR-best of 3DGS, HyperGS and DD-HGS; bold marks the better value of each pair.</span></p>
     </div>
   </div>
 </section>
 
 <!-- 06 Analysis -->
 <section class="s" id="analysis">
-  <div class="head"><div><p class="eyebrow">06 / <span class="en">Analysis</span><span class="zh">分析</span></p>
-    <h2><span class="en">Primitives as <em>material carriers</em></span><span class="zh">基元作為<em>材質的載體</em></span></h2></div>
-    <p><span class="en">Each Gaussian is enclosed by the regular tetrahedron of its canonical frame, scaled, rotated and translated with the Gaussian. The clips dissolve from these bounding tetrahedra into the rendered view along the camera path of the material queries.</span><span class="zh">每個高斯由其標準座標系中的正四面體包圍，並隨高斯一同縮放、旋轉與平移。這些片段沿材質查詢的相機路徑，由包圍四面體逐漸過渡為渲染畫面。</span></p>
+  <div class="head"><div><p class="eyebrow">06 / <span data-i18n="ui.analysis">Analysis</span></p>
+    <h2><span data-i18n="analysis.primitives-material-carriers">Primitives as <em>material carriers</em></span></h2></div>
+    <p><span data-i18n="analysis.each-gaussian-enclosed">Each Gaussian is enclosed by the regular tetrahedron of its canonical frame, scaled, rotated and translated with the Gaussian. The clips dissolve from these bounding tetrahedra into the rendered view along the camera path of the material queries.</span></p>
   </div>
   <div class="panel">
     <div class="ctl"><div class="seg" role="tablist" aria-label="World for the tetrahedra clip" id="tetra-worlds"></div></div>
@@ -333,15 +351,15 @@ var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElem
     <button class="fig" type="button" data-full="assets/fig/tetra_supp.webp" aria-label="Enlarge: Gaussian tetrahedra and decoded materials">
       <img src="assets/fig/tetra_supp-1200.webp" srcset="assets/fig/tetra_supp-800.webp 800w, assets/fig/tetra_supp-1200.webp 1200w, assets/fig/tetra_supp.webp 2400w" sizes="(max-width:1240px) calc(100vw - 96px), 1144px" width="1200" height="912" loading="lazy" decoding="async" alt="Bounding tetrahedra on test views: the rendering, the tetrahedra weighted by opacity and visibility, the tetrahedra coloured by the dominant class decoded at each Gaussian centre, and the rendered material map.">
     </button>
-    <p class="cap"><span class="en"><b>Gaussian tetrahedra and decoded materials.</b> Tetrahedra follow the scale, rotation and centre of each Gaussian; their barycentric coordinates interpolate four corner features. Columns show the rendering, opacity- and visibility-weighted tetrahedra, centre-decoded classes and material maps. Bottom: one Market Gaussian, marked by the amber window.</span><span class="zh"><b>高斯四面體與解碼的材質。</b>四面體依循每個高斯的尺度、旋轉與中心；其重心座標內插四個角點特徵。各欄依序為渲染結果、以不透明度與可見度加權的四面體、在中心解碼的類別，以及材質圖。下方：一個 Market 高斯，以琥珀色框標示。</span></p>
+    <p class="cap"><span data-i18n="analysis.gaussian-tetrahedra-decoded"><b>Gaussian tetrahedra and decoded materials.</b> Tetrahedra follow the scale, rotation and centre of each Gaussian; their barycentric coordinates interpolate four corner features. Columns show the rendering, opacity- and visibility-weighted tetrahedra, centre-decoded classes and material maps. Bottom: one Market Gaussian, marked by the amber window.</span></p>
   </div>
 </section>
 
 <!-- 07 Video -->
 <section class="s" id="video">
-  <div class="head"><div><p class="eyebrow">07 / <span class="en">Video</span><span class="zh">影片</span></p>
-    <h2><span class="en">Overview <em>video</em></span><span class="zh">概覽<em>影片</em></span></h2></div>
-    <p><span class="en">Playing the video loads it from YouTube (privacy-enhanced mode).</span><span class="zh">播放時將從 YouTube 載入影片（隱私強化模式）。</span></p>
+  <div class="head"><div><p class="eyebrow">07 / <span data-i18n="ui.video">Video</span></p>
+    <h2><span data-i18n="video.overview-video">Overview <em>video</em></span></h2></div>
+    <p><span data-i18n="video.playing-video-loads">Playing the video loads it from YouTube (privacy-enhanced mode).</span></p>
   </div>
   <div class="film" id="promo" data-yt="3FrSH7MaSjU">
     <img src="assets/video/swr_promo_poster.webp" srcset="assets/video/swr_promo_poster-640.webp 640w, assets/video/swr_promo_poster.webp 1280w" sizes="(max-width:1240px) 100vw, 1184px" width="1280" height="720" loading="lazy" decoding="async" alt="Overview video frame: a mosaic of SWR-Bench worlds with their material layers in many colours, captioned Any world. Every material.">
@@ -351,26 +369,26 @@ var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElem
 
 <!-- 08 Related -->
 <section class="s" id="related">
-  <div class="head"><div><p class="eyebrow">08 / <span class="en">Related</span><span class="zh">相關研究</span></p>
-    <h2><span class="en">Related <em>work</em></span><span class="zh">相關<em>研究</em></span></h2></div>
-    <p><span class="en">Spectral World Renderer builds on and compares with these works on spectral unmixing, hyperspectral reconstruction, 3D scene queries and material recognition.</span><span class="zh">Spectral World Renderer 延伸並比較了以下在光譜解混、高光譜重建、三維場景查詢與材質辨識方面的研究。</span></p>
+  <div class="head"><div><p class="eyebrow">08 / <span data-i18n="related.related">Related</span></p>
+    <h2><span data-i18n="related.related-work">Related <em>work</em></span></h2></div>
+    <p><span data-i18n="related.spectral-world-renderer">Spectral World Renderer builds on and compares with these works on spectral unmixing, hyperspectral reconstruction, 3D scene queries and material recognition.</span></p>
   </div>
   <ul class="rel">
-    <li><small>ICCV 2025</small><b>UnMix-NeRF: Spectral Unmixing Meets Neural Radiance Fields</b><span class="en">Spectral unmixing inside a neural radiance field; the material-identification baseline on SWR-Bench.</span><span class="zh">在神經輻射場中進行光譜解混；SWR-Bench 上的材質辨識基線。</span></li>
-    <li><small>CVPR 2025</small><b>HyperGS: Hyperspectral 3D Gaussian Splatting</b><span class="en">Hyperspectral Gaussian splatting through a latent spectral representation; a fidelity baseline on real captures.</span><span class="zh">透過潛在光譜表示進行高光譜高斯潑濺；真實擷取資料上的保真度基線。</span></li>
-    <li><small>ECCV 2026</small><b>Neural Harmonic Textures for High-Quality Primitive Based Neural Reconstruction</b><span class="en">Harmonic features interpolated within each primitive; the feature field that SWR decodes into abundances.</span><span class="zh">在每個基元內內插的諧波特徵；SWR 將此特徵場解碼為豐度。</span></li>
-    <li><small>ICCV 2023</small><b>LERF: Language Embedded Radiance Fields</b><span class="en">Open-vocabulary queries lifted into 3D; the query interface that material queries follow.</span><span class="zh">將開放詞彙查詢提升至三維；材質查詢沿用此查詢介面。</span></li>
-    <li><small>CVPR 2024</small><b>LangSplat: 3D Language Gaussian Splatting</b><span class="en">Language features attached to 3D Gaussians for fast open-vocabulary queries; material queries are likewise selections over Gaussians, answered by abundances and spectra.</span><span class="zh">將語言特徵附加於三維高斯以進行快速的開放詞彙查詢；材質查詢同樣是對高斯的選取，並由豐度與光譜回答。</span></li>
-    <li><small>3DV 2026</small><b>SAMa: Material-Aware 3D Selection and Segmentation</b><span class="en">Material selection in 3D from RGB views; spectra additionally separate surfaces of the same colour but different composition.</span><span class="zh">從 RGB 視角在三維中選取材質；光譜可進一步分離顏色相同但組成不同的表面。</span></li>
-    <li><small>ECCV 2022</small><b>A Dense Material Segmentation Dataset for Indoor and Outdoor Scene Parsing</b><span class="en">Per-pixel material categories from RGB images; SWR instead estimates sub-pixel material proportions.</span><span class="zh">從 RGB 影像得到逐像素的材質類別；SWR 則估計次像素的材質比例。</span></li>
+    <li><small>ICCV 2025</small><b>UnMix-NeRF: Spectral Unmixing Meets Neural Radiance Fields</b><span data-i18n="related.spectral-unmixing-inside">Spectral unmixing inside a neural radiance field; the material-identification baseline on SWR-Bench.</span></li>
+    <li><small>CVPR 2025</small><b>HyperGS: Hyperspectral 3D Gaussian Splatting</b><span data-i18n="related.hyperspectral-gaussian-splatting">Hyperspectral Gaussian splatting through a latent spectral representation; a fidelity baseline on real captures.</span></li>
+    <li><small>ECCV 2026</small><b>Neural Harmonic Textures for High-Quality Primitive Based Neural Reconstruction</b><span data-i18n="related.harmonic-features-interpolated">Harmonic features interpolated within each primitive; the feature field that SWR decodes into abundances.</span></li>
+    <li><small>ICCV 2023</small><b>LERF: Language Embedded Radiance Fields</b><span data-i18n="related.open-vocabulary-queries">Open-vocabulary queries lifted into 3D; the query interface that material queries follow.</span></li>
+    <li><small>CVPR 2024</small><b>LangSplat: 3D Language Gaussian Splatting</b><span data-i18n="related.language-features-attached">Language features attached to 3D Gaussians for fast open-vocabulary queries; material queries are likewise selections over Gaussians, answered by abundances and spectra.</span></li>
+    <li><small>3DV 2026</small><b>SAMa: Material-Aware 3D Selection and Segmentation</b><span data-i18n="related.material-selection-3d">Material selection in 3D from RGB views; spectra additionally separate surfaces of the same colour but different composition.</span></li>
+    <li><small>ECCV 2022</small><b>A Dense Material Segmentation Dataset for Indoor and Outdoor Scene Parsing</b><span data-i18n="related.per-pixel-material">Per-pixel material categories from RGB images; SWR instead estimates sub-pixel material proportions.</span></li>
   </ul>
 </section>
 
 <!-- 09 Citation -->
 <section class="s" id="citation">
-  <div class="head"><div><p class="eyebrow">09 / <span class="en">Citation</span><span class="zh">引用</span></p>
-    <h2><span class="en">Cite <em>SWR</em></span><span class="zh">引用 <em>SWR</em></span></h2></div>
-    <p><button class="btn" id="copy-bib" type="button"><span class="en">Copy BibTeX</span><span class="zh">複製 BibTeX</span></button> <span class="note" id="copy-status" aria-live="polite"></span></p>
+  <div class="head"><div><p class="eyebrow">09 / <span data-i18n="ui.citation">Citation</span></p>
+    <h2><span data-i18n="citation.cite-swr">Cite <em>SWR</em></span></h2></div>
+    <p><button class="btn" id="copy-bib" type="button"><span data-i18n="citation.copy-bibtex">Copy BibTeX</span></button> <span class="note" id="copy-status" aria-live="polite"></span></p>
   </div>
 <pre id="bibtex">@misc{lee2026swr,
   title         = {Spectral World Renderer: Unified 3D Hyperspectral Unmixing},
@@ -383,18 +401,18 @@ var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElem
   url           = {https://arxiv.org/abs/2610.19520}
 }</pre>
   <div class="ack" id="acknowledgements">
-    <p class="label"><span class="en">Acknowledgements</span><span class="zh">致謝</span></p>
-    <p><span class="en">This study was supported in part by the National Science and Technology Council (NSTC), Taiwan, under grants 115-2627-M-006-001, 115-2218-E-A49-023, and 115-2634-F-A49-014. We thank the National Center for High-performance Computing (NCHC) of National Applied Research Laboratories (NARLabs) in Taiwan for providing computational and storage resources.</span><span class="zh">本研究部分由國家科學及技術委員會（NSTC）計畫 115-2627-M-006-001、115-2218-E-A49-023 及 115-2634-F-A49-014 支持。感謝國家實驗研究院（NARLabs）國家高速網路與計算中心（NCHC）提供計算與儲存資源。</span></p>
+    <p class="label"><span data-i18n="citation.acknowledgements">Acknowledgements</span></p>
+    <p><span data-i18n="citation.this-study-was">This study was supported in part by the National Science and Technology Council (NSTC), Taiwan, under grants 115-2627-M-006-001, 115-2218-E-A49-023, and 115-2634-F-A49-014. We thank the National Center for High-performance Computing (NCHC) of National Applied Research Laboratories (NARLabs) in Taiwan for providing computational and storage resources.</span></p>
   </div>
 </section>
 </div>
 </main>
 
 <footer><div class="wrap">
-  <span><span class="en">Website template borrowed from <a href="https://nerfies.github.io/">Nerfies</a> and <a href="https://linjohnss.github.io/longsplat/">LongSplat</a>.</span><span class="zh">網站範本取自 <a href="https://nerfies.github.io/">Nerfies</a> 與 <a href="https://linjohnss.github.io/longsplat/">LongSplat</a>。</span></span>
-  <span><a href="https://ming053l.github.io/"><span class="en">Research homepage</span><span class="zh">研究首頁</span> ↗</a> &nbsp; <a href="#top"><span class="en">Back to top</span><span class="zh">回到頂端</span> ↑</a></span>
+  <span><span data-i18n="foot.website-template-borrowed">Website template borrowed from <a href="https://nerfies.github.io/">Nerfies</a> and <a href="https://linjohnss.github.io/longsplat/">LongSplat</a>.</span></span>
+  <span><a href="https://ming053l.github.io/"><span data-i18n="foot.research-homepage">Research homepage</span> ↗</a> &nbsp; <a href="#top"><span data-i18n="foot.back-top">Back to top</span> ↑</a></span>
 </div></footer>
 
-<dialog id="lightbox" aria-label="Figure at full resolution"><button type="button" class="close"><span class="en">Close</span><span class="zh">關閉</span> ×</button><img alt=""></dialog>
+<dialog id="lightbox" aria-label="Figure at full resolution"><button type="button" class="close"><span data-i18n="foot.close">Close</span> ×</button><img alt=""></dialog>
 </body>
 </html>

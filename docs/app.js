@@ -475,33 +475,37 @@ function togglePlayer(p) {
 }
 setQueryWorld('nvidia');
 
-/* ---------- Table 2 ---------- */
-let metric = 'miou';
+/* ---------- Table 2 (all metrics in one grid) ---------- */
+const MORDER = ['miou', 'psnr', 'sam', 'em'];
+const MNAME = {miou: 'mIoU', psnr: 'PSNR', sam: 'SAM', em: 'EM'};
+const METHODS = [['UnMix-NeRF', 'UnMix'], ['3DGS + VCA / NNLS', '3DGS+VCA'], ['SWR', 'SWR']];
 function renderTable() {
-  const m = METRICS[metric], body = $('#bench-table tbody');
+  const head = $('#bench-table thead'), body = $('#bench-table tbody');
+  const top = `<tr><th scope="col" rowspan="2"><span class="en">World</span><span class="zh">世界</span></th>` +
+    MORDER.map(k => `<th scope="colgroup" colspan="3" class="mg">${MNAME[k]} ${METRICS[k].higher ? '↑' : '↓'}</th>`).join('') + '</tr>';
+  const sub = '<tr>' + MORDER.map(() => METHODS.map((n, j) =>
+    `<th scope="col" class="${j === 2 ? 'ours ' : ''}${j === 0 ? 'gs' : ''}"><span class="long">${n[0]}</span><span class="short" aria-hidden="true">${n[1]}</span></th>`).join('')).join('') + '</tr>';
+  head.innerHTML = top + sub;
   body.replaceChildren();
-  const means = [0, 0, 0];
+  const means = MORDER.map(() => [0, 0, 0]);
+  const cells = (vals, k, mark) => {
+    const m = METRICS[k], best = m.higher ? Math.max(...vals) : Math.min(...vals);
+    return vals.map((v, j) => `<td class="${j === 2 ? 'ours ' : ''}${j === 0 ? 'gs ' : ''}${mark && v === best ? 'best' : ''}">${v.toFixed(m.digits)}</td>`).join('');
+  };
   for (const w of WORLDS) {
-    const vals = TABLE2[w.key].map(r => r[m.i]);
-    vals.forEach((v, j) => means[j] += v / WORLDS.length);
-    const best = m.higher ? Math.max(...vals) : Math.min(...vals);
     const tr = document.createElement('tr');
     tr.innerHTML = `<th scope="row">${w.name}<span class="set">${L(...SETTING[w.setting])}</span></th>` +
-      vals.map((v, j) => `<td class="${j === 2 ? 'ours ' : ''}${v === best ? 'best' : ''}">${v.toFixed(m.digits)}</td>`).join('');
+      MORDER.map((k, a) => { const vals = TABLE2[w.key].map(r => r[METRICS[k].i]); vals.forEach((v, j) => means[a][j] += v / WORLDS.length); return cells(vals, k, true); }).join('');
     body.append(tr);
   }
   const tr = document.createElement('tr'); tr.className = 'mean';
-  tr.innerHTML = `<th scope="row">${L('Mean', '平均')}</th>` + means.map((v, j) => `<td class="${j === 2 ? 'ours' : ''}">${v.toFixed(m.digits)}</td>`).join('');
+  tr.innerHTML = `<th scope="row">${L('Mean', '平均')}</th>` + MORDER.map((k, a) => cells(means[a], k, false)).join('');
   body.append(tr);
-  $('#bench-caption').innerHTML = L(`${m.label[0]}, ${m.higher ? 'higher' : 'lower'} is better; the amber dot marks the best value in each world. ${m.note[0]} Source: Table 2 of the paper.`,
-    `${m.label[1]}，${m.higher ? '越高越好' : '越低越好'}；琥珀色圓點標示各世界的最佳數值。${m.note[1]}來源：論文表 2。`);
+  $('#bench-caption').innerHTML = L(
+    'All four metrics on the eight worlds; the amber dot marks the best value per world and metric. mIoU: dominant-endmember mIoU on test views. PSNR (dB) and SAM (degrees) on foreground pixels against clean truth; a lower SAM does not by itself imply better identification. EM (degrees): angle between each class mean spectrum and its learned endmember. Source: Table 2 of the paper.',
+    '八個世界上的四項指標；琥珀色圓點標示各世界、各指標的最佳數值。mIoU：測試視角上以主導端元計算的 mIoU。PSNR（dB）與 SAM（度）以無雜訊真值計算前景像素；較低的 SAM 本身並不代表較佳的辨識。EM（度）：各類別平均光譜與其學得端元之間的角度。來源：論文表 2。');
 }
-(function metricTabs() {
-  const tabs = $$('#metric-tabs [role="tab"]');
-  for (const t of tabs) t.addEventListener('click', () => { selectTab(tabs, t); metric = t.dataset.metric; renderTable(); });
-  $('#metric-tabs').addEventListener('keydown', tabKeys);
-  renderTable();
-})();
+renderTable();
 
 /* ---------- Efficiency bars (Table 6) ---------- */
 function bars(el, items, max) {

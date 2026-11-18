@@ -278,3 +278,11 @@ dialog button{display:block;margin:0 0 8px auto;color:#fff;font-size:14px;paddin
   .long{display:none}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}.ticker>div{animation:none}.xhair .pulse{animation:none;opacity:0}}
+/* Table 2: all metrics in one grid */
+#bench-table th.mg{text-align:center;border-bottom:1px solid var(--line2);letter-spacing:.02em}
+#bench-table th.gs,#bench-table td.gs,#bench-table th.mg{border-left:1px solid var(--line2)}
+#bench-table .long{display:none}
+#bench-table .short{display:inline}
+#bench-table th,#bench-table td{padding:8px 9px}
+#bench-table td.best:after{margin-left:4px}
+#bench-table caption{white-space:normal}

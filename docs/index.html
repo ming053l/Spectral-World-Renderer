@@ -68,7 +68,7 @@ var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElem
       <li><sup>3</sup> National Cheng Kung University</li>
     </ul>
     <p class="venue"><span class="en">Preprint · under review</span><span class="zh">預印本 · 審稿中</span></p>
-    <p class="lead"><span class="en">A camera records how a surface looks; Spectral World Renderer shows what it is made of. One framework generates worlds of known composition and unmixes inside rendering, so a single render gives spectra and material abundances.</span><span class="zh">相機記錄的是表面看起來的樣子；Spectral World Renderer 呈現的是它由什麼構成。單一框架既生成組成已知的世界，也在渲染過程中進行解混，因此一次渲染即可同時得到光譜與材質豐度。</span></p>
+    <p class="lead"><span class="en">SWR is a material-aware explicit representation that unifies 3D spectral reconstruction and unmixing. A Gaussian scaffold fitted from RGB decodes each ray–Gaussian intersection into abundances over a shared endmember dictionary, so the same visibility weights render spectra and material maps from any view.</span><span class="zh">SWR 是一種具材質感知的顯式表示，將三維光譜重建與解混統一於同一框架。以 RGB 擬合的高斯骨架將每個光線與高斯的交點解碼為共享端元字典上的豐度，因此同一組可見度權重可在任意視角渲染光譜與材質圖。</span></p>
     <div class="btns">
       <a class="btn p" href="https://arxiv.org/pdf/2610.19520" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span class="en">Paper</span><span class="zh">論文</span></a>
       <a class="btn" href="https://arxiv.org/abs/2610.19520" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h12v18H6zM9 8h6M9 12h6M9 16h4"/></svg>arXiv</a>
@@ -268,17 +268,11 @@ var l=q==='zh'||q==='en'?q:s==='zh'||s==='en'?s:'en';var h=document.documentElem
     <h2><span class="en">Identification <em>and fidelity</em></span><span class="zh">材質辨識<em>與光譜保真度</em></span></h2></div>
     <p><span class="en">Mean scores from the paper on the eight SWR-Bench worlds. ↑ higher is better, ↓ lower is better.</span><span class="zh">論文中 SWR-Bench 八個世界的結果。↑ 越高越好，↓ 越低越好。</span></p>
   </div>
-  <div class="ctl"><div class="seg" role="tablist" aria-label="Metric" id="metric-tabs">
-    <button role="tab" type="button" aria-selected="true" data-metric="miou">mIoU ↑</button>
-    <button role="tab" type="button" aria-selected="false" data-metric="psnr" tabindex="-1">PSNR ↑</button>
-    <button role="tab" type="button" aria-selected="false" data-metric="sam" tabindex="-1">SAM ↓</button>
-    <button role="tab" type="button" aria-selected="false" data-metric="em" tabindex="-1">EM ↓</button>
-  </div></div>
   <div class="spec-rule" aria-hidden="true"></div>
-  <div class="scroll" role="tabpanel" aria-label="Table 2 results" tabindex="0">
+  <div class="scroll" role="region" aria-label="Table 2 results" tabindex="0">
     <table id="bench-table">
       <caption id="bench-caption"></caption>
-      <thead><tr><th scope="col"><span class="en">World</span><span class="zh">世界</span></th><th scope="col"><span class="long">UnMix-NeRF</span><span class="short" aria-hidden="true">UnMix</span></th><th scope="col"><span class="long">3DGS + VCA / NNLS</span><span class="short" aria-hidden="true">3DGS+VCA</span></th><th scope="col" class="ours">SWR</th></tr></thead>
+      <thead></thead>
       <tbody></tbody>
     </table>
   </div>

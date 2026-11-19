@@ -93,18 +93,12 @@ html:not([lang=en]) .lead{font-size:17px}
 .hero-cap b{color:var(--ink)}
 .play{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.9);border:1px solid var(--line2);border-radius:99px;padding:5px 12px;font-size:12.5px}
 .play svg{width:11px;height:11px}
-.ticker{border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;color:var(--mute);font-size:14px;padding:13px 0}
-.ticker>div{display:inline-block;animation:tk 46s linear infinite}
-.ticker span{margin:0 26px}
-.ticker span:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--spec);margin-right:52px;vertical-align:1px}
-@keyframes tk{to{transform:translateX(-50%)}}
 
 /* Sections */
 section.s{padding:92px 0 0}
 .head{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:end;margin-bottom:34px}
 .eyebrow{font:500 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:0 0 16px}
 h2{font-size:clamp(28px,3.5vw,44px);line-height:1.12;letter-spacing:-.028em;font-weight:700;margin:0}
-h2 em{font-style:normal;color:var(--acc)}
 .head p{margin:0;color:var(--ink2);font-size:15px}
 .head p a{color:var(--acc);font-weight:600;text-decoration:none}
 h3{font-size:18px;letter-spacing:-.01em;margin:0 0 6px;line-height:1.35}
@@ -123,6 +117,7 @@ p.intro{margin:0 0 22px;color:var(--ink2);max-width:80ch;font-size:15px}
 .grid2>*{min-width:0}
 .grid2 .txt p{margin:0 0 12px;color:var(--ink2);font-size:15px}
 .grid2 .panel h3{margin-top:14px}
+.beyond .txt{margin-top:18px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:18px 20px}
 .stat b{display:block;font-size:30px;letter-spacing:-.03em;line-height:1.15}
@@ -325,7 +320,7 @@ html:not([lang=en]) .ameas b{letter-spacing:.05em;font-size:11px}
   table{font-size:12.5px}
   .long{display:none}
 }
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}.ticker>div{animation:none}.xhair .pulse{animation:none;opacity:0}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}.xhair .pulse{animation:none;opacity:0}}
 /* Table 2: all metrics in one grid */
 #bench-table th.mg{text-align:center;border-bottom:1px solid var(--line2);letter-spacing:.02em}
 #bench-table th.gs,#bench-table td.gs,#bench-table th.mg{border-left:1px solid var(--line2)}

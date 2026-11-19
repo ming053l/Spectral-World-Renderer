@@ -453,7 +453,7 @@ window.SWR_I18N = {
   "ko": "센서 시뮬레이션과 NDVI",
 },
 "apps.ndvi-meas": {
-  "en": "32 held-out views: NDVI MAE 0.042, <i>r</i> = 0.95; NDRE MAE 0.028, <i>r</i> = 0.93",
+  "en": "32 test views: NDVI MAE 0.042, <i>r</i> = 0.95; NDRE MAE 0.028, <i>r</i> = 0.93",
   "zh-Hans": "32 个测试视角：NDVI MAE 0.042，<i>r</i> = 0.95；NDRE MAE 0.028，<i>r</i> = 0.93",
   "zh-Hant": "32 個測試視角：NDVI MAE 0.042，<i>r</i> = 0.95；NDRE MAE 0.028，<i>r</i> = 0.93",
   "ja": "32 のテスト視点：NDVI MAE 0.042、<i>r</i> = 0.95。NDRE MAE 0.028、<i>r</i> = 0.93",
@@ -488,21 +488,21 @@ window.SWR_I18N = {
   "ko": "3D 재질 통계",
 },
 "apps.stats-meas": {
-  "en": "Class shares on held-out views: vegetation 41.8&nbsp;% (ground truth 41.3&nbsp;%), concrete masonry 25.4&nbsp;% (24.8&nbsp;%); mIoU 0.521 with one abundance vector per Gaussian, 0.524 for the full render",
+  "en": "Class shares on test views: vegetation 41.8&nbsp;% (ground truth 41.3&nbsp;%), concrete masonry 25.4&nbsp;% (24.8&nbsp;%); mIoU 0.521 with one abundance vector per Gaussian, 0.524 for the full render",
   "zh-Hans": "测试视角上的类别占比：植被 41.8&nbsp;%（真值 41.3&nbsp;%），混凝土砌体 25.4&nbsp;%（24.8&nbsp;%）；每个高斯仅用一个丰度向量时 mIoU 为 0.521，完整渲染为 0.524",
   "zh-Hant": "測試視角上的類別占比：植被 41.8&nbsp;%（真值 41.3&nbsp;%），混凝土砌體 25.4&nbsp;%（24.8&nbsp;%）；每個高斯僅用一個豐度向量時 mIoU 為 0.521，完整渲染為 0.524",
   "ja": "テスト視点におけるクラス占有率：植生 41.8&nbsp;%（真値 41.3&nbsp;%）、コンクリート組積 25.4&nbsp;%（24.8&nbsp;%）。mIoU はガウシアンごとに一つの存在比ベクトルとした場合 0.521、完全なレンダリングでは 0.524",
   "ko": "테스트 시점의 클래스 점유율: 식생 41.8&nbsp;%(실측값 41.3&nbsp;%), 콘크리트 조적 25.4&nbsp;%(24.8&nbsp;%); mIoU는 가우시안당 풍부도 벡터 하나만 사용할 때 0.521, 전체 렌더링에서 0.524",
 },
 "apps.stats-cap": {
-  "en": "Per-Gaussian abundances are aggregated over the training-view hits of each Gaussian with visibility weights. On held-out views, the resulting image-space class shares match the ground truth, and a single abundance vector per Gaussian leaves mIoU nearly unchanged. The Gaussians of each material can be exported as point sets; the clip isolates one material at a time.",
+  "en": "Per-Gaussian abundances are aggregated over the training-view hits of each Gaussian with visibility weights. On test views, the resulting image-space class shares match the ground truth, and a single abundance vector per Gaussian leaves mIoU nearly unchanged. The Gaussians of each material can be exported as point sets; the clip isolates one material at a time.",
   "zh-Hans": "每个高斯的丰度由其在训练视角中的所有命中按可见度权重聚合而得。在测试视角上，由此得到的图像空间类别占比与真值一致，且每个高斯仅保留一个丰度向量时 mIoU 几乎不变。各材质的高斯可导出为点集；视频每次单独显示一种材质。",
   "zh-Hant": "每個高斯的豐度由其在訓練視角中的所有命中依可見度權重彙整而得。在測試視角上，由此得到的影像空間類別占比與真值一致，且每個高斯僅保留一個豐度向量時 mIoU 幾乎不變。各材質的高斯可匯出為點集；影片每次單獨顯示一種材質。",
   "ja": "ガウシアンごとの存在比は、学習視点における各ガウシアンへのヒットを可視性重みで集約して求める。テスト視点では、得られた画像空間のクラス占有率は真値と一致し、ガウシアンごとに存在比ベクトルを一つに限っても mIoU はほとんど変化しない。各材質のガウシアンは点群として書き出すことができ、動画では材質を一つずつ分離して示す。",
   "ko": "가우시안별 풍부도는 학습 시점에서 각 가우시안에 대한 히트를 가시성 가중치로 집계하여 구한다. 테스트 시점에서 이렇게 얻은 영상 공간 클래스 점유율은 실측값과 일치하며, 가우시안당 풍부도 벡터를 하나로 제한해도 mIoU는 거의 변하지 않는다. 각 재질의 가우시안은 점 집합으로 내보낼 수 있으며, 영상은 재질을 하나씩 분리하여 보여 준다.",
 },
 "apps.stats-fig1": {
-  "en": "Class shares on held-out views",
+  "en": "Class shares on test views",
   "zh-Hans": "测试视角上的类别占比",
   "zh-Hant": "測試視角上的類別占比",
   "ja": "テスト視点におけるクラス占有率",
@@ -516,7 +516,7 @@ window.SWR_I18N = {
   "ko": "사전으로 설명할 수 없는 스펙트럼",
 },
 "apps.anom-meas": {
-  "en": "32 held-out views: AUC 0.97 per pixel, 0.95 in 3D, against 0.50 for the same fit in RGB; stressed-leaf variant 0.85",
+  "en": "32 test views: AUC 0.97 per pixel, 0.95 in 3D, against 0.50 for the same fit in RGB; stressed-leaf variant 0.85",
   "zh-Hans": "32 个测试视角：逐像素 AUC 0.97，三维 0.95，而在 RGB 中进行相同拟合仅为 0.50；胁迫叶片变体为 0.85",
   "zh-Hant": "32 個測試視角：逐像素 AUC 0.97，三維 0.95，而在 RGB 中進行相同擬合僅為 0.50；逆境葉片變體為 0.85",
   "ja": "32 のテスト視点：AUC はピクセル単位で 0.97、3D で 0.95。RGB で同じフィットを行った場合は 0.50。ストレスを受けた葉の変種では 0.85",
@@ -530,7 +530,7 @@ window.SWR_I18N = {
   "ko": "City의 메타머 변형에서는 일부 수관과 차량 도장이 RGB에서는 일치하지만 스펙트럼에서는 다른 재질로 대체되어 있다. 학습된 엔드멤버에 대한 비음수 적합 후의 잔차 각을 가우시안으로 집계하면 이들이 검출된다. 사전이 잘 적합하지 못하는 재질 역시 높은 점수를 받는다.",
 },
 "apps.anom-fig1": {
-  "en": "Residual on a held-out view",
+  "en": "Residual on a test view",
   "zh-Hans": "测试视角上的残差",
   "zh-Hant": "測試視角上的殘差",
   "ja": "テスト視点における残差",
